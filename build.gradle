@@ -1,0 +1,22 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.github.erizo.gradle:jcstress-gradle-plugin:0.7.5'
+    }
+}
+
+apply plugin: 'jcstress'
+
+repositories {
+    jcenter()
+}
+
+jcstress {
+    // verbose = true
+    // timeMillis = "200"
+    // yield = true
+    // mode = "stress" // sanity, quick, default, tough, stress
+}
