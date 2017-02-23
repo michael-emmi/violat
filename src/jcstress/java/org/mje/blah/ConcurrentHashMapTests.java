@@ -200,7 +200,9 @@ public class ConcurrentHashMapTests {
 
         @Actor
         public void actor2(BooleanResult1 result) {
-            result.r1 = m.get(1) == m.get(2);
+            Integer i = m.get(1);
+            Integer j = m.get(2);
+            result.r1 = i != null && i.equals(j);
         }
     }
 
@@ -276,18 +278,16 @@ public class ConcurrentHashMapTests {
     @State
     public static class sizeTest {
         ConcurrentMap<Integer,Integer> m =
-            new ConcurrentHashMap<Integer,Integer>(
-                Collections.singletonMap(0, 0)
-            );
+            new ConcurrentHashMap<Integer,Integer>();
 
         @Actor
         public void actor1() {
-            m.put(1,1);
+            m.put(0,0);
         }
 
         @Actor
         public void actor2(BooleanResult1 result) {
-            result.r1 = m.containsKey(1) && m.size() < 2;
+            result.r1 = m.containsKey(0) && m.size() < 1;
         }
     }
 
