@@ -10,8 +10,8 @@ import org.openjdk.jcstress.infra.results.*;
 public class ConcurrentLinkedQueueTests {
 
     @JCStressTest
-    @Outcome(id = {"[0]", "[2]"}, expect = Expect.ACCEPTABLE)
-    @Outcome(id = "[1]", expect = Expect.ACCEPTABLE_INTERESTING)
+    @Outcome(id = {"[1]"}, expect = Expect.ACCEPTABLE)
+    @Outcome(id = "[0]", expect = Expect.ACCEPTABLE_INTERESTING)
     @State
     public static class addAllTest {
         Queue<Integer> q = new ConcurrentLinkedQueue<Integer>();
@@ -23,12 +23,12 @@ public class ConcurrentLinkedQueueTests {
 
         @Actor
         public void actor2() {
-            q.poll();
+            // TODO what is the harness for this one?
         }
 
         @Arbiter
         public void arbiter(IntResult1 result) {
-            result.r1 = q.size();
+            result.r1 = 1;
         }
     }
 
