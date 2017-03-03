@@ -1,5 +1,10 @@
+apply plugin: 'jcstress'
+apply plugin: 'java'
+apply plugin: 'application'
+
 buildscript {
     repositories {
+        mavenCentral()
         jcenter()
     }
 
@@ -8,9 +13,9 @@ buildscript {
     }
 }
 
-apply plugin: 'jcstress'
 
 repositories {
+    mavenCentral()
     jcenter()
 }
 
@@ -19,4 +24,10 @@ jcstress {
     // timeMillis = "200"
     // yield = true
     // mode = "stress" // sanity, quick, default, tough, stress
+}
+
+mainClassName = 'org.mje.blah.Main'
+
+jar {
+    version = '0.2'
 }
