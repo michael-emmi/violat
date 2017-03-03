@@ -1,2 +1,3 @@
 .gradle
 build
+src/jcstress/java/org/mje/auto
