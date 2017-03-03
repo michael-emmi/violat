@@ -9,13 +9,13 @@ public class Main {
     public static void main(String... args) {
         try {
 
-            Class<?> c = Class.forName("java.util.concurrent.ConcurrentLinkedQueue");
+            InvocationFactory f = new InvocationFactory("java.util.concurrent.ConcurrentLinkedQueue");
             Harness h = HarnessFactory.allAgainstOne(
-                new Invocation(c.getConstructor()),
-                new Invocation(c.getMethod("add", Object.class), 1),
-                new Invocation(c.getMethod("add", Object.class), 2),
-                new Invocation(c.getMethod("clear")),
-                new Invocation(c.getMethod("peek"))
+                f.get(),
+                f.get("add", 1),
+                f.get("add", 2),
+                f.get("clear"),
+                f.get("peek")
             );
 
             Path root = Paths.get("src", "jcstress", "java");
