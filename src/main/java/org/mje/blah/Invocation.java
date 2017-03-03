@@ -24,6 +24,29 @@ public class Invocation {
             || ((Method) method).getReturnType().equals(Void.TYPE);
     }
 
+    public Object invoke()
+    throws InstantiationException,
+           IllegalAccessException,
+           IllegalArgumentException,
+           InvocationTargetException {
+
+        if (method instanceof Constructor)
+            return ((Constructor<?>) method).newInstance(arguments);
+        else
+            throw new InstantiationException("Invalid constructor.");
+    }
+
+    public Object invoke(Object target)
+    throws IllegalAccessException,
+           IllegalArgumentException,
+           InvocationTargetException {
+
+        if (method instanceof Method)
+            return ((Method) method).invoke(target, arguments);
+        else
+            throw new IllegalArgumentException("Invalid method.");
+    }
+
     public String toString() {
         StringBuilder s = new StringBuilder();
         s.append(method.getName() + "(");

@@ -4,25 +4,51 @@ import java.util.*;
 
 public class PartialOrder<N> {
 
-    HashMap<N,Set<N>> before;
-    HashMap<N,Set<N>> after;
-
     public static class Edge<N> {
         N source, sink;
         public Edge(N n1, N n2) { source = n1; sink = n2; }
         public N getSource() { return source; }
         public N getSink() { return sink; }
+        public boolean equals(Object that) {
+            return (that instanceof Edge)
+                && this.source.equals(((Edge) that).source)
+                && this.sink.equals(((Edge) that).sink);
+        }
+        public int hashCode() {
+            return source.hashCode() + sink.hashCode();
+        }
     }
 
-    public PartialOrder(Collection<Edge<N>> edges) {
+    Set<N> nodes;
+    Set<Edge<N>> basis;
+    HashMap<N,Set<N>> before;
+    HashMap<N,Set<N>> after;
+
+    public PartialOrder(Collection<N> nodes, Collection<Edge<N>> edges) {
+        this.nodes = new HashSet<>();
+        this.basis = new HashSet<>(edges);
         this.before = new HashMap<>();
         this.after = new HashMap<>();
+        for (N n : nodes)
+            add(n);
         for (Edge<N> edge : edges)
             add(edge);
     }
 
+    public PartialOrder(Collection<N> nodes) {
+        this(nodes, Collections.emptyList());
+    }
+
     public PartialOrder() {
-        this(Collections.emptyList());
+        this(Collections.emptySet(), Collections.emptyList());
+    }
+
+    public void add(N n) {
+        nodes.add(n);
+        if (!before.containsKey(n)) {
+            before.put(n, new HashSet<>());
+            after.put(n, new HashSet<>());
+        }
     }
 
     public void add(N n1, N n2) {
@@ -30,6 +56,7 @@ public class PartialOrder<N> {
     }
 
     public void add(Edge<N> edge) {
+        basis.add(edge);
         addOnly(edge);
         addClosure(edge);
     }
@@ -37,15 +64,8 @@ public class PartialOrder<N> {
     void addOnly(Edge<N> edge) {
         N n1 = edge.getSource();
         N n2 = edge.getSink();
-
-        if (!before.containsKey(n1)) {
-            before.put(n1, new HashSet<>());
-            after.put(n1, new HashSet<>());
-        }
-        if (!before.containsKey(n2)) {
-            before.put(n2, new HashSet<>());
-            after.put(n2, new HashSet<>());
-        }
+        add(n1);
+        add(n2);
         before.get(n1).add(n2);
         after.get(n2).add(n1);
     }
@@ -83,14 +103,76 @@ public class PartialOrder<N> {
     }
 
     public Set<N> getNodes() {
-        return before.keySet();
+        return nodes;
     }
 
     public Set<N> getMinimals() {
         Set<N> minimals = new HashSet<>();
-        for (N n : after.keySet())
+        for (N n : nodes)
             if (after.get(n).isEmpty())
                 minimals.add(n);
         return minimals;
+    }
+
+    public boolean isEmpty() {
+        return nodes.isEmpty();
+    }
+
+    public Set<Edge<N>> getBasis() {
+        return basis;
+    }
+
+    public PartialOrder<N> clone() {
+        return new PartialOrder<>(getNodes(), getBasis());
+    }
+
+    public PartialOrder<N> drop(Edge<N> edge) {
+        Set<Edge<N>> edges = new HashSet<>(getBasis());
+        edges.remove(edge);
+        return new PartialOrder<>(getNodes(), edges);
+    }
+
+    public PartialOrder<N> replace(N n1, N n2) {
+        Set<N> nodes = new HashSet<>(getNodes());
+        nodes.remove(n1);
+        nodes.add(n2);
+
+        Set<Edge<N>> edges = new HashSet<>(getBasis());
+        for (Edge<N> edge : edges) {
+            N src = edge.getSource();
+            N snk = edge.getSink();
+            if (src.equals(n1)) {
+                edges.remove(edge);
+                edges.add(new Edge<>(n2,snk));
+            } else if (snk.equals(n1)) {
+                edges.remove(edge);
+                edges.add(new Edge<>(src,n2));
+            }
+        }
+        return new PartialOrder<>(nodes, edges);
+    }
+
+    public PartialOrder<N> drop(N n) {
+        Set<N> nodes = new HashSet<>(getNodes());
+        nodes.remove(n);
+
+        Set<Edge<N>> edges = new HashSet<>(getBasis());
+        for (Edge<N> edge : edges)
+            if (edge.getSource().equals(n) || edge.getSink().equals(n))
+                edges.remove(edge);
+        return new PartialOrder<>(nodes, edges);
+    }
+
+    public String toString() {
+        StringBuilder s = new StringBuilder();
+        Map<N,Integer> ids = new HashMap<>();
+        int count = 0;
+        for (N n : nodes) {
+            ids.put(n, ++count);
+            s.append("n" + count + ": " + n + "\n");
+        }
+        for (Edge<N> edge : basis)
+            s.append("edge: n" + ids.get(edge.getSource()) + " < n" + ids.get(edge.getSink()) + "\n");
+        return s.toString();
     }
 }

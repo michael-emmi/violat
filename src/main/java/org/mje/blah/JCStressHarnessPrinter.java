@@ -44,8 +44,7 @@ public class JCStressHarnessPrinter {
 
     void harness() {
         Class<?> klass = harness.getConstructor().getMethod().getDeclaringClass();
-        Vector<Invocation> invocations = harness.getInvocations();
-        List<List<Integer>> rounds = harness.getRounds();
+        Map<Invocation,Integer> invocations = harness.getInvocations();
 
         line("package " + harness.getPackage() + ";");
         line("import org.openjdk.jcstress.annotations.*;");
@@ -65,15 +64,15 @@ public class JCStressHarnessPrinter {
                 int seqNum = 0;
                 line(klass.getName() + " obj = new " + harness.getConstructor() + ";");
 
-                for (List<Integer> seq : harness.getSequences()) {
+                for (InvocationSequence seq : harness.getSequences().getNodes()) {
                     line();
                     line(annotation());
                     scope("public void seq" + ++seqNum + "(StringResult" + invocations.size() + " result)", () -> {
-                        for (int i : seq) {
-                            if (invocations.get(i).isVoid()) {
-                                line("obj." + invocations.get(i).toString() + "; result.r" + (i+1) + " = null;");
+                        for (Invocation i : seq.getInvocations()) {
+                            if (i.isVoid()) {
+                                line("obj." + i + "; result.r" + invocations.get(i) + " = null;");
                             } else
-                                line("result.r" + (i+1) + " = String.valueOf(obj." + invocations.get(i).toString() + ");");
+                                line("result.r" + invocations.get(i) + " = String.valueOf(obj." + i + ");");
                         }
                     });
                 }
@@ -82,7 +81,7 @@ public class JCStressHarnessPrinter {
     }
 
     String result(Map<Integer,Object> r) {
-        return IntStream.range(0, r.size())
+        return IntStream.range(1, r.size()+1)
             .mapToObj(i -> String.valueOf(r.get(i)))
             .collect(Collectors.joining(", "));
     }

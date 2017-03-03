@@ -9,19 +9,26 @@ public class Harness {
     String pack;
     String name;
     Invocation constructor;
-    Vector<Invocation> invocations;
-    Vector<List<Integer>> sequences;
-    List<List<Integer>> rounds;
+    PartialOrder<InvocationSequence> sequences;
+    Map<Invocation,Integer> invocations;
     Set<Map<Integer,Object>> results;
 
-    public Harness(Invocation constructor, List<Invocation> invocations,
-            List<List<Integer>> sequences, List<List<Integer>> rounds) {
+    public Harness(
+            Invocation constructor,
+            PartialOrder<InvocationSequence> sequences) {
+
         this.pack = "org.mje.auto";
         this.name = "AutogenHarness";
+
         this.constructor = constructor;
-        this.invocations = new Vector<>(invocations);
-        this.sequences = new Vector<>(sequences);
-        this.rounds = rounds;
+        this.sequences = sequences;
+
+        int count = 0;
+        this.invocations = new HashMap<>();
+        for (InvocationSequence sequence : sequences.getNodes())
+            for (Invocation i : sequence.getInvocations())
+                invocations.put(i, ++count);
+
         this.results = null;
     }
 
@@ -37,88 +44,83 @@ public class Harness {
         return constructor;
     }
 
-    public Vector<Invocation> getInvocations() {
-        return invocations;
-    }
-
-    public Vector<List<Integer>> getSequences() {
+    public PartialOrder<InvocationSequence> getSequences() {
         return sequences;
     }
 
-    public List<List<Integer>> getRounds() {
-        return rounds;
+    public Map<Invocation,Integer> getInvocations() {
+        return invocations;
     }
 
     public Set<Map<Integer,Object>> getResults() {
         if (results == null) {
             results = new HashSet<>();
 
-            for (List<Integer> seq : getLinearizations())
-                results.add(collectResult(seq));
+            for (InvocationSequence sequence : getLinearizations())
+                results.add(collectResult(sequence));
         }
         return results;
     }
 
-    List<List<Integer>> getLinearizations() {
-        List<List<Integer>> linearizations = new LinkedList<>();
-        linearizations.add(new LinkedList<>());
+    public String toString() {
+        return sequences.toString();
+    }
 
-        for (List<Integer> seqs : rounds) {
-            List<List<Integer>> next = new LinkedList<>();
+    static class PartialLinearization {
+        InvocationSequence sequence;
+        PartialOrder<InvocationSequence> remainder;
+        public PartialLinearization(InvocationSequence s, PartialOrder<InvocationSequence> o) {
+            this.sequence = s;
+            this.remainder = o;
+        }
+        public InvocationSequence getSequence() { return sequence; }
+        public PartialOrder<InvocationSequence> getRemainder() { return remainder; }
+    }
 
-            Queue<Map.Entry<List<Integer>,Map<Integer,Queue<Integer>>>> partials
-                = new LinkedList<>();
+    List<InvocationSequence> getLinearizations() {
+        List<InvocationSequence> linearizations = new LinkedList<>();
 
-            List<Integer> initPartial = new LinkedList<>();
-            Map<Integer, Queue<Integer>> initBuffers = new HashMap<>();
-            for (int i : seqs)
-                initBuffers.put(i, new LinkedList<>(sequences.get(i)));
+        Queue<PartialLinearization> partials = new LinkedList<>();
+        partials.add(new PartialLinearization(new InvocationSequence(), sequences));
 
-            partials.offer(new AbstractMap.SimpleEntry<>(initPartial, initBuffers));
+        while (!partials.isEmpty()) {
+            PartialLinearization p = partials.poll();
+            InvocationSequence sequence = p.getSequence();
+            PartialOrder<InvocationSequence> remainder = p.getRemainder();
 
-            while (!partials.isEmpty()) {
-                Map.Entry<List<Integer>,Map<Integer,Queue<Integer>>> e = partials.poll();
+            if (remainder.isEmpty())
+                linearizations.add(sequence);
 
-                if (e.getValue().isEmpty()) {
-                    for (List<Integer> prev : linearizations)
-                        next.add(Stream.concat(prev.stream(), e.getKey().stream()).collect(Collectors.toList()));
+            else {
+                for (InvocationSequence s : remainder.getMinimals()) {
+                    PartialOrder<InvocationSequence> rest = remainder.clone();
 
-                } else {
-                    for (int i : e.getValue().keySet()) {
-                        List<Integer> partial = new LinkedList<>(e.getKey());
-                        Map<Integer, Queue<Integer>> buffers = new HashMap<>(e.getValue());
-                        buffers.put(i, new LinkedList<>(buffers.get(i)));
-                        partial.add(buffers.get(i).poll());
-                        if (buffers.get(i).isEmpty())
-                            buffers.remove(i);
-                        partials.offer(new AbstractMap.SimpleEntry<>(partial, buffers));
-                    }
+                    Invocation head = s.head();
+                    InvocationSequence tail = s.tail();
+
+                    partials.offer(new PartialLinearization(
+                        sequence.snoc(head),
+                        tail.getInvocations().isEmpty()
+                            ? rest.drop(s)
+                            : rest.replace(s, tail)
+                    ));
                 }
             }
-            linearizations = next;
         }
-
         return linearizations;
     }
 
-    Map<Integer,Object> collectResult(List<Integer> sequence) {
+    Map<Integer,Object> collectResult(InvocationSequence sequence) {
         Map<Integer,Object> result = new HashMap<>();
 
         try {
-            Object obj =
-                ((Constructor<?>) constructor.getMethod())
-                .newInstance(constructor.getArguments());
-
-            for (int i : sequence)
-                result.put(i,
-                    ((Method) invocations.get(i).getMethod())
-                    .invoke(obj, invocations.get(i).getArguments())
-                );
+            Object obj = constructor.invoke();
+            for (Invocation i : sequence.getInvocations())
+                result.put(invocations.get(i), i.invoke(obj));
 
         } catch (Exception e) {
             throw new RuntimeException("BAD CLASSES: " + e);
         }
-
         return result;
     }
 }
