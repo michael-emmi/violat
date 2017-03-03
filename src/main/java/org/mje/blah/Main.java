@@ -10,22 +10,12 @@ public class Main {
         try {
 
             Class<?> c = Class.forName("java.util.concurrent.ConcurrentLinkedQueue");
-
-            Harness h = new Harness(
+            Harness h = HarnessFactory.allAgainstOne(
                 new Invocation(c.getConstructor()),
-                Arrays.asList(new Invocation[] {
-                    new Invocation(c.getMethod("add", Object.class), 1),
-                    new Invocation(c.getMethod("add", Object.class), 2),
-                    new Invocation(c.getMethod("clear")),
-                    new Invocation(c.getMethod("peek"))
-                }),
-                Arrays.asList(new List[]{
-                    Arrays.asList(new Integer[]{0, 1, 2}),
-                    Arrays.asList(new Integer[]{3})
-                }),
-                Arrays.asList(new List[]{
-                    Arrays.asList(new Integer[]{0,1})
-                })
+                new Invocation(c.getMethod("add", Object.class), 1),
+                new Invocation(c.getMethod("add", Object.class), 2),
+                new Invocation(c.getMethod("clear")),
+                new Invocation(c.getMethod("peek"))
             );
 
             Path root = Paths.get("src", "jcstress", "java");
