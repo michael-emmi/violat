@@ -6,6 +6,9 @@ import java.util.*;
 
 public class Main {
 
+    static String P = "org.mje.auto";
+    static String C = "AutogenHarness";
+
     public static void main(String... args) {
         try {
 
@@ -19,15 +22,15 @@ public class Main {
             );
 
             Path root = Paths.get("src", "jcstress", "java");
-            Path auto = Paths.get(root.toString(), h.getPackage().split("[.]"));
-            Path file = Paths.get(auto.toString(), h.getName() + ".java");
+            Path auto = Paths.get(root.toString(), P.split("[.]"));
+            Path file = Paths.get(auto.toString(), C + ".java");
 
             File dir = new File(auto.toString());
             if (!dir.exists())
                 dir.mkdir();
 
             try(PrintWriter out = new PrintWriter(file.toString())) {
-                out.println(new JCStressHarnessPrinter(h).toString());
+                out.println(new JCStressHarnessPrinter(P, C, h).toString());
             }
 
         } catch (Exception e) {

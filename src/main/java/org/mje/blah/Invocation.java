@@ -1,6 +1,8 @@
 package org.mje.blah;
 
 import java.lang.reflect.*;
+import java.util.*;
+import java.util.stream.*;
 
 public class Invocation {
     Executable method;
@@ -48,11 +50,9 @@ public class Invocation {
     }
 
     public String toString() {
-        StringBuilder s = new StringBuilder();
-        s.append(method.getName() + "(");
-        for (Object a : arguments)
-            s.append(a.toString());
-        s.append(")");
-        return s.toString();
+        return method.getName() + "("
+            + Arrays.stream(arguments).map(Object::toString)
+                .collect(Collectors.joining(", "))
+            + ")";
     }
 }

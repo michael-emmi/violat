@@ -6,38 +6,25 @@ import java.util.stream.*;
 
 public class Harness {
 
-    String pack;
-    String name;
     Invocation constructor;
     PartialOrder<InvocationSequence> sequences;
-    Map<Invocation,Integer> invocations;
+    Map<Invocation,Integer> numbering;
     Set<Map<Integer,Object>> results;
 
     public Harness(
             Invocation constructor,
             PartialOrder<InvocationSequence> sequences) {
 
-        this.pack = "org.mje.auto";
-        this.name = "AutogenHarness";
-
         this.constructor = constructor;
         this.sequences = sequences;
 
         int count = 0;
-        this.invocations = new HashMap<>();
+        this.numbering = new HashMap<>();
         for (InvocationSequence sequence : sequences.getNodes())
             for (Invocation i : sequence.getInvocations())
-                invocations.put(i, ++count);
+                numbering.put(i, ++count);
 
         this.results = null;
-    }
-
-    public String getPackage() {
-        return pack;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public Invocation getConstructor() {
@@ -48,8 +35,8 @@ public class Harness {
         return sequences;
     }
 
-    public Map<Invocation,Integer> getInvocations() {
-        return invocations;
+    public Map<Invocation,Integer> getNumbering() {
+        return numbering;
     }
 
     public Set<Map<Integer,Object>> getResults() {
@@ -116,7 +103,7 @@ public class Harness {
         try {
             Object obj = constructor.invoke();
             for (Invocation i : sequence.getInvocations())
-                result.put(invocations.get(i), i.invoke(obj));
+                result.put(numbering.get(i), i.invoke(obj));
 
         } catch (Exception e) {
             throw new RuntimeException("BAD CLASSES: " + e);

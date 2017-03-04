@@ -8,12 +8,17 @@ import java.util.stream.*;
 public class JCStressHarnessPrinter {
 
     Harness harness;
+    String packageName;
+    String className;
     StringWriter stringWriter;
     PrintWriter printWriter;
     int indentation;
 
-    public JCStressHarnessPrinter(Harness harness) {
+    public JCStressHarnessPrinter(String packageName, String className, Harness harness) {
+        this.packageName = packageName;
+        this.className = className;
         this.harness = harness;
+
         stringWriter = new StringWriter();
         printWriter = new PrintWriter(stringWriter);
         indentation = 0;
@@ -43,16 +48,16 @@ public class JCStressHarnessPrinter {
     }
 
     void harness() {
-        Class<?> klass = harness.getConstructor().getMethod().getDeclaringClass();
-        Map<Invocation,Integer> invocations = harness.getInvocations();
+        Class<?> _class = harness.getConstructor().getMethod().getDeclaringClass();
+        Map<Invocation,Integer> numbering = harness.getNumbering();
 
-        line("package " + harness.getPackage() + ";");
+        line("package " + this.packageName + ";");
         line("import org.openjdk.jcstress.annotations.*;");
         line("import org.openjdk.jcstress.infra.results.*;");
-        line("import " + klass.getName() + ";");
+        line("import " + _class.getName() + ";");
         line();
 
-        scope("public class " + harness.getName(), () -> {
+        scope("public class " + this.className, () -> {
             int testNum = 0;
             line();
             line("@JCStressTest");
@@ -62,17 +67,17 @@ public class JCStressHarnessPrinter {
             line("@State");
             scope("public static class Test" + ++testNum, () -> {
                 int seqNum = 0;
-                line(klass.getName() + " obj = new " + harness.getConstructor() + ";");
+                line(_class.getSimpleName() + " obj = new " + harness.getConstructor() + ";");
 
                 for (InvocationSequence seq : harness.getSequences().getNodes()) {
                     line();
                     line(annotation());
-                    scope("public void seq" + ++seqNum + "(StringResult" + invocations.size() + " result)", () -> {
+                    scope("public void seq" + ++seqNum + "(StringResult" + numbering.size() + " result)", () -> {
                         for (Invocation i : seq.getInvocations()) {
                             if (i.isVoid()) {
-                                line("obj." + i + "; result.r" + invocations.get(i) + " = null;");
+                                line("obj." + i + "; result.r" + numbering.get(i) + " = null;");
                             } else
-                                line("result.r" + invocations.get(i) + " = String.valueOf(obj." + i + ");");
+                                line("result.r" + numbering.get(i) + " = String.valueOf(obj." + i + ");");
                         }
                     });
                 }
