@@ -3,39 +3,37 @@ package org.mje.blah;
 import java.io.*;
 import java.nio.file.*;
 import java.util.*;
+import javax.json.*;
 
 public class Main {
 
-    static String P = "org.mje.auto";
-    static String C = "AutogenHarness";
+    static String PACKAGE_NAME = "org.mje.auto";
+    static String CLASS_NAME_PREFIX = "AutogenHarness";
+    static Path ROOT_PATH = Paths.get("src", "jcstress", "java");
+    static Path CLASS_PATH = Paths.get(ROOT_PATH.toString(), PACKAGE_NAME.split("[.]"));
 
     public static void main(String... args) {
-        try {
+        int count = 0;
 
-            InvocationFactory f = new InvocationFactory("java.util.concurrent.ConcurrentLinkedQueue");
-            Harness h = HarnessFactory.allAgainstOne(
-                f.get(),
-                f.get("add", 1),
-                f.get("add", 2),
-                f.get("clear"),
-                f.get("peek")
-            );
+        for (String file : args) {
+            try {
+                Harness harness;
+                try (JsonReader reader = Json.createReader(new FileReader(file))) {
+                    harness = HarnessFactory.fromJson(reader.readObject());
+                }
 
-            Path root = Paths.get("src", "jcstress", "java");
-            Path auto = Paths.get(root.toString(), P.split("[.]"));
-            Path file = Paths.get(auto.toString(), C + ".java");
+                String className = CLASS_NAME_PREFIX + ++count;
+                try (PrintWriter out = new PrintWriter(
+                        Paths.get(CLASS_PATH.toString(), className + ".java")
+                        .toString())) {
 
-            File dir = new File(auto.toString());
-            if (!dir.exists())
-                dir.mkdir();
+                    out.println(new JCStressHarnessPrinter(
+                        PACKAGE_NAME, className, harness).toString());
+                }
 
-            try(PrintWriter out = new PrintWriter(file.toString())) {
-                out.println(new JCStressHarnessPrinter(P, C, h).toString());
+            } catch (Exception e) {
+                System.err.println("Caught " + e + " while processing " + file);
             }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("CLASS PROBLEMS: " + e);
         }
     }
 }

@@ -19,6 +19,10 @@ repositories {
     jcenter()
 }
 
+dependencies {
+  compile group: 'org.glassfish', name: 'javax.json', version: '1.0.4'
+}
+
 jcstress {
     verbose = true
     // timeMillis = "200"
@@ -30,4 +34,12 @@ mainClassName = 'org.mje.blah.Main'
 
 jar {
     version = '0.2'
+
+    manifest { 
+      attributes "Main-Class": "$mainClassName"
+    }
+
+    from {
+      configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
