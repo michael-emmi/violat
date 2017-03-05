@@ -43,16 +43,18 @@ public class HarnessFactory {
 
     static Object fromJsonValue(JsonValue value) {
         switch (value.getValueType()) {
-            case FALSE:
-                return new Boolean(false);
             case NULL:
                 return null;
+            case TRUE:
+                return new Boolean(true);
+            case FALSE:
+                return new Boolean(false);
             case NUMBER:
                 return new Integer(((JsonNumber) value).intValue());
             case STRING:
                 return ((JsonString) value).getString();
-            case TRUE:
-                return new Boolean(true);
+            case ARRAY:
+                return new ArrayList<>((JsonArray) value);
         }
 
         throw new RuntimeException("Unexpected JSON value: " + value);

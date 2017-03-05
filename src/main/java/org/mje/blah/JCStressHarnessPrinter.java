@@ -125,6 +125,7 @@ public class JCStressHarnessPrinter {
         line("package " + this.packageName + ";");
         line("import org.openjdk.jcstress.annotations.*;");
         line("import org.openjdk.jcstress.infra.results.*;");
+        line("import java.util.Arrays;");
         line("import " + _class.getName() + ";");
         line();
 
@@ -162,9 +163,9 @@ public class JCStressHarnessPrinter {
                     scope(declaration, () -> {
                         for (Invocation i : seq.getInvocations()) {
                             if (i.isVoid() || seq.equals(initial))
-                                line("obj." + i + ";");
+                                line("obj." + ofInvocation(i) + ";");
                             else
-                                line("result.r" + numbering.get(i) + " = String.valueOf(obj." + i + ");");
+                                line("result.r" + numbering.get(i) + " = String.valueOf(obj." + ofInvocation(i) + ");");
                         }
                     });
                 }
@@ -193,5 +194,22 @@ public class JCStressHarnessPrinter {
 
     public String toString() {
         return stringWriter.toString();
+    }
+
+    static String ofInvocation(Invocation i) {
+        return i.getMethod().getName() + "("
+            + Arrays.stream(i.getArguments()).map(JCStressHarnessPrinter::ofArgument)
+                .collect(Collectors.joining(", "))
+            + ")";
+    }
+
+    static String ofArgument(Object a) {
+        if (a instanceof Collection)
+            return "Arrays.asList("
+                + ((Collection) a).stream().map(JCStressHarnessPrinter::ofArgument)
+                    .collect(Collectors.joining(", "))
+                + ")";
+        else
+            return a.toString();
     }
 }
