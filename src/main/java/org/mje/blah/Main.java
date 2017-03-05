@@ -13,6 +13,7 @@ public class Main {
     static Path CLASS_PATH = Paths.get(ROOT_PATH.toString(), PACKAGE_NAME.split("[.]"));
 
     public static void main(String... args) {
+        int status = 0;
         int count = 0;
 
         for (String file : args) {
@@ -33,7 +34,10 @@ public class Main {
 
             } catch (Exception e) {
                 System.err.println("Caught " + e + " while processing " + file);
+                status = 1;
             }
         }
+
+        System.exit(status);
     }
 }
