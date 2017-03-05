@@ -93,6 +93,26 @@ public class JCStressHarnessPrinter {
             : Optional.empty();
     }
 
+    boolean inInitial(Invocation invocation) {
+        return getInitial().map(i -> i.getInvocations().contains(invocation)).orElse(false);
+    }
+
+    Map<Invocation,Integer> getNumbering() {
+        Map<Invocation,Integer> numbering = new HashMap<>();
+
+        Invocation[] invocations = new Invocation[harness.getNumbering().size()];
+        for (Invocation i : harness.getNumbering().keySet())
+            if (!i.isVoid() && !inInitial(i))
+                invocations[harness.getNumbering().get(i)-1] = i;
+
+        int count = 0;
+        for (int i = 0; i < invocations.length; i++)
+            if (invocations[i] != null)
+                numbering.put(invocations[i], ++count);
+
+        return numbering;
+    }
+
     void harness() {
 
         InvocationSequence
@@ -100,7 +120,7 @@ public class JCStressHarnessPrinter {
             arbiter = getArbiter().orElse(null);
 
         Class<?> _class = harness.getConstructor().getMethod().getDeclaringClass();
-        Map<Invocation,Integer> numbering = harness.getNumbering();
+        Map<Invocation,Integer> numbering = getNumbering();
 
         line("package " + this.packageName + ";");
         line("import org.openjdk.jcstress.annotations.*;");
@@ -124,22 +144,26 @@ public class JCStressHarnessPrinter {
                     String declaration;
 
                     if (seq.equals(initial)) {
-                        declaration = "public Test";
+                        declaration = "public Test()";
 
                     } else if (seq.equals(arbiter)) {
                         line("@Arbiter");
-                        declaration = "public void arbiter";
+                        declaration =
+                            "public void arbiter" +
+                            "(StringResult" + numbering.size() + " result)";
 
                     } else {
                         line("@Actor");
-                        declaration = "public void actor" + ++seqNum;
+                        declaration =
+                            "public void actor" + ++seqNum +
+                            "(StringResult" + numbering.size() + " result)";
                     }
 
-                    scope(declaration + "(StringResult" + numbering.size() + " result)", () -> {
+                    scope(declaration, () -> {
                         for (Invocation i : seq.getInvocations()) {
-                            if (i.isVoid()) {
-                                line("obj." + i + "; result.r" + numbering.get(i) + " = null;");
-                            } else
+                            if (i.isVoid() || seq.equals(initial))
+                                line("obj." + i + ";");
+                            else
                                 line("result.r" + numbering.get(i) + " = String.valueOf(obj." + i + ");");
                         }
                     });
@@ -149,7 +173,15 @@ public class JCStressHarnessPrinter {
     }
 
     String result(Map<Integer,Object> r) {
+        Map<Invocation,Integer> numbering = harness.getNumbering();
+        Set<Integer> initials =
+            getInitial()
+            .map(i -> i.getInvocations().stream().map(numbering::get))
+            .orElse(Stream.empty())
+            .collect(Collectors.toSet());
+
         return IntStream.range(1, r.size()+1)
+            .filter(i -> !initials.contains(i))
             .mapToObj(i -> String.valueOf(r.get(i)))
             .collect(Collectors.joining(", "));
     }
