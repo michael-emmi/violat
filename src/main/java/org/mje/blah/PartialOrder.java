@@ -138,7 +138,7 @@ public class PartialOrder<N> {
         nodes.add(n2);
 
         Set<Edge<N>> edges = new HashSet<>(getBasis());
-        for (Edge<N> edge : edges) {
+        for (Edge<N> edge : getBasis()) {
             N src = edge.getSource();
             N snk = edge.getSink();
             if (src.equals(n1)) {
@@ -157,7 +157,7 @@ public class PartialOrder<N> {
         nodes.remove(n);
 
         Set<Edge<N>> edges = new HashSet<>(getBasis());
-        for (Edge<N> edge : edges)
+        for (Edge<N> edge : getBasis())
             if (edge.getSource().equals(n) || edge.getSink().equals(n))
                 edges.remove(edge);
         return new PartialOrder<>(nodes, edges);
