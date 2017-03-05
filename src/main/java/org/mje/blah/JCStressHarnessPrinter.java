@@ -1,6 +1,7 @@
 package org.mje.blah;
 
 import java.io.*;
+import java.lang.reflect.*;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
@@ -132,8 +133,13 @@ public class JCStressHarnessPrinter {
         scope("public class " + this.className, () -> {
             line();
             line("@JCStressTest");
-            for (Map<Integer,Object> r : harness.getResults())
-                line("@Outcome(id = \"[" + result(r) + "]\", expect = Expect.ACCEPTABLE)");
+
+            harness.getResults().stream()
+                .map(this::result)
+                .distinct()
+                .forEach(r -> {
+                    line("@Outcome(id = \"[" + r + "]\", expect = Expect.ACCEPTABLE)");
+                });
 
             line("@State");
             scope("public static class Test", () -> {
@@ -165,7 +171,7 @@ public class JCStressHarnessPrinter {
                             if (i.isVoid() || seq.equals(initial))
                                 line("obj." + ofInvocation(i) + ";");
                             else
-                                line("result.r" + numbering.get(i) + " = String.valueOf(obj." + ofInvocation(i) + ");");
+                                line("result.r" + numbering.get(i) + " = ResultAdapter.get(obj." + ofInvocation(i) + ");");
                         }
                     });
                 }
@@ -188,7 +194,7 @@ public class JCStressHarnessPrinter {
 
         return IntStream.range(1, r.size()+1)
             .filter(i -> !initials.contains(i) && !voids.contains(i))
-            .mapToObj(i -> String.valueOf(r.get(i)))
+            .mapToObj(i -> ofResult(r.get(i)))
             .collect(Collectors.joining(", "));
     }
 
@@ -211,5 +217,15 @@ public class JCStressHarnessPrinter {
                 + ")";
         else
             return a.toString();
+    }
+
+    static String ofResult(Object a) {
+        if (a instanceof Object[])
+            return "[" + Arrays.stream((Object[]) a)
+                .map(JCStressHarnessPrinter::ofResult)
+                .collect(Collectors.joining(",")) + "]";
+
+        else
+            return String.valueOf(a);
     }
 }
