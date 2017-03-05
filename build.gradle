@@ -24,6 +24,9 @@ dependencies {
 }
 
 jcstress {
+    // TODO specify the version?
+    // jcstressDependency 'org.openjdk.jcstress:jcstress-core:0.1.2'
+
     verbose = true
     // timeMillis = "200"
     // yield = true
@@ -35,7 +38,7 @@ mainClassName = 'org.mje.blah.Main'
 jar {
     version = '0.2'
 
-    manifest { 
+    manifest {
       attributes "Main-Class": "$mainClassName"
     }
 
