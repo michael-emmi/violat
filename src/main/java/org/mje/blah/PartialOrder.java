@@ -94,6 +94,14 @@ public class PartialOrder<N> {
         }
     }
 
+    public Set<N> getSuccessors(N n) {
+        return before.get(n);
+    }
+
+    public Set<N> getPredecessors(N n) {
+        return after.get(n);
+    }
+
     public boolean isBefore(N n1, N n2) {
         return before.get(n1).contains(n2);
     }
@@ -112,6 +120,14 @@ public class PartialOrder<N> {
             if (after.get(n).isEmpty())
                 minimals.add(n);
         return minimals;
+    }
+
+    public Set<N> getMaximals() {
+        Set<N> maximals = new HashSet<>();
+        for (N n : nodes)
+            if (before.get(n).isEmpty())
+                maximals.add(n);
+        return maximals;
     }
 
     public boolean isEmpty() {
