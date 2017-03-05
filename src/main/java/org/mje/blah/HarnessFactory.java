@@ -2,6 +2,7 @@ package org.mje.blah;
 
 import java.lang.reflect.*;
 import java.util.*;
+import java.util.stream.*;
 import javax.json.*;
 
 public class HarnessFactory {
@@ -54,7 +55,9 @@ public class HarnessFactory {
             case STRING:
                 return ((JsonString) value).getString();
             case ARRAY:
-                return new ArrayList<>((JsonArray) value);
+                return ((JsonArray) value).stream()
+                    .map(HarnessFactory::fromJsonValue)
+                    .collect(Collectors.toList());
         }
 
         throw new RuntimeException("Unexpected JSON value: " + value);
