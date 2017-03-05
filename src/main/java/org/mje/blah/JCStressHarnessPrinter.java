@@ -180,8 +180,13 @@ public class JCStressHarnessPrinter {
             .orElse(Stream.empty())
             .collect(Collectors.toSet());
 
+        Set<Integer> voids =
+            numbering.keySet().stream()
+            .filter(Invocation::isVoid).map(numbering::get)
+            .collect(Collectors.toSet());
+
         return IntStream.range(1, r.size()+1)
-            .filter(i -> !initials.contains(i))
+            .filter(i -> !initials.contains(i) && !voids.contains(i))
             .mapToObj(i -> String.valueOf(r.get(i)))
             .collect(Collectors.joining(", "));
     }
