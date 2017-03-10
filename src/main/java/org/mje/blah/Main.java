@@ -18,9 +18,9 @@ public class Main {
 
         for (String file : args) {
             try {
-                Harness harness;
+                Collection<Harness> harnesses;
                 try (JsonReader reader = Json.createReader(new FileReader(file))) {
-                    harness = HarnessFactory.fromJson(reader.readObject());
+                    harnesses = HarnessFactory.fromJson(reader.read());
                 }
 
                 String className = CLASS_NAME_PREFIX + ++count;
@@ -29,7 +29,7 @@ public class Main {
                         .toString())) {
 
                     out.println(new JCStressHarnessPrinter(
-                        PACKAGE_NAME, className, harness).toString());
+                        PACKAGE_NAME, className, harnesses).toString());
                 }
 
             } catch (Exception e) {

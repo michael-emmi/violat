@@ -3,28 +3,31 @@ package org.mje.blah;
 import java.io.*;
 import java.lang.reflect.*;
 import java.util.*;
+import java.util.concurrent.atomic.*;
 import java.util.function.*;
 import java.util.stream.*;
 
 public class JCStressHarnessPrinter {
 
-    Harness harness;
+    Collection<Harness> harnesses;
     String packageName;
     String className;
     StringWriter stringWriter;
     PrintWriter printWriter;
     int indentation;
 
-    public JCStressHarnessPrinter(String packageName, String className, Harness harness) {
+    public JCStressHarnessPrinter(String packageName, String className,
+            Collection<Harness> harnesses) {
+
         this.packageName = packageName;
         this.className = className;
-        this.harness = harness;
+        this.harnesses = harnesses;
 
         stringWriter = new StringWriter();
         printWriter = new PrintWriter(stringWriter);
         indentation = 0;
 
-        if (!isRepresentable())
+        if (!harnesses.stream().allMatch(JCStressHarnessPrinter::isRepresentable))
             throw new RuntimeException("Unable to represent harness.");
 
         harness();
@@ -52,12 +55,12 @@ public class JCStressHarnessPrinter {
         line("}");
     }
 
-    boolean isRepresentable() {
-        PartialOrder<InvocationSequence> sequences = harness.getSequences();
+    static boolean isRepresentable(Harness h) {
+        PartialOrder<InvocationSequence> sequences = h.getSequences();
 
         InvocationSequence
-            initial = getInitial().orElse(null),
-            arbiter = getArbiter().orElse(null);
+            initial = getInitial(h).orElse(null),
+            arbiter = getArbiter(h).orElse(null);
 
         for (InvocationSequence seq : sequences.getNodes()) {
             if (seq.equals(initial) || seq.equals(arbiter))
@@ -80,31 +83,31 @@ public class JCStressHarnessPrinter {
         return true;
     }
 
-    Optional<InvocationSequence> getInitial() {
-        Set<InvocationSequence> minimals = harness.getSequences().getMinimals();
+    static Optional<InvocationSequence> getInitial(Harness h) {
+        Set<InvocationSequence> minimals = h.getSequences().getMinimals();
         return minimals.size() == 1
             ? Optional.of(minimals.iterator().next())
             : Optional.empty();
     }
 
-    Optional<InvocationSequence> getArbiter() {
-        Set<InvocationSequence> maximals = harness.getSequences().getMaximals();
+    static Optional<InvocationSequence> getArbiter(Harness h) {
+        Set<InvocationSequence> maximals = h.getSequences().getMaximals();
         return maximals.size() == 1
             ? Optional.of(maximals.iterator().next())
             : Optional.empty();
     }
 
-    boolean inInitial(Invocation invocation) {
-        return getInitial().map(i -> i.getInvocations().contains(invocation)).orElse(false);
+    static boolean inInitial(Harness h, Invocation invocation) {
+        return getInitial(h).map(i -> i.getInvocations().contains(invocation)).orElse(false);
     }
 
-    Map<Invocation,Integer> getNumbering() {
+    static Map<Invocation,Integer> getNumbering(Harness h) {
         Map<Invocation,Integer> numbering = new HashMap<>();
 
-        Invocation[] invocations = new Invocation[harness.getNumbering().size()];
-        for (Invocation i : harness.getNumbering().keySet())
-            if (!i.isVoid() && !inInitial(i))
-                invocations[harness.getNumbering().get(i)-1] = i;
+        Invocation[] invocations = new Invocation[h.getNumbering().size()];
+        for (Invocation i : h.getNumbering().keySet())
+            if (!i.isVoid() && !inInitial(h,i))
+                invocations[h.getNumbering().get(i)-1] = i;
 
         int count = 0;
         for (int i = 0; i < invocations.length; i++)
@@ -115,74 +118,85 @@ public class JCStressHarnessPrinter {
     }
 
     void harness() {
-
-        InvocationSequence
-            initial = getInitial().orElse(null),
-            arbiter = getArbiter().orElse(null);
-
-        Class<?> _class = harness.getConstructor().getMethod().getDeclaringClass();
-        Map<Invocation,Integer> numbering = getNumbering();
-
         line("package " + this.packageName + ";");
         line("import org.openjdk.jcstress.annotations.*;");
         line("import org.openjdk.jcstress.infra.results.*;");
         line("import java.util.Arrays;");
-        line("import " + _class.getName() + ";");
+
+        harnesses.stream()
+            .map(Harness::getConstructor)
+            .map(Invocation::getMethod)
+            .map(Executable::getDeclaringClass)
+            .map(Class::getName)
+            .distinct()
+            .forEach(_class -> line("import " + _class + ";"));
+
         line();
 
         scope("public class " + this.className, () -> {
-            line();
-            line("@JCStressTest");
+            AtomicInteger idx = new AtomicInteger();
+            harnesses.stream().forEach(harness -> {
 
-            harness.getResults().stream()
-                .map(this::result)
-                .distinct()
-                .forEach(r -> {
-                    line("@Outcome(id = \"[" + r + "]\", expect = Expect.ACCEPTABLE)");
-                });
+                InvocationSequence
+                    initial = getInitial(harness).orElse(null),
+                    arbiter = getArbiter(harness).orElse(null);
 
-            line("@State");
-            scope("public static class Test", () -> {
-                int seqNum = 0;
-                line(_class.getSimpleName() + " obj = new " + harness.getConstructor() + ";");
+                Class<?> _class = harness.getConstructor().getMethod().getDeclaringClass();
+                Map<Invocation,Integer> numbering = getNumbering(harness);
 
-                for (InvocationSequence seq : harness.getSequences().getNodes()) {
-                    line();
-                    String declaration;
+                line();
+                line("@JCStressTest");
 
-                    if (seq.equals(initial)) {
-                        declaration = "public Test()";
-
-                    } else if (seq.equals(arbiter)) {
-                        line("@Arbiter");
-                        declaration =
-                            "public void arbiter" +
-                            "(StringResult" + numbering.size() + " result)";
-
-                    } else {
-                        line("@Actor");
-                        declaration =
-                            "public void actor" + ++seqNum +
-                            "(StringResult" + numbering.size() + " result)";
-                    }
-
-                    scope(declaration, () -> {
-                        for (Invocation i : seq.getInvocations()) {
-                            if (i.isVoid() || seq.equals(initial))
-                                line("obj." + ofInvocation(i) + ";");
-                            else
-                                line("result.r" + numbering.get(i) + " = ResultAdapter.get(obj." + ofInvocation(i) + ");");
-                        }
+                harness.getResults().stream()
+                    .map(r -> result(harness, r))
+                    .distinct()
+                    .forEach(r -> {
+                        line("@Outcome(id = \"[" + r + "]\", expect = Expect.ACCEPTABLE)");
                     });
-                }
+
+                line("@State");
+                scope("public static class T" + idx.incrementAndGet(), () -> {
+                    int seqNum = 0;
+                    line(_class.getSimpleName() + " obj = new " + harness.getConstructor() + ";");
+
+                    for (InvocationSequence seq : harness.getSequences().getNodes()) {
+                        line();
+                        String declaration;
+
+                        if (seq.equals(initial)) {
+                            declaration = "public Test()";
+
+                        } else if (seq.equals(arbiter)) {
+                            line("@Arbiter");
+                            declaration =
+                                "public void arbiter" +
+                                "(StringResult" + numbering.size() + " result)";
+
+                        } else {
+                            line("@Actor");
+                            declaration =
+                                "public void actor" + ++seqNum +
+                                "(StringResult" + numbering.size() + " result)";
+                        }
+
+                        scope(declaration, () -> {
+                            for (Invocation i : seq.getInvocations()) {
+                                if (i.isVoid() || seq.equals(initial))
+                                    line("obj." + ofInvocation(i) + ";");
+                                else
+                                    line("result.r" + numbering.get(i) + " = ResultAdapter.get(obj." + ofInvocation(i) + ");");
+                            }
+                        });
+                    }
+                });
             });
         });
     }
 
-    String result(Map<Integer,Object> r) {
-        Map<Invocation,Integer> numbering = harness.getNumbering();
+    static String result(Harness h, Map<Integer,Object> r) {
+        Map<Invocation,Integer> numbering = h.getNumbering();
         Set<Integer> initials =
-            getInitial()
+            getInitial(h)
             .map(i -> i.getInvocations().stream().map(numbering::get))
             .orElse(Stream.empty())
             .collect(Collectors.toSet());

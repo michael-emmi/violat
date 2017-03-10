@@ -7,6 +7,26 @@ import javax.json.*;
 
 public class HarnessFactory {
 
+    public static Collection<Harness> fromJson(JsonStructure struct)
+    throws ClassNotFoundException, NoSuchMethodException {
+        switch (struct.getValueType()) {
+            case ARRAY:
+                return fromJson((JsonArray) struct);
+            default:
+                return Collections.singletonList(fromJson((JsonObject) struct));
+        }
+    }
+
+    public static Collection<Harness> fromJson(JsonArray array)
+    throws ClassNotFoundException, NoSuchMethodException {
+        Collection<Harness> hs = new LinkedList<>();
+
+        for (JsonObject h : array.getValuesAs(JsonObject.class))
+            hs.add(fromJson(h));
+
+        return hs;
+    }
+
     public static Harness fromJson(JsonObject object)
     throws ClassNotFoundException, NoSuchMethodException {
         Map<Integer, InvocationSequence> numbering = new HashMap<>();
