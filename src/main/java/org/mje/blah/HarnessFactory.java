@@ -37,7 +37,7 @@ public class HarnessFactory {
                 .getValuesAs(JsonObject.class)) {
 
             List<Invocation> invocations = new LinkedList<>();
-            for (JsonObject i : sequence.getJsonArray("sequence")
+            for (JsonObject i : sequence.getJsonArray("invocations")
                     .getValuesAs(JsonObject.class))
 
                 invocations.add(f.get(
