@@ -1,4 +1,4 @@
 .gradle
 build
-src/jcstress/java/org/mje/auto
+jcstress/src/main/java/org/mje/auto
 node_modules
