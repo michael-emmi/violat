@@ -151,7 +151,7 @@ public class JCStressHarnessPrinter {
                     .map(r -> result(harness, r))
                     .distinct()
                     .forEach(r -> {
-                        line("@Outcome(id = \"[" + r + "]\", expect = Expect.ACCEPTABLE)");
+                        line("@Outcome(id = \"" + r + "\", expect = Expect.ACCEPTABLE)");
                     });
 
                 line("@State");
