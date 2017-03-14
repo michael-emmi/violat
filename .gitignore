@@ -3,3 +3,4 @@ build
 jcstress.*
 node_modules
 harnesses
+results
