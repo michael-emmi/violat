@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 function compose(g1, g2) {
   return function*(x) {
     for (y of g1(x))
