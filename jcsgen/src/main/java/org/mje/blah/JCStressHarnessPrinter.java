@@ -10,16 +10,12 @@ import java.util.stream.*;
 public class JCStressHarnessPrinter {
 
     Collection<Harness> harnesses;
-    String packageName;
     String className;
     StringWriter stringWriter;
     PrintWriter printWriter;
     int indentation;
 
-    public JCStressHarnessPrinter(String packageName, String className,
-            Collection<Harness> harnesses) {
-
-        this.packageName = packageName;
+    public JCStressHarnessPrinter(String className, Collection<Harness> harnesses) {
         this.className = className;
         this.harnesses = harnesses;
 
@@ -31,6 +27,16 @@ public class JCStressHarnessPrinter {
             throw new RuntimeException("Unable to represent harness.");
 
         harness();
+    }
+
+    String packageName() {
+        String[] pieces = this.className.split("[.]");
+        return String.join(".", Arrays.copyOf(pieces, pieces.length-1));
+    }
+
+    String className() {
+        String[] pieces = this.className.split("[.]");
+        return pieces[pieces.length-1];
     }
 
     void indent(int n) {
@@ -118,7 +124,7 @@ public class JCStressHarnessPrinter {
     }
 
     void harness() {
-        line("package " + this.packageName + ";");
+        line("package " + packageName() + ";");
         line("import org.openjdk.jcstress.annotations.*;");
         line("import org.openjdk.jcstress.infra.results.*;");
         line("import java.util.Arrays;");
@@ -133,7 +139,7 @@ public class JCStressHarnessPrinter {
 
         line();
 
-        scope("public class " + this.className, () -> {
+        scope("public class " + className(), () -> {
             AtomicInteger idx = new AtomicInteger();
             harnesses.stream().forEach(harness -> {
 

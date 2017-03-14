@@ -8,9 +8,8 @@ import org.apache.commons.cli.*;
 
 public class Main {
     final static String PROGRAM_NAME = "jcsgen";
-    final static String DESCRIPTION = "generate ";
-    final static String PACKAGE_NAME = "org.mje.auto";
-    final static String CLASS_NAME_PREFIX = "AutogenHarness";
+    final static String DESCRIPTION = "JCStress harness generator";
+    final static String CLASS_NAME_SUFFIX = "StressTests";
 
     static Options getOptions() {
         Options options = new Options();
@@ -19,8 +18,8 @@ public class Main {
             .desc("print this message")
             .build());
 
-        options.addOption(Option.builder().longOpt("output")
-            .desc("path to output file (required)")
+        options.addOption(Option.builder().longOpt("path")
+            .desc("path to output files (required)")
             .hasArg()
             .argName("PATH")
             .build());
@@ -40,7 +39,7 @@ public class Main {
         if (line == null
                 || line.hasOption("help")
                 || line.getArgs().length != 1
-                || !line.hasOption("output")) {
+                || !line.hasOption("path")) {
 
             new HelpFormatter().printHelp(
                 PROGRAM_NAME + " [options] <HARNESS-SPEC-FILE>.json",
@@ -54,15 +53,30 @@ public class Main {
         int status = 0;
 
         try {
-            Collection<Harness> harnesses;
+            Map<String,Collection<Harness>> harnesses = new HashMap<>();;
             try (JsonReader reader = Json.createReader(new FileReader(file))) {
-                harnesses = HarnessFactory.fromJson(reader.read());
+                for (Harness h : HarnessFactory.fromJson(reader.read())) {
+                    String className = h.getTargetClass().getName();
+                    if (!harnesses.containsKey(className))
+                        harnesses.put(className, new LinkedList<>());
+                    harnesses.get(className).add(h);
+                }
             }
 
-            String className = CLASS_NAME_PREFIX;
-            try (PrintWriter out = new PrintWriter(line.getOptionValue("output"))) {
-                out.println(new JCStressHarnessPrinter(
-                    PACKAGE_NAME, className, harnesses).toString());
+            for (String className : harnesses.keySet()) {
+                String testClassName = className + CLASS_NAME_SUFFIX;
+
+                Path path = Paths.get(
+                    line.getOptionValue("path"),
+                    testClassName.replace(".", "/") + ".java"
+                );
+
+                path.toFile().getParentFile().mkdirs();
+
+                try (PrintWriter out = new PrintWriter(path.toFile())) {
+                    out.println(new JCStressHarnessPrinter(
+                        testClassName, harnesses.get(className)).toString());
+                }
             }
 
         } catch (Exception e) {

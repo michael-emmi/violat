@@ -31,6 +31,10 @@ public class Harness {
         return constructor;
     }
 
+    public Class getTargetClass() {
+        return constructor.getMethod().getDeclaringClass();
+    }
+
     public PartialOrder<InvocationSequence> getSequences() {
         return sequences;
     }

@@ -1,4 +1,5 @@
 .gradle
 build
-jcstress/src/main/java/org/mje/auto
+jcstress.*
 node_modules
+harnesses
