@@ -1,2 +1,3 @@
 src/main/java
 !src/main/java/org/openjdk/jcstress
+target
