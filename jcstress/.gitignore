@@ -1,3 +1,2 @@
-target
-results
-src/main/java/java
+src/main/java
+!src/main/java/org/openjdk/jcstress
