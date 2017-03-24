@@ -205,7 +205,36 @@ function placeArgumentValues() {
   }
 }
 
-function main() {
+function enumerate(spec, method, sequences, invocations) {
+  return [
+    seeds(),
+    placeSequences(sequences),
+    placeOrders(),
+    placeInvocations(invocations),
+    placeClass(spec),
+    placeOneMethod(method),
+    placeRemainingMethods(spec),
+    placeArgumentTypes(spec),
+    placeArgumentValues(),
+    function*(schema) { yield JSON.stringify(schema, null, 2); }
+  ].reduce(compose);
+}
+
+function dump(spec, method, sequences, invocations, writable) {
+  var schemas = enumerate(spec, method, sequences, invocations);
+  var count = 0;
+  for (var schema of schemas()) {
+    writable.write("---\n");
+    writable.write(schema);
+    writable.write("\n");
+  }
+  writable.end();
+}
+
+exports.generator = enumerate;
+exports.dump = dump;
+
+if (require.main === module) {
   var fs = require('fs');
   var minimist = require('minimist')
 
@@ -228,21 +257,5 @@ function main() {
   }
 
   var spec = JSON.parse(fs.readFileSync(args.spec, 'utf8'));
-
-  var generator = [
-    seeds(),
-    placeSequences(args.sequences),
-    placeOrders(),
-    placeInvocations(args.invocations),
-    placeClass(spec),
-    placeOneMethod(args.method),
-    placeRemainingMethods(spec),
-    placeArgumentTypes(spec),
-    placeArgumentValues()
-
-  ].reduce(compose);
-
-  console.log(JSON.stringify(Array.from(generator()), null, 2));
+  dump(spec, args.method, args.sequences, args.invocations, process.stdout);
 }
-
-main();

@@ -38,49 +38,51 @@ public class Main {
 
         if (line == null
                 || line.hasOption("help")
-                || line.getArgs().length != 1
-                || !line.hasOption("path")) {
+                || line.getArgs().length > 0
+                || !line.hasOption("path")
+                || System.console() != null) {
 
             new HelpFormatter().printHelp(
-                PROGRAM_NAME + " [options] <HARNESS-SPEC-FILE>.json",
+                PROGRAM_NAME + " [options]",
                 DESCRIPTION + System.lineSeparator() + "options:",
                 getOptions(),
                 System.lineSeparator());
             return;
         }
 
-        String file = line.getArgs()[0];
+        Scanner scanner = new Scanner(System.in).useDelimiter("---");
         int status = 0;
-
         try {
-            Map<String,Collection<Harness>> harnesses = new HashMap<>();;
-            try (JsonReader reader = Json.createReader(new FileReader(file))) {
-                for (Harness h : HarnessFactory.fromJson(reader.read())) {
-                    String className = h.getTargetClass().getName();
-                    if (!harnesses.containsKey(className))
-                        harnesses.put(className, new LinkedList<>());
-                    harnesses.get(className).add(h);
+            Map<String,Integer> counts = new HashMap<>();
+
+            while (scanner.hasNext()) {
+                try (JsonReader reader = Json.createReader(new StringReader(scanner.next()))) {
+                    for (Harness h : HarnessFactory.fromJson(reader.read())) {
+                        String className = h.getTargetClass().getName();
+
+                        if (!counts.containsKey(className))
+                            counts.put(className, 0);
+
+                        int n = counts.get(className) + 1;
+                        counts.put(className, n);
+
+                        String testClassName = className + CLASS_NAME_SUFFIX + n;
+
+                        Path path = Paths.get(
+                            line.getOptionValue("path"),
+                            testClassName.replace(".", "/") + ".java");
+
+                        path.toFile().getParentFile().mkdirs();
+
+                        try (PrintWriter out = new PrintWriter(path.toFile())) {
+                            out.println(new JCStressHarnessPrinter(
+                                testClassName, Collections.singletonList(h)).toString());
+                        }
+                    }
                 }
             }
-
-            for (String className : harnesses.keySet()) {
-                String testClassName = className + CLASS_NAME_SUFFIX;
-
-                Path path = Paths.get(
-                    line.getOptionValue("path"),
-                    testClassName.replace(".", "/") + ".java"
-                );
-
-                path.toFile().getParentFile().mkdirs();
-
-                try (PrintWriter out = new PrintWriter(path.toFile())) {
-                    out.println(new JCStressHarnessPrinter(
-                        testClassName, harnesses.get(className)).toString());
-                }
-            }
-
         } catch (Exception e) {
-            System.err.println("Caught " + e + " while processing " + file);
+            System.err.println("Caught " + e);
             status = 1;
         }
 

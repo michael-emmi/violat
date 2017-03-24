@@ -2,5 +2,5 @@
 build
 jcstress.*
 node_modules
-harnesses
+schemas
 results
