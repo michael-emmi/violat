@@ -1,6 +1,8 @@
 var path = require('path');
 var cp = require('child_process');
 
+const EventEmitter = require('events');
+
 function compile(jcstressPath) {
   cp.execSync(`mvn clean install`, {cwd: jcstressPath});
 }
@@ -25,46 +27,46 @@ function splitStream(src, dst1, dst2) {
   snd.pipe(dst2);
 }
 
-function test(jarFile, callback) {
+function test(jarFile) {
   const proc = cp.spawn('java', ['-jar', jarFile, '-v', '-f', '1', '-iters', '1', '-jvmArgs', '-server']);
   const good = cp.spawn('grep', ['iteration #', '--line-buffered']);
   const bad = cp.spawn('grep', ['FORBIDDEN', '-B', '10', '--line-buffered']);
 
-  var failed = {};
+  var events = new EventEmitter();
 
   splitStream(proc.stdout, good.stdin, bad.stdin);
 
   good.stdout.on('data', (data) => {
-
+    events.emit('passed');
   });
 
   bad.stdout.on('data', (data) => {
     var m = data.toString().match(/\[FAILED\] ([^ ]*)/);
 
     if (Array.isArray(m)) {
-      failed['name'] =  m[1];
+      events.emit('failed', m[1]);
       grep.kill();
       proc.kill();
     }
   });
 
   process.on('exit', _ => {
-    callback(failed);
+    events.emit('finish');
   });
+
+  return events;
 }
 
 module.exports = (jcstressPath) => {
   return {
     testsPath: () => path.resolve(jcstressPath, 'src/main/java'),
     compile: () => compile(jcstressPath),
-    test: (fn) => test(path.resolve(jcstressPath, 'target/jcstress.jar'), fn),
+    test: () => test(path.resolve(jcstressPath, 'target/jcstress.jar')),
   };
 };
 
-if (require.main === module)
-  test('jcstress/target/jcstress.jar', failed => {
-    if (failed.hasOwnProperty('name'))
-      console.log(`failure: ${failed.name}`);
-    else
-      console.log("All tests passed.")
-  });
+if (require.main === module) {
+  events = test('jcstress/target/jcstress.jar');
+  events.on('finish', () => console.log("Testing complete."));
+  events.on('failed', t => console.log(`test ${t} failed.`));
+}

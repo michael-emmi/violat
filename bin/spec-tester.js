@@ -56,13 +56,13 @@ function testMethod(specFile, method, sequences, invocations) {
 
     process.stdout.write('Running test harnesses...');
     var t = new Date();
-    jcstress.test(failed => {
-        t = (new Date() - t) / 1000;
-        process.stdout.write(` ${t}s\n`);
-        if (failed.hasOwnProperty('name'))
-          console.log(`failed: ${failed.name}`);
-        else
-          console.log("All tests passed.")
+    var e = jcstress.test();
+    e.on('passed', () => process.stdout.write('.'));
+    e.on('failed', test => process.stdout.write(` test ${test} failed`))
+    e.on('finish', () => {
+      t = (new Date() - t) / 1000;
+      process.stdout.write(` ${t}s\n`);
+      console.log("Testing complete.");
     });
   });
 }
