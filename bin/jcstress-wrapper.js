@@ -1,8 +1,6 @@
 var path = require('path');
 var cp = require('child_process');
 
-const EventEmitter = require('events');
-
 function compile(jcstressPath) {
   cp.execSync(`mvn clean install`, {cwd: jcstressPath});
 }
@@ -27,34 +25,23 @@ function splitStream(src, dst1, dst2) {
   snd.pipe(dst2);
 }
 
-function test(jarFile) {
+function test(jarFile, onTick) {
   const proc = cp.spawn('java', ['-jar', jarFile, '-v', '-f', '1', '-iters', '1', '-jvmArgs', '-server']);
   const good = cp.spawn('grep', ['iteration #', '--line-buffered']);
   const bad = cp.spawn('grep', ['FORBIDDEN', '-B', '10', '--line-buffered']);
-
-  var events = new EventEmitter();
-
   splitStream(proc.stdout, good.stdin, bad.stdin);
 
-  good.stdout.on('data', (data) => {
-    events.emit('passed');
+  return new Promise((resolve, reject) => {
+    good.stdout.on('data', _ => { onTick(); });
+    bad.stdout.on('data', data => {
+      var m = data.toString().match(/\[FAILED\] ([^ ]*)/);
+      if (Array.isArray(m)) {
+        resolve(m[1]);
+        [proc, good, bad].map(p => p.kill());
+      }
+    });
+    process.on('exit', _ => resolve(null));
   });
-
-  bad.stdout.on('data', (data) => {
-    var m = data.toString().match(/\[FAILED\] ([^ ]*)/);
-
-    if (Array.isArray(m)) {
-      events.emit('failed', m[1]);
-      grep.kill();
-      proc.kill();
-    }
-  });
-
-  process.on('exit', _ => {
-    events.emit('finish');
-  });
-
-  return events;
 }
 
 module.exports = (jcstressPath) => {
@@ -62,15 +49,24 @@ module.exports = (jcstressPath) => {
     testsPath: () => path.resolve(jcstressPath, 'src/main/java'),
     compile: () => compile(jcstressPath),
     count: () => count(path.resolve(jcstressPath, 'target/jcstress.jar')),
-    test: () => test(path.resolve(jcstressPath, 'target/jcstress.jar')),
+    test: onTick => test(path.resolve(jcstressPath, 'target/jcstress.jar'), onTick),
   };
 };
 
 if (require.main === module) {
-  events = test('jcstress/target/jcstress.jar');
-  var total = count('jcstress/target/jcstress.jar');
-  var count = 0;
-  events.on('passed', () => process.stdout.write(`${++count} of ${total}\r`));
-  events.on('finish', () => console.log("Testing complete."));
-  events.on('failed', t => console.log(`test ${t} failed.`));
+  (async () => {
+    var jarFile = 'jcstress/target/jcstress.jar';
+    var total = count(jarFile);
+    var n = 0;
+
+    console.log(`Running ${total} tests.`)
+
+    var result = await test(jarFile,
+     () => process.stdout.write(`${++n} of ${total}\r`));
+
+    if (result == null)
+      console.log(`All tests passed.`);
+    else
+      console.log(`Test ${result} failed.`)
+  })();
 }

@@ -1,3 +1,5 @@
+var streamify = require('stream-generators');
+
 function compose(g1, g2) {
   return function*(x) {
     for (y of g1(x))
@@ -220,19 +222,18 @@ function enumerate(spec, method, sequences, invocations) {
   ].reduce(compose);
 }
 
-function dump(spec, method, sequences, invocations, writable) {
-  var schemas = enumerate(spec, method, sequences, invocations);
-  var count = 0;
-  for (var schema of schemas()) {
-    writable.write("---\n");
-    writable.write(schema);
-    writable.write("\n");
-  }
-  writable.end();
+function stream(spec, method, sequences, invocations) {
+  var gen = enumerate(spec, method, sequences, invocations);
+  function* wrap(schema) {
+    yield "---\n";
+    yield schema;
+    yield "\n";
+  };
+  return streamify(compose(gen, wrap));
 }
 
 exports.generator = enumerate;
-exports.dump = dump;
+exports.stream = stream;
 
 if (require.main === module) {
   var fs = require('fs');

@@ -12,15 +12,22 @@ function countSchemas(schemas) {
   return cp.execSync(`grep ${schemas} -e '---' | wc -l`).toString().trim();
 }
 
-function clockMe(description, fn) {
+function finished(stream) {
+  return new Promise((resolve, reject) => {
+    stream.on('finish', resolve);
+    stream.on('error', reject);
+  });
+}
+
+async function clockMe(description, fn) {
   process.stdout.write(description + "...");
   var t = new Date();
-  fn();
+  await fn();
   t = (new Date() - t) / 1000;
   process.stdout.write(` ${t}s\n`);
 }
 
-function testMethod(specFile, method, sequences, invocations) {
+async function testMethod(specFile, method, sequences, invocations) {
   var schemaPath = 'schemas';
 
   var schemas = path.resolve(schemaPath, specFile.replace(
@@ -42,29 +49,32 @@ function testMethod(specFile, method, sequences, invocations) {
   cp.execSync(`find ${schemaPath} -name "*.json" | xargs rm`);
   cp.execSync(`find ${jcstress.testsPath()} -name "*StressTests*.java" | xargs rm`);
 
-  var stream = fs.createWriteStream(schemas);
-
-  clockMe('Generating harness schemas',
-    () => enumerator.dump(spec, method, sequences, invocations, stream)
-  );
-
-  stream.on('finish', () => {
-    console.log(`* generated ${countSchemas(schemas)} schemas`);
-
-    clockMe('Translating harness schemas', () => translator.translate(schemas, jcstress.testsPath()));
-    clockMe('Compiling test harnesses', () => jcstress.compile());
-
-    console.log('Running test harnesses...');
+  await clockMe('Generating harness schemas', async () => {
+    var stream = fs.createWriteStream(schemas);
+    enumerator
+      .stream(spec, method, sequences, invocations)
+      .pipe(stream);
+    await finished(stream);
+    process.stdout.write('\n');
+    process.stdout.write(`* generated ${countSchemas(schemas)} schemas.`);
+  });
+  await clockMe('Translating harness schemas', () => {
+    translator.translate(schemas, jcstress.testsPath())
+  });
+  await clockMe('Compiling test harnesses', () => {
+    jcstress.compile()
+  });
+  await clockMe('Running test harnesses', async () => {
     var total = jcstress.count();
     var count = 0;
-    var t = new Date();
-    var e = jcstress.test();
-    e.on('passed', () => process.stdout.write(`${++count} of ${total}\r`));
-    e.on('failed', test => process.stdout.write(` test ${test} failed`))
-    e.on('finish', () => {
-      t = (new Date() - t) / 1000;
-      console.log(`Testing complete in ${t}s`);
+    var result = await jcstress.test(() => {
+      process.stdout.write(count > 0 ? '' : '\n');
+      process.stdout.write(`* ${++count} of ${total}\r`)
     });
+    if (result == null)
+      process.stdout.write(`* all ${count} tests passed.`);
+    else
+      process.stdout.write(`* test ${result} failed.`);
   });
 }
 
