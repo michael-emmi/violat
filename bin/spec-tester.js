@@ -54,21 +54,16 @@ function testMethod(specFile, method, sequences, invocations) {
     clockMe('Translating harness schemas', () => translator.translate(schemas, jcstress.testsPath()));
     clockMe('Compiling test harnesses', () => jcstress.compile());
 
-    process.stdout.write('Running test harnesses...');
+    console.log('Running test harnesses...');
+    var total = jcstress.count();
     var count = 0;
     var t = new Date();
     var e = jcstress.test();
-    e.on('passed', () => {
-      if (++count % 10 == 0)
-        process.stdout.write(`${count}`);
-      else
-        process.stdout.write('.');
-    });
+    e.on('passed', () => process.stdout.write(`${++count} of ${total}\r`));
     e.on('failed', test => process.stdout.write(` test ${test} failed`))
     e.on('finish', () => {
       t = (new Date() - t) / 1000;
-      process.stdout.write(` ${t}s\n`);
-      console.log("Testing complete.");
+      console.log(`Testing complete in ${t}s`);
     });
   });
 }

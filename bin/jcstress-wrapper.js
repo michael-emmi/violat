@@ -7,7 +7,7 @@ function compile(jcstressPath) {
   cp.execSync(`mvn clean install`, {cwd: jcstressPath});
 }
 
-function countTests(jarFile) {
+function count(jarFile) {
   return parseInt(
     cp.execSync(`tar tf ${jarFile} | grep '\$T[0-9]*.class' | wc -l`)
     .toString()
@@ -61,12 +61,16 @@ module.exports = (jcstressPath) => {
   return {
     testsPath: () => path.resolve(jcstressPath, 'src/main/java'),
     compile: () => compile(jcstressPath),
+    count: () => count(path.resolve(jcstressPath, 'target/jcstress.jar')),
     test: () => test(path.resolve(jcstressPath, 'target/jcstress.jar')),
   };
 };
 
 if (require.main === module) {
   events = test('jcstress/target/jcstress.jar');
+  var total = count('jcstress/target/jcstress.jar');
+  var count = 0;
+  events.on('passed', () => process.stdout.write(`${++count} of ${total}\r`));
   events.on('finish', () => console.log("Testing complete."));
   events.on('failed', t => console.log(`test ${t} failed.`));
 }
