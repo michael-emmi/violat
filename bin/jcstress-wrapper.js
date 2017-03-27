@@ -1,5 +1,7 @@
 var path = require('path');
 var cp = require('child_process');
+var fs = require('fs');
+var es = require('event-stream');
 
 function compile(jcstressPath) {
   cp.execSync(`mvn clean install`, {cwd: jcstressPath});
@@ -23,6 +25,38 @@ function splitStream(src, dst1, dst2) {
   fork.pipe(snd);
   fst.pipe(dst1);
   snd.pipe(dst2);
+}
+
+function getResult(jarFile, name) {
+  return new Promise((resolve, reject) => {
+    let lines = cp.spawn('java', [
+      '-jar', jarFile, '-f', '1', '-iters', '1', '-jvmArgs', '-server',
+      '-t', name
+    ]).stdout.pipe(es.split());
+
+    lines.on('data', data => {
+      if (data.match(/FORBIDDEN/))
+        resolve(data.toString().replace(/([^0-9]*).*/, '$1').trim());
+    });
+    lines.on('end', () => {
+      reject('unable to reproduce failure');
+    });
+  });
+}
+
+function getHarness(jcstressPath, name) {
+  return new Promise((resolve, reject) => {
+    fs.readFile(path.resolve(
+      jcstressPath,
+      'src/main/java',
+      name.replace(/[.]T[0-9]*$/, '').replace(/[.]/g, '/') + '.java'
+    ), (err, data) => {
+      if (err)
+        reject(err);
+      else
+        resolve(data.toString());
+    });
+  });
 }
 
 function test(jarFile, onTick) {
@@ -50,6 +84,8 @@ module.exports = (jcstressPath) => {
     compile: () => compile(jcstressPath),
     count: () => count(path.resolve(jcstressPath, 'target/jcstress.jar')),
     test: onTick => test(path.resolve(jcstressPath, 'target/jcstress.jar'), onTick),
+    getResult: name => getResult(path.resolve(jcstressPath, 'target/jcstress.jar'), name),
+    getHarness: name => getHarness(jcstressPath, name)
   };
 };
 
