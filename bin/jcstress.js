@@ -15,24 +15,20 @@ function count(jarFile) {
   );
 }
 
-function splitStream(src, dst1, dst2) {
-  var PassThrough = require('stream').PassThrough;
-  var fork = PassThrough();
-  var fst = PassThrough();
-  var snd = PassThrough();
-  src.pipe(fork);
-  fork.pipe(fst);
-  fork.pipe(snd);
-  fst.pipe(dst1);
-  snd.pipe(dst2);
+function runJar(jarFile, ...extras) {
+  return cp.spawn('java', [
+    '-jar', jarFile,
+    '-v',
+    '-f', '1',
+    '-iters', '1',
+    '-jvmArgs', '-server',
+    ... extras
+  ]);
 }
 
 function getResult(jarFile, name) {
   return new Promise((resolve, reject) => {
-    let lines = cp.spawn('java', [
-      '-jar', jarFile, '-f', '1', '-iters', '1', '-jvmArgs', '-server',
-      '-t', name
-    ]).stdout.pipe(es.split());
+    let lines = runJar(jarFile, '-t', name).stdout.pipe(es.split());
 
     lines.on('data', data => {
       if (data.match(/FORBIDDEN/))
@@ -44,13 +40,13 @@ function getResult(jarFile, name) {
   });
 }
 
-function getHarness(jcstressPath, name) {
+function getHarness(testsPath, name) {
   return new Promise((resolve, reject) => {
-    fs.readFile(path.resolve(
-      jcstressPath,
-      'src/main/java',
+    let harnessFile = path.resolve(
+      testsPath,
       name.replace(/[.]T[0-9]*$/, '').replace(/[.]/g, '/') + '.java'
-    ), (err, data) => {
+    );
+    fs.readFile(harnessFile, (err, data) => {
       if (err)
         reject(err);
       else
@@ -60,32 +56,35 @@ function getHarness(jcstressPath, name) {
 }
 
 function test(jarFile, onTick) {
-  const proc = cp.spawn('java', ['-jar', jarFile, '-v', '-f', '1', '-iters', '1', '-jvmArgs', '-server']);
-  const good = cp.spawn('grep', ['iteration #', '--line-buffered']);
-  const bad = cp.spawn('grep', ['FORBIDDEN', '-B', '10', '--line-buffered']);
-  splitStream(proc.stdout, good.stdin, bad.stdin);
-
   return new Promise((resolve, reject) => {
-    good.stdout.on('data', _ => { onTick(); });
-    bad.stdout.on('data', data => {
-      var m = data.toString().match(/\[FAILED\] ([^ ]*)/);
+    let tester = runJar(jarFile);
+    let lines = tester.stdout.pipe(es.split());
+    lines.on('data', data => {
+      let m = data.toString().match(/\[FAILED\][ ]*([^ ]*)[ ]*$/);
       if (Array.isArray(m)) {
+        tester.kill();
         resolve(m[1]);
-        [proc, good, bad].map(p => p.kill());
+
+      } else if (data.match(/iteration #/)) {
+        onTick();
       }
     });
-    process.on('exit', _ => resolve(null));
+    lines.on('end', () => {
+      resolve();
+    });
   });
 }
 
 module.exports = (jcstressPath) => {
+  let testsPath = path.resolve(jcstressPath, 'src/main/java');
+  let jarPath = path.resolve(jcstressPath, 'target/jcstress.jar');
   return {
-    testsPath: () => path.resolve(jcstressPath, 'src/main/java'),
+    testsPath: () => testsPath,
     compile: () => compile(jcstressPath),
-    count: () => count(path.resolve(jcstressPath, 'target/jcstress.jar')),
-    test: onTick => test(path.resolve(jcstressPath, 'target/jcstress.jar'), onTick),
-    getResult: name => getResult(path.resolve(jcstressPath, 'target/jcstress.jar'), name),
-    getHarness: name => getHarness(jcstressPath, name)
+    count: () => count(jarPath),
+    test: onTick => test(jarPath, onTick),
+    getResult: name => getResult(jarPath, name),
+    getHarness: name => getHarness(testsPath, name)
   };
 };
 

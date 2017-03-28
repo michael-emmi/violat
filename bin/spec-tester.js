@@ -7,7 +7,7 @@ var split = require('split');
 
 var enumerator = require('./schema-enumerator.js');
 var translator = require('./schema-translator.js');
-var jcstress = require('./jcstress-wrapper.js')(path.resolve(path.dirname(__dirname), 'jcstress'));
+var jcstress = require('./jcstress.js')(path.resolve(path.dirname(__dirname), 'jcstress'));
 
 function countSchemas(schemas) {
   return cp.execSync(`grep ${schemas} -e '---' | wc -l`).toString().trim();

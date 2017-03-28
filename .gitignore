@@ -1,6 +1,6 @@
 .gradle
 build
-jcstress.*
+jcstress.[0-9]*
 node_modules
 schemas
 results
