@@ -8,11 +8,7 @@ var figlet = require('figlet');
 var enumerator = require('./schema-enumerator.js');
 var translator = require('./schema-translator.js');
 var jcstress = require('./jcstress.js')(path.resolve(path.dirname(__dirname), 'jcstress'));
-var records = require('./records.js')
-
-function countSchemas(schemas) {
-  return cp.execSync(`grep ${schemas} -e '---' | wc -l`).toString().trim();
-}
+var records = require('./records.js')('---\n');
 
 function finished(stream) {
   return new Promise((resolve, reject) => {
@@ -81,7 +77,7 @@ async function testMethod(specFile, method, sequences, invocations) {
         .pipe(stream);
       await finished(stream);
       process.stdout.write('\n');
-      process.stdout.write(`* generated ${countSchemas(schemas)} schemas.`);
+      process.stdout.write(`* generated ${await records.count(fs.createReadStream(schemas))} schemas.`);
     });
 
     let shuffled = await clockMe('Shuffling harness schemas', async () => {
