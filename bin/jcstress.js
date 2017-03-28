@@ -3,21 +3,41 @@ var cp = require('child_process');
 var fs = require('fs');
 var es = require('event-stream');
 
+function testsPath(jcstressPath) {
+  return path.resolve(jcstressPath, 'src/main/java');
+}
+
+function jarFile(jcstressPath) {
+  return path.resolve(jcstressPath, 'target/jcstress.jar');
+}
+
+function needsCompile(jcstressPath) {
+  if (!fs.existsSync(jarFile(jcstressPath)))
+    return true;
+
+  let t0 = cp.execSync(`find ${testsPath(jcstressPath)} -name "*.java"`)
+    .toString().split('\n').filter(f => f)
+    .map(f => fs.statSync(f).mtime)
+    .reduce((x,y) => x > y ? x : y);
+  let t = fs.statSync(jarFile(jcstressPath)).mtime;
+  return t0 > t;
+}
+
 function compile(jcstressPath) {
   cp.execSync(`mvn clean install`, {cwd: jcstressPath});
 }
 
-function count(jarFile) {
+function count(jcstressPath) {
   return parseInt(
-    cp.execSync(`tar tf ${jarFile} | grep '\$T[0-9]*.class' | wc -l`)
+    cp.execSync(`tar tf ${jarFile(jcstressPath)} | grep '\$T[0-9]*.class' | wc -l`)
     .toString()
     .trim()
   );
 }
 
-function runJar(jarFile, ...extras) {
+function runJar(jcstressPath, ...extras) {
   return cp.spawn('java', [
-    '-jar', jarFile,
+    '-jar', jarFile(jcstressPath),
     '-v',
     '-f', '1',
     '-iters', '1',
@@ -26,9 +46,9 @@ function runJar(jarFile, ...extras) {
   ]);
 }
 
-function getResult(jarFile, name) {
+function getResult(jcstressPath, name) {
   return new Promise((resolve, reject) => {
-    let lines = runJar(jarFile, '-t', name).stdout.pipe(es.split());
+    let lines = runJar(jarFile(jcstressPath), '-t', name).stdout.pipe(es.split());
 
     lines.on('data', data => {
       if (data.match(/FORBIDDEN/))
@@ -40,10 +60,10 @@ function getResult(jarFile, name) {
   });
 }
 
-function getHarness(testsPath, name) {
+function getHarness(jcstressPath, name) {
   return new Promise((resolve, reject) => {
     let harnessFile = path.resolve(
-      testsPath,
+      testsPath(jcstressPath),
       name.replace(/[.]T[0-9]*$/, '').replace(/[.]/g, '/') + '.java'
     );
     fs.readFile(harnessFile, (err, data) => {
@@ -55,9 +75,13 @@ function getHarness(testsPath, name) {
   });
 }
 
-function test(jarFile, onTick) {
+function test(jcstressPath, onTick) {
   return new Promise((resolve, reject) => {
-    let tester = runJar(jarFile);
+
+    if (needsCompile(jcstressPath))
+      compile(jcstressPath);
+
+    let tester = runJar(jcstressPath);
     let lines = tester.stdout.pipe(es.split());
 
     let get = p => b => b.toString().match(p) || [];
@@ -66,7 +90,7 @@ function test(jarFile, onTick) {
 
     let lastFailedName;
 
-    lines.on('data', data => {
+    lines.on('data', async data => {
       let name = getName(data);
       let result = getResult(data);
 
@@ -83,7 +107,12 @@ function test(jarFile, onTick) {
         if (!lastFailedName)
           reject(`Missing name for failed test result ${result}.`);
         else
-          resolve({ status: 'failure', name: lastFailedName,  values: result });
+          resolve({
+            status: 'fail',
+            name: lastFailedName,
+            harness: await getHarness(jcstressPath, lastFailedName),
+            values: result
+          });
 
       } else if (data.match(/iteration #/))
         onTick();
@@ -95,15 +124,10 @@ function test(jarFile, onTick) {
 }
 
 module.exports = jcstressPath => {
-  let testsPath = path.resolve(jcstressPath, 'src/main/java');
-  let jarPath = path.resolve(jcstressPath, 'target/jcstress.jar');
   return {
-    testsPath: () => testsPath,
-    compile: () => compile(jcstressPath),
-    count: () => count(jarPath),
-    test: onTick => test(jarPath, onTick),
-    getResult: name => getResult(jarPath, name),
-    getHarness: name => getHarness(testsPath, name)
+    testsPath: () => testsPath(jcstressPath),
+    count: () => count(jcstressPath),
+    test: onTick => test(jcstressPath, onTick)
   };
 };
 
@@ -111,16 +135,15 @@ if (require.main === module) {
   (async () => {
     try {
       let jcstress = module.exports('jcstress');
-      let total = jcstress.count();
+      let total;
       let n = 0;
-      console.log(`Running ${total} tests.`);
       let results = await jcstress.test(() => {
-        process.stdout.write(`${++n} of ${total}\r`);
+        process.stdout.write(`${++n} of ${total || (total = jcstress.count())}\r`);
       });
-      if (results.status == 'failure') {
+      if (results.status == 'fail') {
         console.log(`Test ${results.name} failed.`);
         console.log(`Found values [${results.values}] for harness:`)
-        console.log(await jcstress.getHarness(results.name));
+        console.log(results.harness);
 
       } else
         console.log(`All tests passed.`);

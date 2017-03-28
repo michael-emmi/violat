@@ -106,28 +106,22 @@ async function testMethod(specFile, method, sequences, invocations) {
         translator.translate(splits[split], jcstress.testsPath())
       });
 
-      await clockMe(`Compiling test harnesses (${split})`, () => {
-        jcstress.compile()
-      });
-
       let done = await clockMe(`Running test harnesses (${split})`, async () => {
-        let total = jcstress.count();
+        let total;
         let count = 0;
         let result = await jcstress.test(() => {
           process.stdout.write(count > 0 ? '' : '\n');
-          process.stdout.write(`* ${++count} of ${total}\r`)
+          process.stdout.write(`* ${++count} of ${total || (total = jcstress.count())}\r`)
         });
-        if (result.status != 'failure') {
+        if (result.status != 'fail') {
           process.stdout.write(`* all ${count} tests passed.`);
           return false
 
         } else {
-          let harness = await jcstress.getHarness(result.name);
-
           console.log(`Bug found!`)
           console.log(`The following harness got ${result.values}:`);
           console.log(`---`);
-          console.log(harness);
+          console.log(result.harness);
           console.log(`---`);
           return true;
         }
