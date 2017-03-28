@@ -1,4 +1,3 @@
-var streamify = require('stream-generators');
 
 function compose(g1, g2) {
   return function*(x) {
@@ -218,22 +217,10 @@ function enumerate(spec, method, sequences, invocations) {
     placeRemainingMethods(spec),
     placeArgumentTypes(spec),
     placeArgumentValues(),
-    function*(schema) { yield JSON.stringify(schema, null, 2); }
   ].reduce(compose);
 }
 
-function stream(spec, method, sequences, invocations) {
-  var gen = enumerate(spec, method, sequences, invocations);
-  function* wrap(schema) {
-    yield "---\n";
-    yield schema;
-    yield "\n";
-  };
-  return streamify(compose(gen, wrap));
-}
-
 exports.generator = enumerate;
-exports.stream = stream;
 
 if (require.main === module) {
   var fs = require('fs');

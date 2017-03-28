@@ -9,23 +9,17 @@ var enumerator = require('./schema-enumerator.js');
 var translator = require('./schema-translator.js');
 var jcstress = require('./jcstress.js')(path.resolve(path.dirname(__dirname), 'jcstress'));
 var records = require('./records.js')('---\n');
+var shuffle = require('./shuffle.js')('TODO: seed goes here');
 
-function finished(stream) {
-  return new Promise((resolve, reject) => {
-    stream.on('finish', resolve);
-    stream.on('error', reject);
-  });
+async function shuffleFile(srcFile) {
+  let dstFile = srcFile.replace(/[.]json$/, '.shuffled.json');
+  let ary = await records.get(fs.createReadStream(srcFile));
+  shuffle(ary);
+  await records.put(ary, fs.createWriteStream(dstFile));
+  return dstFile;
 }
 
-function shuffle(ary) {
-  for (let i = ary.length; i; i--) {
-    let j = Math.floor(Math.random() * i);
-    [ary[i - 1], ary[j]] = [ary[j], ary[i - 1]];
-  }
-  return ary;
-}
-
-async function split(srcFile, cycle) {
+async function splitFile(srcFile, cycle) {
   let elems = [];
   let prefix = srcFile.replace(/[.]json$/, '.split');
   let ary = await records.get(fs.createReadStream(srcFile));
@@ -71,25 +65,20 @@ async function testMethod(specFile, method, sequences, invocations) {
     mkdirp.sync(path.dirname(schemas));
 
     await clockMe('Generating harness schemas', async () => {
-      let stream = fs.createWriteStream(schemas);
-      enumerator
-        .stream(spec, method, sequences, invocations)
-        .pipe(stream);
-      await finished(stream);
+      await records.put(
+        Array.from(enumerator.generator(spec, method, sequences, invocations)()),
+        fs.createWriteStream(schemas));
+
       process.stdout.write('\n');
       process.stdout.write(`* generated ${await records.count(fs.createReadStream(schemas))} schemas.`);
     });
 
     let shuffled = await clockMe('Shuffling harness schemas', async () => {
-      let name = schemas.replace(/[.]json$/, '.shuffled.json');
-      await records.put(
-        shuffle(await records.get(fs.createReadStream(schemas))),
-        fs.createWriteStream(name));
-      return name;
+      return await shuffleFile(schemas);
     });
 
     let splits = await clockMe('Splitting harness schemas', async () => {
-      return await split(shuffled, 1000);
+      return await splitFile(shuffled, 1000);
     });
 
     for (let split in splits) {
