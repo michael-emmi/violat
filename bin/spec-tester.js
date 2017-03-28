@@ -117,17 +117,15 @@ async function testMethod(specFile, method, sequences, invocations) {
           process.stdout.write(count > 0 ? '' : '\n');
           process.stdout.write(`* ${++count} of ${total}\r`)
         });
-        if (result == null) {
+        if (result.status != 'failure') {
           process.stdout.write(`* all ${count} tests passed.`);
           return false
 
         } else {
-          let name = result.trim();
-          let values = await jcstress.getResult(name);
-          let harness = await jcstress.getHarness(name);
+          let harness = await jcstress.getHarness(result.name);
 
           console.log(`Bug found!`)
-          console.log(`The following harness got ${values}:`);
+          console.log(`The following harness got ${result.values}:`);
           console.log(`---`);
           console.log(harness);
           console.log(`---`);

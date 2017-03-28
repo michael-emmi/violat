@@ -59,18 +59,37 @@ function test(jarFile, onTick) {
   return new Promise((resolve, reject) => {
     let tester = runJar(jarFile);
     let lines = tester.stdout.pipe(es.split());
-    lines.on('data', data => {
-      let m = data.toString().match(/\[FAILED\][ ]*([^ ]*)[ ]*$/);
-      if (Array.isArray(m)) {
-        tester.kill();
-        resolve(m[1]);
 
-      } else if (data.match(/iteration #/)) {
+    let get = p => b => b.toString().match(p) || [];
+    let getName = b => get(/\[FAILED\][ ]*([^ ]*)[ ]*$/)(b)[1];
+    let getResult = b => (get(/^\s+(.*)\s+([0-9,]+)\s+FORBIDDEN\b/)(b)[1] || '').trim();
+
+    let lastFailedName;
+
+    lines.on('data', data => {
+      let name = getName(data);
+      let result = getResult(data);
+
+      if (name) {
+        if (lastFailedName) {
+          tester.kill();
+          reject(`Missing result for failed test ${lastFailedName}.`);
+        } else {
+          lastFailedName = name;
+        }
+
+      } else if (result) {
+        tester.kill();
+        if (!lastFailedName)
+          reject(`Missing name for failed test result ${result}.`);
+        else
+          resolve({ status: 'failure', name: lastFailedName,  values: result });
+
+      } else if (data.match(/iteration #/))
         onTick();
-      }
     });
     lines.on('end', () => {
-      resolve();
+      resolve({ status: 'success' });
     });
   });
 }
@@ -90,16 +109,23 @@ module.exports = jcstressPath => {
 
 if (require.main === module) {
   (async () => {
-    let jcstress = module.exports('jcstress');
-    let total = jcstress.count();
-    let n = 0;
-    console.log(`Running ${total} tests.`);
-    let results = await jcstress.test(() => {
-      process.stdout.write(`${++n} of ${total}\r`);
-    });
-    if (results)
-      console.log(`Test ${results} failed.`);
-    else
-      console.log(`All tests passed.`);
+    try {
+      let jcstress = module.exports('jcstress');
+      let total = jcstress.count();
+      let n = 0;
+      console.log(`Running ${total} tests.`);
+      let results = await jcstress.test(() => {
+        process.stdout.write(`${++n} of ${total}\r`);
+      });
+      if (results.status == 'failure') {
+        console.log(`Test ${results.name} failed.`);
+        console.log(`Found values [${results.values}] for harness:`)
+        console.log(await jcstress.getHarness(results.name));
+
+      } else
+        console.log(`All tests passed.`);
+    } catch (e) {
+      console.log(`caught: ${e}`)
+    }
   })();
 }
