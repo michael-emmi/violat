@@ -4,7 +4,6 @@ var mkdirp = require('mkdirp');
 var cp = require('child_process');
 var es = require('event-stream');
 var figlet = require('figlet');
-var split = require('split');
 
 var enumerator = require('./schema-enumerator.js');
 var translator = require('./schema-translator.js');
@@ -30,46 +29,19 @@ function shuffle(ary) {
   return ary;
 }
 
-// async function split(cycle, stream) {
-//   let ary = await records.get(stream);
-//   for (let i = 0; i < ary.length; i++) {
-//     records.put(_, ary.slice(i, i+cycle));
-//   }
-// }
-
-function splitMe(schemas, cycle) {
-  let nRecords = 0;
-  let nSegments = 0;
-  let out = null;
-  let streams = [];
-  let prefix = schemas.replace(/[.]json$/, '.split');
-
-  return new Promise((resolve, reject) => {
-    fs.createReadStream(schemas)
-      .pipe(split(/---\n/))
-      .on('data', record => {
-        if (record.trim() === '')
-          return;
-
-        if (nRecords == 0) {
-          let file = `${prefix}.${++nSegments}.json`;
-          streams.unshift({file: file, stream: fs.createWriteStream(file)});
-        }
-
-        streams[0].stream.write('---\n');
-        streams[0].stream.write(record);
-
-        nRecords++;
-        nRecords %= cycle;
-
-        if (nRecords == 0)
-          streams[0].stream.end();
-
-      }).on('end', () => {
-        streams.map(s => s.stream.end());
-        resolve(streams.map(s => s.file).reverse());
-      });
-  });
+async function split(srcFile, cycle) {
+  let elems = [];
+  let prefix = srcFile.replace(/[.]json$/, '.split');
+  let ary = await records.get(fs.createReadStream(srcFile));
+  for (let i = 0; i < ary.length; i+= cycle) {
+    let dstFile = `${prefix}.${i}.json`;
+    elems.push({
+      file: dstFile,
+      promise: records.put(ary.slice(i, i+cycle), fs.createWriteStream(dstFile))
+    });;
+  }
+  await Promise.all(elems.map(e => e.promise));
+  return elems.map(e => e.file);
 }
 
 async function clockMe(description, fn) {
@@ -121,7 +93,7 @@ async function testMethod(specFile, method, sequences, invocations) {
     });
 
     let splits = await clockMe('Splitting harness schemas', async () => {
-      return await splitMe(shuffled, 1000);
+      return await split(shuffled, 1000);
     });
 
     for (let split in splits) {
