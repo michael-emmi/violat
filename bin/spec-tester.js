@@ -2,12 +2,14 @@ var fs = require('fs');
 var path = require('path');
 var mkdirp = require('mkdirp');
 var cp = require('child_process');
+var es = require('event-stream');
 var figlet = require('figlet');
 var split = require('split');
 
 var enumerator = require('./schema-enumerator.js');
 var translator = require('./schema-translator.js');
 var jcstress = require('./jcstress.js')(path.resolve(path.dirname(__dirname), 'jcstress'));
+var records = require('./records.js')
 
 function countSchemas(schemas) {
   return cp.execSync(`grep ${schemas} -e '---' | wc -l`).toString().trim();
@@ -20,7 +22,22 @@ function finished(stream) {
   });
 }
 
-async function splitMe(schemas, cycle) {
+function shuffle(ary) {
+  for (let i = ary.length; i; i--) {
+    let j = Math.floor(Math.random() * i);
+    [ary[i - 1], ary[j]] = [ary[j], ary[i - 1]];
+  }
+  return ary;
+}
+
+// async function split(cycle, stream) {
+//   let ary = await records.get(stream);
+//   for (let i = 0; i < ary.length; i++) {
+//     records.put(_, ary.slice(i, i+cycle));
+//   }
+// }
+
+function splitMe(schemas, cycle) {
   let nRecords = 0;
   let nSegments = 0;
   let out = null;
@@ -95,8 +112,16 @@ async function testMethod(specFile, method, sequences, invocations) {
       process.stdout.write(`* generated ${countSchemas(schemas)} schemas.`);
     });
 
+    let shuffled = await clockMe('Shuffling harness schemas', async () => {
+      let name = schemas.replace(/[.]json$/, '.shuffled.json');
+      await records.put(
+        shuffle(await records.get(fs.createReadStream(schemas))),
+        fs.createWriteStream(name));
+      return name;
+    });
+
     let splits = await clockMe('Splitting harness schemas', async () => {
-      return await splitMe(schemas, 1000);
+      return await splitMe(shuffled, 1000);
     });
 
     for (let split in splits) {
