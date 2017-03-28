@@ -75,7 +75,7 @@ function test(jarFile, onTick) {
   });
 }
 
-module.exports = (jcstressPath) => {
+module.exports = jcstressPath => {
   let testsPath = path.resolve(jcstressPath, 'src/main/java');
   let jarPath = path.resolve(jcstressPath, 'target/jcstress.jar');
   return {
@@ -90,18 +90,16 @@ module.exports = (jcstressPath) => {
 
 if (require.main === module) {
   (async () => {
-    var jarFile = 'jcstress/target/jcstress.jar';
-    var total = count(jarFile);
-    var n = 0;
-
-    console.log(`Running ${total} tests.`)
-
-    var result = await test(jarFile,
-     () => process.stdout.write(`${++n} of ${total}\r`));
-
-    if (result == null)
-      console.log(`All tests passed.`);
+    let jcstress = module.exports('jcstress');
+    let total = jcstress.count();
+    let n = 0;
+    console.log(`Running ${total} tests.`);
+    let results = await jcstress.test(() => {
+      process.stdout.write(`${++n} of ${total}\r`);
+    });
+    if (results)
+      console.log(`Test ${results} failed.`);
     else
-      console.log(`Test ${result} failed.`)
+      console.log(`All tests passed.`);
   })();
 }
