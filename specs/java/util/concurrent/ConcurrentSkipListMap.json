@@ -24,6 +24,42 @@
       "parameters": [],
       "readonly": false,
       "trusted": false
+    },
+    {
+      "name": "containsValue",
+      "parameters": ["int"],
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "entrySet",
+      "parameters": [],
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "keySet",
+      "parameters": [],
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "size",
+      "parameters": [],
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "toString",
+      "parameters": [],
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "values",
+      "parameters": [],
+      "readonly": true,
+      "trusted": false
     }
   ]
 }
