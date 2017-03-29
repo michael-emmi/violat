@@ -4,6 +4,17 @@ var mkdirp = require('mkdirp');
 var cp = require('child_process');
 var es = require('event-stream');
 var figlet = require('figlet');
+var winston = require('winston');
+
+let t0 = new Date();
+
+var logger = new (winston.Logger)({
+    transports: [
+      new (winston.transports.Console)({
+        timestamp: () => `${(new Date() - t0) / 1000}s`
+      })
+    ]
+});
 
 var enumerator = require('./schema-enumerator.js');
 var translator = require('./schema-translator.js');
@@ -48,43 +59,44 @@ async function splitFile(srcFile, cycle) {
 
 async function testMethod(specFile, method, sequences, invocations) {
   try {
-    console.log(figlet.textSync(`SPEC TESTER`));
-    console.log(`---`);
-    console.log(`class: ${JSON.parse(fs.readFileSync(specFile)).class}`)
-    console.log(`method: ${method}`);
-    console.log(`sequences: ${sequences}`);
-    console.log(`invocations: ${invocations}`)
-    console.log(`---`);
+    logger.info(`SPEC TESTER`);
+    logger.info(`---`);
+    logger.info(`class: ${JSON.parse(fs.readFileSync(specFile)).class}`)
+    logger.info(`method: ${method}`);
+    logger.info(`sequences: ${sequences}`);
+    logger.info(`invocations: ${invocations}`)
+    logger.info(`---`);
 
-    console.log(`generating harness schemas`);
     let schemas = await schemaFile(specFile, method, sequences, invocations);
+    let count = await records.count(fs.createReadStream(schemas));
+    logger.info(`generated ${count} schemas`);
 
-    console.log(`shuffling harness schemas`);
     let shuffled = await shuffleFile(schemas);
+    logger.info(`suffled harness schemas`)
 
-    console.log(`splitting harness schemas`);
     let chunks = await splitFile(shuffled, 500);
+    logger.info(`split into ${chunks.length} chunks of 500 schemas`);
 
     for (let chunk of chunks) {
 
-      console.log(`translating harness schemas`);
       cp.execSync(`find ${jcstress.testsPath()} -name "*StressTests*.java" | xargs rm`);
       translator.translate(chunk, jcstress.testsPath());
+      logger.info(`translated harness schemas`);
 
-      console.log(`running test harnesses`);
       let result = await jcstress.test();
+      logger.info(`ran test harnesses`);
 
       if (result.status == 'fail') {
-        console.log(`Bug found!`);
-        console.log(`The following harness got ${result.values}:`);
-        console.log(`---`);
-        console.log(result.harness);
-        console.log(`---`);
+        logger.info(`Bug found!`);
+        logger.info(`The following harness got ${result.values}:`);
+        logger.info(`---`);
+        logger.info(result.harness);
+        logger.info(`---`);
         return true;
       }
     }
   } catch (e) {
-    console.log(e);
+    logger.info(e);
   }
   return false;
 }
