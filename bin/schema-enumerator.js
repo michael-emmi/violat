@@ -206,6 +206,15 @@ function placeArgumentValues() {
   }
 }
 
+function rejectAllReadOnly(spec) {
+  let mutators = spec.methods.filter(m => !m.readonly).map(m => m.name);
+  return filter(schema => {
+    return select('sequences.*.invocations.*.method')(schema)
+      .map(i => i.item)
+      .some(m => mutators.includes(m));
+  });
+}
+
 function enumerate(spec, method, sequences, invocations) {
   return [
     seeds(),
@@ -215,6 +224,7 @@ function enumerate(spec, method, sequences, invocations) {
     placeClass(spec),
     placeOneMethod(method),
     placeRemainingMethods(spec),
+    rejectAllReadOnly(spec),
     placeArgumentTypes(spec),
     placeArgumentValues(),
   ].reduce(compose);
