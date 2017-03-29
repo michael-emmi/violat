@@ -216,6 +216,9 @@ function rejectAllReadOnly(spec) {
 }
 
 function rejectUntrustedAgainstReadonly(spec) {
+
+  // TODO except for non-parallel sequences...
+
   let mutators = spec.methods.filter(m => !m.readonly).map(m => m.name);
   let untrusted = spec.methods.filter(m => !m.trusted).map(m => m.name);
   return filter(schema => {
