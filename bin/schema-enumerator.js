@@ -215,6 +215,17 @@ function rejectAllReadOnly(spec) {
   });
 }
 
+function rejectUntrustedAgainstReadonly(spec) {
+  let mutators = spec.methods.filter(m => !m.readonly).map(m => m.name);
+  let untrusted = spec.methods.filter(m => !m.trusted).map(m => m.name);
+  return filter(schema => {
+    let seqs = select('sequences.*')(schema).map(s => s.item);
+    return seqs.every(seq => seq.invocations.some(i => {
+      return mutators.includes(i.method) || untrusted.includes(i.method);
+    }))
+  });
+}
+
 function enumerate(spec, method, sequences, invocations) {
   return [
     seeds(),
@@ -225,6 +236,7 @@ function enumerate(spec, method, sequences, invocations) {
     placeOneMethod(method),
     placeRemainingMethods(spec),
     rejectAllReadOnly(spec),
+    rejectUntrustedAgainstReadonly(spec),
     placeArgumentTypes(spec),
     placeArgumentValues(),
   ].reduce(compose);
