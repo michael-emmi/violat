@@ -3,7 +3,7 @@ var path = require('path');
 var mkdirp = require('mkdirp');
 var cp = require('child_process');
 var es = require('event-stream');
-var figlet = require('figlet');
+var seedrandom = require('seedrandom');
 var winston = require('winston');
 
 let t0 = new Date();
@@ -59,6 +59,8 @@ async function splitFile(srcFile, cycle) {
 
 async function testMethod(specFile, method, sequences, invocations) {
   try {
+    seedrandom('knick-knacks', { global: true });
+
     logger.info(`SPEC TESTER`);
     logger.info(`---`);
     logger.info(`class: ${JSON.parse(fs.readFileSync(specFile)).class}`)
