@@ -11,7 +11,7 @@ let t0 = new Date();
 var logger = new (winston.Logger)({
     transports: [
       new (winston.transports.Console)({
-        timestamp: () => `${(new Date() - t0) / 1000}s`
+        timestamp: () => `${((new Date() - t0) / 1000).toFixed(3)}s`
       })
     ]
 });
@@ -59,6 +59,7 @@ async function splitFile(srcFile, cycle) {
 
 async function testMethod(specFile, method, sequences, invocations) {
   try {
+    let chunkSize = 20;
     seedrandom('knick-knacks', { global: true });
 
     logger.info(`SPEC TESTER`);
@@ -76,8 +77,8 @@ async function testMethod(specFile, method, sequences, invocations) {
     let shuffled = await shuffleFile(schemas);
     logger.info(`suffled harness schemas`)
 
-    let chunks = await splitFile(shuffled, 500);
-    logger.info(`split into ${chunks.length} chunks of 500 schemas`);
+    let chunks = await splitFile(shuffled, chunkSize);
+    logger.info(`split into ${chunks.length} chunks of ${chunkSize} schemas`);
 
     for (let chunk of chunks) {
 
@@ -85,8 +86,11 @@ async function testMethod(specFile, method, sequences, invocations) {
       translator.translate(chunk, jcstress.testsPath());
       logger.info(`translated harness schemas`);
 
-      let result = await jcstress.test();
-      logger.info(`ran test harnesses`);
+      let n = 0;
+      let result = await jcstress.test(() => {
+        if (++n % 10 == 0)
+          logger.info(`completed ${n} of ${chunkSize} tests`);
+      });
 
       if (result.status == 'fail') {
         logger.info(`Bug found!`);

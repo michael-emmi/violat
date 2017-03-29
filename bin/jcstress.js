@@ -115,7 +115,9 @@ function test(jcstressPath, onTick) {
           });
 
       } else if (data.match(/iteration #/) && onTick)
-        onTick();
+        onTick({
+          status: 'ok'
+        });
     });
     lines.on('end', () => {
       resolve({ status: 'success' });
