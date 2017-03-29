@@ -20,6 +20,12 @@
       "trusted": true
     },
     {
+      "name": "remove",
+      "parameters": ["int"],
+      "readonly": false,
+      "trusted": true
+    },
+    {
       "name": "clear",
       "parameters": [],
       "readonly": false,

@@ -59,7 +59,7 @@ async function splitFile(srcFile, cycle) {
 
 async function testMethod(specFile, method, sequences, invocations) {
   try {
-    let chunkSize = 20;
+    let chunkSize = 100;
     seedrandom('knick-knacks', { global: true });
 
     logger.info(`SPEC TESTER`);
@@ -80,11 +80,12 @@ async function testMethod(specFile, method, sequences, invocations) {
     let chunks = await splitFile(shuffled, chunkSize);
     logger.info(`split into ${chunks.length} chunks of ${chunkSize} schemas`);
 
-    for (let chunk of chunks) {
+    for (let idx in chunks) {
+      logger.info(`processing chunk ${parseInt(idx)+1} of ${chunks.length}`);
 
       cp.execSync(`find ${jcstress.testsPath()} -name "*StressTests*.java" | xargs rm`);
-      translator.translate(chunk, jcstress.testsPath());
-      logger.info(`translated harness schemas`);
+      translator.translate(chunks[idx], jcstress.testsPath());
+      logger.info(`translated ${chunkSize} harness schemas`);
 
       let n = 0;
       let result = await jcstress.test(() => {
