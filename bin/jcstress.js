@@ -114,7 +114,7 @@ function test(jcstressPath, onTick) {
             values: result
           });
 
-      } else if (data.match(/iteration #/))
+      } else if (data.match(/iteration #/) && onTick)
         onTick();
     });
     lines.on('end', () => {

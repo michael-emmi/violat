@@ -11,6 +11,18 @@ var jcstress = require('./jcstress.js')(path.resolve(path.dirname(__dirname), 'j
 var records = require('./records.js')('---\n');
 var shuffle = require('./shuffle.js')('TODO: seed goes here');
 
+async function schemaFile(specFile, method, sequences, invocations) {
+  let spec = JSON.parse(fs.readFileSync(specFile, 'utf8'));
+  let dstFile = path.resolve(
+    'schemas',
+    specFile.replace('.json', `.${method}.${sequences}.${invocations}.json`)
+  );
+  mkdirp.sync(path.dirname(dstFile));
+  let ary = Array.from(enumerator.generator(spec, method, sequences, invocations)());
+  await records.put(ary, fs.createWriteStream(dstFile));
+  return dstFile;
+}
+
 async function shuffleFile(srcFile) {
   let dstFile = srcFile.replace(/[.]json$/, '.shuffled.json');
   let ary = await records.get(fs.createReadStream(srcFile));
@@ -34,87 +46,47 @@ async function splitFile(srcFile, cycle) {
   return elems.map(e => e.file);
 }
 
-async function clockMe(description, fn) {
-  process.stdout.write(description + "...");
-  let t = new Date();
-  let result = await fn();
-  t = (new Date() - t) / 1000;
-  process.stdout.write(` ${t}s\n`);
-  return result;
-}
-
 async function testMethod(specFile, method, sequences, invocations) {
   try {
-    var schemaPath = 'schemas';
-
-    var schemas = path.resolve(schemaPath, specFile.replace(
-      '.json',
-      `.${method}.${sequences}.${invocations}.json`
-    ));
-
-    var spec = JSON.parse(fs.readFileSync(specFile, 'utf8'));
-
     console.log(figlet.textSync(`SPEC TESTER`));
     console.log(`---`);
-    console.log(`class: ${spec.class}`)
+    console.log(`class: ${JSON.parse(fs.readFileSync(specFile)).class}`)
     console.log(`method: ${method}`);
     console.log(`sequences: ${sequences}`);
     console.log(`invocations: ${invocations}`)
     console.log(`---`);
 
-    mkdirp.sync(path.dirname(schemas));
+    console.log(`generating harness schemas`);
+    let schemas = await schemaFile(specFile, method, sequences, invocations);
 
-    await clockMe('Generating harness schemas', async () => {
-      await records.put(
-        Array.from(enumerator.generator(spec, method, sequences, invocations)()),
-        fs.createWriteStream(schemas));
+    console.log(`shuffling harness schemas`);
+    let shuffled = await shuffleFile(schemas);
 
-      process.stdout.write('\n');
-      process.stdout.write(`* generated ${await records.count(fs.createReadStream(schemas))} schemas.`);
-    });
+    console.log(`splitting harness schemas`);
+    let chunks = await splitFile(shuffled, 500);
 
-    let shuffled = await clockMe('Shuffling harness schemas', async () => {
-      return await shuffleFile(schemas);
-    });
+    for (let chunk of chunks) {
 
-    let splits = await clockMe('Splitting harness schemas', async () => {
-      return await splitFile(shuffled, 1000);
-    });
+      console.log(`translating harness schemas`);
+      cp.execSync(`find ${jcstress.testsPath()} -name "*StressTests*.java" | xargs rm`);
+      translator.translate(chunk, jcstress.testsPath());
 
-    for (let split in splits) {
+      console.log(`running test harnesses`);
+      let result = await jcstress.test();
 
-      await clockMe(`Translating harness schemas (${split})`, () => {
-        cp.execSync(`find ${jcstress.testsPath()} -name "*StressTests*.java" | xargs rm`);
-        translator.translate(splits[split], jcstress.testsPath())
-      });
-
-      let done = await clockMe(`Running test harnesses (${split})`, async () => {
-        let total;
-        let count = 0;
-        let result = await jcstress.test(() => {
-          process.stdout.write(count > 0 ? '' : '\n');
-          process.stdout.write(`* ${++count} of ${total || (total = jcstress.count())}\r`)
-        });
-        if (result.status != 'fail') {
-          process.stdout.write(`* all ${count} tests passed.`);
-          return false
-
-        } else {
-          console.log(`Bug found!`)
-          console.log(`The following harness got ${result.values}:`);
-          console.log(`---`);
-          console.log(result.harness);
-          console.log(`---`);
-          return true;
-        }
-      });
-
-      if (done)
-        break;
+      if (result.status == 'fail') {
+        console.log(`Bug found!`);
+        console.log(`The following harness got ${result.values}:`);
+        console.log(`---`);
+        console.log(result.harness);
+        console.log(`---`);
+        return true;
+      }
     }
   } catch (e) {
     console.log(e);
   }
+  return false;
 }
 
 if (require.main === module) {
