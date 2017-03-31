@@ -246,6 +246,6 @@ public class JCStressHarnessPrinter {
                 .collect(Collectors.joining(",")) + "]";
 
         else
-            return String.valueOf(a).replaceAll("([{}])", "\\\\\\\\$1");
+            return String.valueOf(a).replaceAll("([{}\\[\\]])", "\\\\\\\\$1");
     }
 }
