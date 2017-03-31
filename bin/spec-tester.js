@@ -93,19 +93,13 @@ async function testMethod(specFile, method, sequences, invocations) {
           logger.info(`completed ${n} of ${chunkSize} tests`);
       });
 
-      if (result.status == 'fail') {
-        logger.info(`Bug found!`);
-        logger.info(`The following harness got ${result.values}:`);
-        logger.info(`---`);
-        logger.info(result.harness);
-        logger.info(`---`);
-        return true;
-      }
+      if (result.status == 'fail')
+        return result;
     }
   } catch (e) {
     logger.info(e);
   }
-  return false;
+  return {status: 'success'};
 }
 
 if (require.main === module) {
@@ -129,5 +123,14 @@ if (require.main === module) {
     throw new Error(`Cannot find file: ${args.spec}`);
   }
 
-  testMethod(args.spec, args.method, args.sequences, args.invocations);
+  (async () => {
+    let result = await testMethod(args.spec, args.method, args.sequences, args.invocations);
+    if (result.status == 'fail') {
+      logger.info(`Bug found!`);
+      logger.info(`The following harness got ${result.values}:`);
+      logger.info(`---`);
+      logger.info(result.harness);
+      logger.info(`---`);
+    }
+  })();
 }
