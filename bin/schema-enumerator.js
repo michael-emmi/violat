@@ -229,6 +229,13 @@ function rejectUntrustedAgainstReadonly(spec) {
   });
 }
 
+function tagWithIdentifier() {
+  let id = 0;
+  return function*(schema) {
+    yield Object.assign({id: id++}, schema);
+  };
+}
+
 function enumerate(spec, method, sequences, invocations) {
   return [
     seeds(),
@@ -242,6 +249,7 @@ function enumerate(spec, method, sequences, invocations) {
     rejectUntrustedAgainstReadonly(spec),
     placeArgumentTypes(spec),
     placeArgumentValues(),
+    tagWithIdentifier(),
   ].reduce(compose);
 }
 
