@@ -46,8 +46,9 @@ async function splitFile(srcFile, cycle) {
   let elems = [];
   let prefix = srcFile.replace(/[.]json$/, '.split');
   let ary = await records.get(fs.createReadStream(srcFile));
+  let n = 0;
   for (let i = 0; i < ary.length; i+= cycle) {
-    let dstFile = `${prefix}.${i}.json`;
+    let dstFile = `${prefix}.${n++}.json`;
     elems.push({
       file: dstFile,
       promise: records.put(ary.slice(i, i+cycle), fs.createWriteStream(dstFile))
