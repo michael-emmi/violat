@@ -62,14 +62,6 @@ async function testMethod(specFile, method, sequences, invocations) {
     let chunkSize = 100;
     seedrandom('knick-knacks', { global: true });
 
-    logger.info(`SPEC TESTER`);
-    logger.info(`---`);
-    logger.info(`class: ${JSON.parse(fs.readFileSync(specFile)).class}`)
-    logger.info(`method: ${method}`);
-    logger.info(`sequences: ${sequences}`);
-    logger.info(`invocations: ${invocations}`)
-    logger.info(`---`);
-
     let schemas = await schemaFile(specFile, method, sequences, invocations);
     let count = await records.count(fs.createReadStream(schemas));
     logger.info(`generated ${count} schemas`);
@@ -102,6 +94,25 @@ async function testMethod(specFile, method, sequences, invocations) {
   return {status: 'success'};
 }
 
+async function testUntrustedMethods(specFile, sequences, invocations) {
+  let spec = JSON.parse(fs.readFileSync(specFile));
+  let methods = spec.methods.filter(m => !m.trusted);
+  let results = [];
+  for (let m of methods) {
+    logger.info(`testing untrusted method: ${m.name}`);
+    let result = await testMethod(specFile, m.name, sequences, invocations);
+    if (result.status == 'fail') {
+      logger.info(`Bug found!`);
+      logger.info(`The following harness got ${result.values}:`);
+      logger.info(`---`);
+      logger.info(result.harness);
+      logger.info(`---`);
+    }
+    results.push(result);
+  }
+  return results;
+}
+
 if (require.main === module) {
   var minimist = require('minimist');
 
@@ -118,19 +129,32 @@ if (require.main === module) {
   }
 
   check('spec');
-  check('method');
   if (!fs.existsSync(args.spec)) {
     throw new Error(`Cannot find file: ${args.spec}`);
   }
 
   (async () => {
-    let result = await testMethod(args.spec, args.method, args.sequences, args.invocations);
-    if (result.status == 'fail') {
-      logger.info(`Bug found!`);
-      logger.info(`The following harness got ${result.values}:`);
-      logger.info(`---`);
-      logger.info(result.harness);
-      logger.info(`---`);
+    logger.info(`SPEC TESTER`);
+    logger.info(`---`);
+    logger.info(`class: ${JSON.parse(fs.readFileSync(args.spec)).class}`);
+    if (args.method)
+      logger.info(`method: ${args.method}`);
+    logger.info(`sequences: ${args.sequences}`);
+    logger.info(`invocations: ${args.invocations}`)
+    logger.info(`---`);
+
+    let results = args.method
+      ? await testMethod(args.spec, args.method, args.sequences, args.invocations)
+      : await testUntrustedMethods(args.spec, args.sequences, args.invocations);
+
+    for (let result of ([].concat(results))) {
+      if (result.status == 'fail') {
+        logger.info(`Bug found!`);
+        logger.info(`The following harness got ${result.values}:`);
+        logger.info(`---`);
+        logger.info(result.harness);
+        logger.info(`---`);
+      }
     }
   })();
 }
