@@ -1,0 +1,47 @@
+{
+  "class": "java.util.concurrent.ConcurrentLinkedQueue",
+  "methods": [
+    {
+      "name": "peek",
+      "parameters": [],
+      "readonly": true,
+      "trusted": true
+    },
+    {
+      "name": "offer",
+      "parameters": ["int"],
+      "readonly": false,
+      "trusted": true
+    },
+    {
+      "name": "poll",
+      "parameters": [],
+      "readonly": false,
+      "trusted": true
+    },
+    {
+      "name": "clear",
+      "parameters": [],
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "size",
+      "parameters": [],
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "toArray",
+      "parameters": [],
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "toString",
+      "parameters": [],
+      "readonly": true,
+      "trusted": false
+    }
+  ]
+}

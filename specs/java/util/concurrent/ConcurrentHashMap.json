@@ -1,0 +1,77 @@
+{
+  "class": "java.util.concurrent.ConcurrentHashMap",
+  "methods": [
+    {
+      "name": "containsKey",
+      "parameters": ["int"],
+      "readonly": true,
+      "trusted": true
+    },
+    {
+      "name": "get",
+      "parameters": ["int"],
+      "readonly": true,
+      "trusted": true
+    },
+    {
+      "name": "put",
+      "parameters": ["int", "int"],
+      "readonly": false,
+      "trusted": true
+    },
+    {
+      "name": "remove",
+      "parameters": ["int"],
+      "readonly": false,
+      "trusted": true
+    },
+    {
+      "name": "clear",
+      "parameters": [],
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "containsValue",
+      "parameters": ["int"],
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "entrySet",
+      "parameters": [],
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "isEmpty",
+      "parameters": [],
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "keySet",
+      "parameters": [],
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "size",
+      "parameters": [],
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "toString",
+      "parameters": [],
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "values",
+      "parameters": [],
+      "readonly": true,
+      "trusted": false
+    }
+  ]
+}
