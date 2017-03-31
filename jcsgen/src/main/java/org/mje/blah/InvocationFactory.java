@@ -58,8 +58,23 @@ public class InvocationFactory {
             .filter(m -> isAssignableFrom(m.getParameterTypes(), types))
             .toArray(Method[]::new);
 
-        if (methods.length != 1)
-            throw new NoSuchMethodException("unknown or ambiguous method: " + methodName);
+        if (methods.length == 0)
+            throw new NoSuchMethodException("unknown method: " + methodName);
+
+        if (methods.length > 1) {
+            String name = methods[0].getName();
+            if (Arrays.stream(methods).allMatch(m -> m.getName().equals(name)))
+                methods = new Method[]{ methods[0] };
+        }
+
+        if (methods.length > 1) {
+            StringBuilder b = new StringBuilder();
+            b.append("ambiguous method: " + methodName + "\n");
+            b.append("found:\n");
+            for (Method m : methods)
+                b.append("  " + m + "\n");
+            throw new NoSuchMethodException(b.toString());
+        }
 
         return get(methods[0], args);
     }
