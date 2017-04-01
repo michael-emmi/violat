@@ -3,7 +3,6 @@ var path = require('path');
 var mkdirp = require('mkdirp');
 var cp = require('child_process');
 var es = require('event-stream');
-var seedrandom = require('seedrandom');
 var winston = require('winston');
 
 let t0 = new Date();
@@ -16,12 +15,12 @@ var logger = new (winston.Logger)({
     ]
 });
 
-var enumerator = require('./schema-enumerator.js');
+var enumeration = require('./enumeration.js');
 var annotation = require('./annotation.js');
-var translator = require('./schema-translator.js');
+var translation = require('./translation.js');
 var jcstress = require('./jcstress.js')(path.resolve(path.dirname(__dirname), 'jcstress'));
 var records = require('./records.js')('---\n');
-var shuffle = require('./shuffle.js')('TODO: seed goes here');
+var shuffle = require('./shuffle.js');
 
 String.prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
@@ -34,7 +33,7 @@ async function schemaFile(specFile, method, sequences, invocations) {
     specFile.replace('.json', `.${method}.${sequences}.${invocations}.json`)
   );
   mkdirp.sync(path.dirname(dstFile));
-  let ary = Array.from(enumerator.generator(spec, method, sequences, invocations)());
+  let ary = Array.from(enumeration.generator(spec, method, sequences, invocations)());
   await records.put(ary, fs.createWriteStream(dstFile));
   return dstFile;
 }
@@ -66,7 +65,6 @@ async function splitFile(srcFile, cycle) {
 async function testMethod(specFile, method, sequences, invocations) {
   try {
     let chunkSize = 100;
-    seedrandom('knick-knacks', { global: true });
 
     let schemas = await schemaFile(specFile, method, sequences, invocations);
     let count = await records.count(fs.createReadStream(schemas));
@@ -85,7 +83,7 @@ async function testMethod(specFile, method, sequences, invocations) {
       logger.info(`annotated harness schemas`);
 
       cp.execSync(`find ${jcstress.testsPath()} -name "*Test*.java" | xargs rm`);
-      await translator.translate(annotated, jcstress.testsPath(), method.capitalize());
+      await translation.translate(annotated, jcstress.testsPath(), method.capitalize());
       logger.info(`translated ${chunkSize} harness schemas`);
 
       let n = 0;
