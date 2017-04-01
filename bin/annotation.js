@@ -2,13 +2,25 @@ var path = require('path');
 var cp = require('child_process');
 var fs = require('fs');
 
-let jcsgen = path.resolve(
-  path.dirname(__dirname),
-  'jcsgen/build/install/jcsgen/bin/jcsgen'
-);
+let jcsgenPath = path.resolve(path.dirname(__dirname), 'jcsgen');
+let jcsgen = path.resolve(jcsgenPath, 'build/install/jcsgen/bin/jcsgen');
+
+function compile() {
+  return new Promise((resolve, reject) => {
+    if (fs.existsSync(jcsgen))
+      resolve();
+    cp.exec(`gradle`, {cwd: jcsgenPath}, (rc, out, err) => {
+      if (rc)
+        reject(err);
+      else
+        resolve();
+    });
+  });
+}
 
 function annotate(schemaFile) {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
+    await compile();
     let dstFile = schemaFile.replace('.json', '.annotated.json');
     cp.exec(`${jcsgen} < ${schemaFile} > ${dstFile}`, (rc, out, err) => {
       if (rc)
