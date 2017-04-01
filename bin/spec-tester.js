@@ -22,6 +22,10 @@ var jcstress = require('./jcstress.js')(path.resolve(path.dirname(__dirname), 'j
 var records = require('./records.js')('---\n');
 var shuffle = require('./shuffle.js')('TODO: seed goes here');
 
+String.prototype.capitalize = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+}
+
 async function schemaFile(specFile, method, sequences, invocations) {
   let spec = JSON.parse(fs.readFileSync(specFile, 'utf8'));
   let dstFile = path.resolve(
@@ -77,7 +81,7 @@ async function testMethod(specFile, method, sequences, invocations) {
       logger.info(`processing chunk ${parseInt(idx)+1} of ${chunks.length}`);
 
       cp.execSync(`find ${jcstress.testsPath()} -name "*Test*.java" | xargs rm`);
-      await translator.translate(chunks[idx], jcstress.testsPath(), `_${method}_${sequences}x${invocations}_`);
+      await translator.translate(chunks[idx], jcstress.testsPath(), method.capitalize());
       logger.info(`translated ${chunkSize} harness schemas`);
 
       let n = 0;
