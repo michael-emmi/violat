@@ -81,7 +81,7 @@ function schemaToHarness(schema, testName) {
 
   function outcome(o) {
     let filtered = o.filter((_,i) => resultIdxs.includes(i));
-    let escaped = filtered.join(', ').replace(/([\[\]\{\}])/g, '\\$1')
+    let escaped = filtered.join(', ').replace(/([\[\]\{\}])/g, '\\\\$1')
     return `@Outcome(id = "${escaped}", expect = Expect.ACCEPTABLE)`;
   }
 
