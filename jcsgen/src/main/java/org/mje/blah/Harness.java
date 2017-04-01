@@ -9,7 +9,7 @@ public class Harness {
     Invocation constructor;
     PartialOrder<InvocationSequence> sequences;
     Map<Invocation,Integer> numbering;
-    Set<Map<Integer,Object>> results;
+    Set<SortedMap<Integer,Object>> results;
 
     public Harness(
             Invocation constructor,
@@ -27,23 +27,7 @@ public class Harness {
         this.results = null;
     }
 
-    public Invocation getConstructor() {
-        return constructor;
-    }
-
-    public Class getTargetClass() {
-        return constructor.getMethod().getDeclaringClass();
-    }
-
-    public PartialOrder<InvocationSequence> getSequences() {
-        return sequences;
-    }
-
-    public Map<Invocation,Integer> getNumbering() {
-        return numbering;
-    }
-
-    public Set<Map<Integer,Object>> getResults() {
+    public Set<SortedMap<Integer,Object>> getResults() {
         if (results == null) {
             results = new HashSet<>();
 
@@ -101,8 +85,8 @@ public class Harness {
         return linearizations;
     }
 
-    Map<Integer,Object> collectResult(InvocationSequence sequence) {
-        Map<Integer,Object> result = new HashMap<>();
+    SortedMap<Integer,Object> collectResult(InvocationSequence sequence) {
+        SortedMap<Integer,Object> result = new TreeMap<>();
 
         try {
             Object obj = constructor.invoke();

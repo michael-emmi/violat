@@ -4,66 +4,77 @@
     {
       "name": "containsKey",
       "parameters": ["int"],
+      "void": false,
       "readonly": true,
       "trusted": true
     },
     {
       "name": "get",
       "parameters": ["int"],
+      "void": false,
       "readonly": true,
       "trusted": true
     },
     {
       "name": "put",
       "parameters": ["int", "int"],
+      "void": false,
       "readonly": false,
       "trusted": true
     },
     {
       "name": "remove",
       "parameters": ["int"],
+      "void": false,
       "readonly": false,
       "trusted": true
     },
     {
       "name": "clear",
       "parameters": [],
+      "void": true,
       "readonly": false,
       "trusted": false
     },
     {
       "name": "containsValue",
       "parameters": ["int"],
+      "void": false,
       "readonly": true,
       "trusted": false
     },
     {
       "name": "entrySet",
       "parameters": [],
+      "void": false,
       "readonly": true,
       "trusted": false
     },
     {
       "name": "keySet",
       "parameters": [],
+      "void": false,
       "readonly": true,
       "trusted": false
     },
     {
       "name": "size",
       "parameters": [],
+      "void": false,
       "readonly": true,
       "trusted": false
     },
     {
       "name": "toString",
       "parameters": [],
+      "void": false,
       "readonly": true,
       "trusted": false
     },
     {
       "name": "values",
       "parameters": [],
+      "void": false,
       "readonly": true,
       "trusted": false
     }

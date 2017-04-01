@@ -71,11 +71,10 @@ function sequence(index) {
   };
 }
 
-function invocation(method, arguments) {
-  return {
-    method: method || null,
-    arguments: arguments || null
-  }
+function invocation(spec) {
+  return spec
+    ? { method: spec.name, arguments: spec.parameters, void: spec.void }
+    : { method: null, arguments: null, void: null }
 }
 
 function seeds() {
@@ -182,9 +181,7 @@ function placeRemainingMethods(spec) {
 
 function placeArgumentTypes(spec) {
   return mapgen('sequences.*.invocations.*', i =>
-    invocation(
-      i.method,
-      spec.methods.find(m => m.name === i.method).parameters)
+    invocation(spec.methods.find(m => m.name === i.method))
   );
 }
 

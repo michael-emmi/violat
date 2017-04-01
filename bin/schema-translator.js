@@ -2,17 +2,25 @@ var path = require('path');
 var cp = require('child_process');
 var fs = require('fs');
 
-function translate(schemaFile, dstPath) {
-  var jcsgen = path.resolve(
-    path.dirname(__dirname),
-    'jcsgen/build/install/jcsgen/bin/jcsgen'
-  );
-  cp.execSync(`${jcsgen} --path ${dstPath} < ${schemaFile}`)
+var records = require('./records.js')('---\n');
+
+async function translate(schemaFile, dstPath, id) {
+  let annotated = annotate(schemaFile);
+  for (let schema of await records.get(fs.createReadStream(annotated))) {
+    let parts = schema.class.split('.');
+    let className = `${parts.pop()}${id}Test${schema.id}`;
+    let dstFile = path.resolve(dstPath, parts.join('/'), `${className}.java`);
+    fs.writeFileSync(dstFile, schemaToHarness(schema, className));
+  }
 }
 
 function annotate(schemaFile) {
+  let jcsgen = path.resolve(
+    path.dirname(__dirname),
+    'jcsgen/build/install/jcsgen/bin/jcsgen'
+  );
   let dstFile = schemaFile.replace('.json', '.annotated.json');
-  cp.execSync(`XXX < ${schemaFile} > ${dstFile}`);
+  cp.execSync(`${jcsgen} < ${schemaFile} > ${dstFile}`);
   return dstFile;
 }
 
@@ -44,11 +52,11 @@ function isLegal(schema) {
 function numResults(schema) {
   let initial = getInitialSequence(schema);
   return schema.sequences
-    .map(s => s.index == initial ? 0 : s.invocations.filter(i => i.returns.length > 0).length)
+    .map(s => s.index == initial ? 0 : s.invocations.filter(i => !i.void).length)
     .reduce((x,y) => x + y, 0);
 }
 
-function schemaToHarness(schema) {
+function schemaToHarness(schema, testName) {
   if (!isLegal(schema))
     throw new Error(`Unable to translate schema:\n${JSON.stringify(schema)}`);
 
@@ -58,13 +66,22 @@ function schemaToHarness(schema) {
 
   let initial = getInitialSequence(schema);
   let final = getFinalSequence(schema);
+
+  let resultIdxs = schema.sequences
+    .map(s => s.invocations)
+    .reduce((x,y) => x.concat(y))
+    .map((v,i) => [v,i])
+    .filter(([v,i]) => !v.void)
+    .map(([_,i]) => i);
+
   let resultType = `StringResult${numResults(schema)}`;
 
   let actorIdx = 0;
   let resultIdx = 0;
 
   function outcome(o) {
-    let escaped = o.join(', ').replace(/([\[\]\{\}])/g, '\\$1')
+    let filtered = o.filter((_,i) => resultIdxs.includes(i));
+    let escaped = filtered.join(', ').replace(/([\[\]\{\}])/g, '\\$1')
     return `@Outcome(id = "${escaped}", expect = Expect.ACCEPTABLE)`;
   }
 
@@ -83,7 +100,7 @@ function schemaToHarness(schema) {
   }
 
   function assignment(i, seq) {
-    return i.returns.length == 0 || seq.index == initial
+    return i.void || seq.index == initial
       ? `${invocation(i)};`
       : `result.r${++resultIdx} = ResultAdapter.get(${invocation(i)});`;
   }
@@ -105,7 +122,7 @@ import ${schema.class};
 @JCStressTest
 ${schema.outcomes.map(outcome).join('\n')}
 @State
-public class ${className}Test${schema.id} {
+public class ${testName} {
     ${className} obj = new ${className}();
     ${schema.sequences.map(s => sequence(s)).join('\n    ')}
 }
@@ -113,8 +130,7 @@ public class ${className}Test${schema.id} {
 }
 
 exports.translate = translate;
-exports.annotate = annotate;
 
 if (require.main === module) {
-  console.log(schemaToHarness(JSON.parse(fs.readFileSync(process.argv[2]))));
+  console.log(schemaToHarness(JSON.parse(fs.readFileSync(process.argv[2])), 'Test'));
 }

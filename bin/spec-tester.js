@@ -76,8 +76,8 @@ async function testMethod(specFile, method, sequences, invocations) {
     for (let idx in chunks) {
       logger.info(`processing chunk ${parseInt(idx)+1} of ${chunks.length}`);
 
-      cp.execSync(`find ${jcstress.testsPath()} -name "*StressTests*.java" | xargs rm`);
-      translator.translate(chunks[idx], jcstress.testsPath());
+      cp.execSync(`find ${jcstress.testsPath()} -name "*Test*.java" | xargs rm`);
+      await translator.translate(chunks[idx], jcstress.testsPath(), `_${method}_${sequences}x${invocations}_`);
       logger.info(`translated ${chunkSize} harness schemas`);
 
       let n = 0;
