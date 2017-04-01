@@ -5,23 +5,12 @@ var fs = require('fs');
 var records = require('./records.js')('---\n');
 
 async function translate(schemaFile, dstPath, id) {
-  let annotated = annotate(schemaFile);
-  for (let schema of await records.get(fs.createReadStream(annotated))) {
+  for (let schema of await records.get(fs.createReadStream(schemaFile))) {
     let parts = schema.class.split('.');
     let className = `${parts.pop()}${id}Test${schema.id}`;
     let dstFile = path.resolve(dstPath, parts.join('/'), `${className}.java`);
     fs.writeFileSync(dstFile, schemaToHarness(schema, className));
   }
-}
-
-function annotate(schemaFile) {
-  let jcsgen = path.resolve(
-    path.dirname(__dirname),
-    'jcsgen/build/install/jcsgen/bin/jcsgen'
-  );
-  let dstFile = schemaFile.replace('.json', '.annotated.json');
-  cp.execSync(`${jcsgen} < ${schemaFile} > ${dstFile}`);
-  return dstFile;
 }
 
 function getInitialSequence(schema) {

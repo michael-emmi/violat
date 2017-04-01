@@ -17,6 +17,7 @@ var logger = new (winston.Logger)({
 });
 
 var enumerator = require('./schema-enumerator.js');
+var annotation = require('./annotation.js');
 var translator = require('./schema-translator.js');
 var jcstress = require('./jcstress.js')(path.resolve(path.dirname(__dirname), 'jcstress'));
 var records = require('./records.js')('---\n');
@@ -80,8 +81,11 @@ async function testMethod(specFile, method, sequences, invocations) {
     for (let idx in chunks) {
       logger.info(`processing chunk ${parseInt(idx)+1} of ${chunks.length}`);
 
+      let annotated = await annotation.annotate(chunks[idx]);
+      logger.info(`annotated harness schemas`);
+
       cp.execSync(`find ${jcstress.testsPath()} -name "*Test*.java" | xargs rm`);
-      await translator.translate(chunks[idx], jcstress.testsPath(), method.capitalize());
+      await translator.translate(annotated, jcstress.testsPath(), method.capitalize());
       logger.info(`translated ${chunkSize} harness schemas`);
 
       let n = 0;
