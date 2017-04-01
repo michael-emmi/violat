@@ -4,42 +4,49 @@
     {
       "name": "peek",
       "parameters": [],
+      "void": false,
       "readonly": true,
       "trusted": true
     },
     {
       "name": "offer",
       "parameters": ["int"],
+      "void": false,
       "readonly": false,
       "trusted": true
     },
     {
       "name": "poll",
       "parameters": [],
+      "void": false,
       "readonly": false,
       "trusted": true
     },
     {
       "name": "clear",
       "parameters": [],
+      "void": true,
       "readonly": false,
       "trusted": false
     },
     {
       "name": "size",
       "parameters": [],
+      "void": false,
       "readonly": true,
       "trusted": false
     },
     {
       "name": "toArray",
       "parameters": [],
+      "void": false,
       "readonly": true,
       "trusted": false
     },
     {
       "name": "toString",
       "parameters": [],
+      "void": false,
       "readonly": true,
       "trusted": false
     }
