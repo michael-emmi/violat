@@ -1,0 +1,32 @@
+{
+  "name": "find-non-linearizability-tests",
+  "version": "0.1.0",
+  "description": "Non-atomicity exposing test harness discovery.",
+  "main": "index.js",
+  "bin": {
+    "find-non-linearizability-tests": "cli.js"
+  },
+  "preferGlobal": true,
+  "dependencies": {
+    "event-stream": "^3.3.4",
+    "minimist": "^1.2.0",
+    "mkdirp": "^0.5.1",
+    "seedrandom": "^2.4.2",
+    "winston": "^2.3.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/michael-emmi/find-non-linearizability-tests.git"
+  },
+  "keywords": [],
+  "author": "Michael Emmi <michael.emmi@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/michael-emmi/find-non-linearizability-tests/issues"
+  },
+  "homepage": "https://github.com/michael-emmi/find-non-linearizability-tests#readme"
+}
