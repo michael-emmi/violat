@@ -12,10 +12,11 @@ linearizability violations via stress testing with OpenJDK’s jcstress tool.
 * [Node.js][]
 * [Java SE Development Kit 8][]
 * [Gradle][]
+* [Maven][]
 
 # Installation
 
-    npm i -g find-non-linearizability-tests
+    $ npm i -g find-non-linearizability-tests
 
 # Usage
 
@@ -25,3 +26,4 @@ linearizability violations via stress testing with OpenJDK’s jcstress tool.
 [concurrent collections]: https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/package-summary.html
 [Java SE Development Kit 8]: http://www.oracle.com/technetwork/java/javase
 [Gradle]: http://gradle.org
+[Maven]: https://maven.apache.org

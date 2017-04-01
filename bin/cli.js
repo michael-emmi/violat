@@ -12,10 +12,10 @@ let cli = meow(`
     $ ${script} --spec <spec-file.json>
 
   Options
-    --spec <spec-file.json>
-    --method <method-name>
-    --sequences N
-    --invocations N
+    --spec <spec-file.json>     Java class specification file (required).
+    --method <method-name>      Name of a method to test.
+    --sequences N               Number of concurrent invocation sequences.
+    --invocations N             Total nuber of invocations.
 
   Examples
     $ ${script} \\
