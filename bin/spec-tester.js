@@ -1,7 +1,6 @@
 var fs = require('fs');
 var path = require('path');
 var mkdirp = require('mkdirp');
-var cp = require('child_process');
 var winston = require('winston');
 
 let t0 = new Date();
