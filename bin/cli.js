@@ -3,39 +3,49 @@
 
 let fs = require('fs');
 let path = require('path');
-let minimist = require('minimist');
+let meow = require('meow');
 let checker = require(path.join(__dirname, '../lib', 'index.js'));
+let script = `find-non-linearizability-tests`;
 
-var args = minimist(process.argv.slice(2), {
+let cli = meow(`
+  Usage
+    $ ${script} --spec <spec-file.json>
+
+  Options
+    --spec <spec-file.json>
+    --method <method-name>
+    --sequences N
+    --invocations N
+
+  Examples
+    $ ${script} \\
+      --spec specs/java/util/concurrent/ConcurrentSkipListMap.json \\
+      --method clear \\
+      --sequences 4 \\
+      --invocations 4
+`, {
   default: {
     sequences: 2,
     invocations: 2
   }
 });
 
-var check = arg => {
-  if (!(arg in args))
-    throw new Error(`Missing argument: ${arg}`);
-}
-
-check('spec');
-if (!fs.existsSync(args.spec)) {
-  throw new Error(`Cannot find file: ${args.spec}`);
-}
+if (!cli.flags.spec)
+  cli.showHelp();
 
 (async () => {
   console.log(`SPEC TESTER`);
   console.log(`---`);
-  console.log(`class: ${JSON.parse(fs.readFileSync(args.spec)).class}`);
-  if (args.method)
-    console.log(`method: ${args.method}`);
-  console.log(`sequences: ${args.sequences}`);
-  console.log(`invocations: ${args.invocations}`)
+  console.log(`class: ${JSON.parse(fs.readFileSync(cli.flags.spec)).class}`);
+  if (cli.flags.method)
+    console.log(`method: ${cli.flags.method}`);
+  console.log(`sequences: ${cli.flags.sequences}`);
+  console.log(`invocations: ${cli.flags.invocations}`)
   console.log(`---`);
 
-  let results = args.method
-    ? await checker.testMethod(args.spec, args.method, args.sequences, args.invocations)
-    : await checker.testUntrustedMethods(args.spec, args.sequences, args.invocations);
+  let results = cli.flags.method
+    ? await checker.testMethod(cli.flags.spec, cli.flags.method, cli.flags.sequences, cli.flags.invocations)
+    : await checker.testUntrustedMethods(cli.flags.spec, cli.flags.sequences, cli.flags.invocations);
 
   for (let result of ([].concat(results))) {
     if (result.status == 'fail') {
