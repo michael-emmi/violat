@@ -15,7 +15,7 @@ linearizability violations via stress testing with OpenJDK’s jcstress tool.
 
 # Installation
 
-    npm install find-non-linearizability-tests
+    npm i -g find-non-linearizability-tests
 
 # Usage
 
