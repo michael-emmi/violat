@@ -24,7 +24,17 @@ function needsCompile(jcstressPath) {
 }
 
 function compile(jcstressPath) {
-  cp.execSync(`mvn clean install`, {cwd: jcstressPath});
+  return new Promise((resolve, reject) => {
+    cp.exec(`mvn clean install`, {cwd: jcstressPath}, (rc, stdout, _) => {
+      if (rc)
+        reject(stdout.split('\n')
+          .filter(l => l.match(/ERROR/))
+          .slice(0,5)
+          .join('\n'));
+      else
+        resolve();
+    });
+  });
 }
 
 function count(jcstressPath) {
@@ -76,10 +86,14 @@ function getHarness(jcstressPath, name) {
 }
 
 function test(jcstressPath, onTick) {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
 
     if (needsCompile(jcstressPath))
-      compile(jcstressPath);
+      try {
+        await compile(jcstressPath);
+      } catch (e) {
+        reject(e);
+      }
 
     let tester = runJar(jcstressPath);
     let lines = tester.stdout.pipe(es.split());
