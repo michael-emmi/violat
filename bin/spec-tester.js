@@ -93,7 +93,7 @@ async function testMethod(specFile, method, sequences, invocations) {
         return result;
     }
   } catch (e) {
-    logger.info(e);
+    logger.error(e);
   }
   return {status: 'success'};
 }
