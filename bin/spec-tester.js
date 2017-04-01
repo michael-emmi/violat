@@ -2,7 +2,6 @@ var fs = require('fs');
 var path = require('path');
 var mkdirp = require('mkdirp');
 var cp = require('child_process');
-var es = require('event-stream');
 var winston = require('winston');
 
 let t0 = new Date();
@@ -82,12 +81,11 @@ async function testMethod(specFile, method, sequences, invocations) {
       let annotated = await annotation.annotate(chunks[idx]);
       logger.info(`annotated harness schemas`);
 
-      cp.execSync(`find ${jcstress.testsPath()} -name "*Test*.java" | xargs rm`);
-      await translation.translate(annotated, jcstress.testsPath(), method.capitalize());
+      let harnesses = await translation.translate(annotated, method.capitalize());
       logger.info(`translated ${chunkSize} harness schemas`);
 
       let n = 0;
-      let result = await jcstress.test(() => {
+      let result = await jcstress.test(harnesses, () => {
         if (++n % 10 == 0)
           logger.info(`completed ${n} of ${chunkSize} tests`);
       });

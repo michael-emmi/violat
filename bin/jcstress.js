@@ -85,8 +85,16 @@ function getHarness(jcstressPath, name) {
   });
 }
 
-function test(jcstressPath, onTick) {
+function test(jcstressPath, harnesses, onTick) {
   return new Promise(async (resolve, reject) => {
+
+    cp.execSync(`find ${testsPath(jcstressPath)} -name "*Test*.java" | xargs rm`);
+
+    for (let harness of harnesses)
+      fs.linkSync(
+        harness.absolutePath,
+        path.resolve(testsPath(jcstressPath), harness.relativePath)
+      );
 
     if (needsCompile(jcstressPath))
       try {
@@ -141,9 +149,8 @@ function test(jcstressPath, onTick) {
 
 module.exports = jcstressPath => {
   return {
-    testsPath: () => testsPath(jcstressPath),
     count: () => count(jcstressPath),
-    test: onTick => test(jcstressPath, onTick)
+    test: (harnesses, onTick) => test(jcstressPath, harnesses, onTick)
   };
 };
 

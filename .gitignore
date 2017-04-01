@@ -3,4 +3,5 @@ build
 jcstress.[0-9]*
 node_modules
 schemas
+harnesses
 results

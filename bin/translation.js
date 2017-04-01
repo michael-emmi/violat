@@ -1,15 +1,24 @@
 var path = require('path');
 var fs = require('fs');
-
+var mkdirp = require('mkdirp');
 var records = require('./records.js')('---\n');
 
-async function translate(schemaFile, dstPath, id) {
+async function translate(schemaFile, id) {
+  let dstFiles = [];
+  let dstPath = path.resolve('harnesses');
   for (let schema of await records.get(fs.createReadStream(schemaFile))) {
     let parts = schema.class.split('.');
     let className = `${parts.pop()}${id}Test${schema.id}`;
-    let dstFile = path.resolve(dstPath, parts.join('/'), `${className}.java`);
+    let packagePath = parts.join('/');
+    let dstFile = path.resolve(dstPath, packagePath, `${className}.java`);
+    mkdirp.sync(path.dirname(dstFile));
     fs.writeFileSync(dstFile, schemaToHarness(schema, className));
+    dstFiles.push({
+      absolutePath: dstFile,
+      relativePath: `${packagePath}/${className}.java`
+    });
   }
+  return dstFiles;
 }
 
 function getInitialSequence(schema) {
