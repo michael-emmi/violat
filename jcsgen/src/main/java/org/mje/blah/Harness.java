@@ -9,7 +9,7 @@ public class Harness {
     Invocation constructor;
     PartialOrder<InvocationSequence> sequences;
     Map<Invocation,Integer> numbering;
-    Set<SortedMap<Integer,Object>> results;
+    Set<SortedMap<Integer,String>> results;
 
     public Harness(
             Invocation constructor,
@@ -27,7 +27,7 @@ public class Harness {
         this.results = null;
     }
 
-    public Set<SortedMap<Integer,Object>> getResults() {
+    public Set<SortedMap<Integer,String>> getResults() {
         if (results == null) {
             results = new HashSet<>();
 
@@ -85,13 +85,12 @@ public class Harness {
         return linearizations;
     }
 
-    SortedMap<Integer,Object> collectResult(InvocationSequence sequence) {
-        SortedMap<Integer,Object> result = new TreeMap<>();
-
+    SortedMap<Integer,String> collectResult(InvocationSequence sequence) {
+        SortedMap<Integer,String> result = new TreeMap<>();
         try {
             Object obj = constructor.invoke();
             for (Invocation i : sequence.getInvocations())
-                result.put(numbering.get(i), i.invoke(obj));
+                result.put(numbering.get(i), Results.of(i.invoke(obj)));
 
         } catch (Exception e) {
             throw new RuntimeException("BAD CLASSES: " + e);
