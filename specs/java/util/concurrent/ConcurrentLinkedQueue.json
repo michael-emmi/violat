@@ -23,6 +23,13 @@
       "trusted": true
     },
     {
+      "name": "addAll",
+      "parameters": [["int"]],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
       "name": "clear",
       "parameters": [],
       "void": true,
