@@ -5,11 +5,11 @@ let fs = require('fs');
 let path = require('path');
 let meow = require('meow');
 let checker = require(path.join(__dirname, '../lib', 'index.js'));
-let script = `find-non-linearizability-tests`;
+let meta = require('../package.json');
 
 let cli = meow(`
   Usage
-    $ ${script} --spec <spec-file.json>
+    $ ${meta.name} --spec <spec-file.json>
 
   Options
     --spec <spec-file.json>     Java class specification file (required).
@@ -18,7 +18,7 @@ let cli = meow(`
     --invocations N             Total nuber of invocations.
 
   Examples
-    $ ${script} \\
+    $ ${meta.name} \\
       --spec specs/java/util/concurrent/ConcurrentSkipListMap.json \\
       --method clear \\
       --sequences 4 \\
