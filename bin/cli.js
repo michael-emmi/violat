@@ -34,7 +34,7 @@ if (!cli.flags.spec)
   cli.showHelp();
 
 (async () => {
-  console.log(`SPEC TESTER`);
+  console.log(`${meta.name} version ${meta.version}`);
   console.log(`---`);
   console.log(`class: ${JSON.parse(fs.readFileSync(cli.flags.spec)).class}`);
   if (cli.flags.method)
