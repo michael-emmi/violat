@@ -21,7 +21,7 @@ let cli = meow(`
     $ ${meta.name} \\
       --spec specs/java/util/concurrent/ConcurrentSkipListMap.json \\
       --method clear \\
-      --sequences 4 \\
+      --sequences 2 \\
       --invocations 4
 `, {
   default: {
