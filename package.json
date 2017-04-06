@@ -4,11 +4,14 @@
   "description": "Find test harnesses that expose linearizability violations.",
   "main": "index.js",
   "bin": {
-    "find-non-linearizability-tests": "./bin/cli.js"
+    "find-non-linearizability-tests": "./bin/cli.js",
+    "generate-class-spec": "./bin/cli-spec-generator.js"
   },
   "preferGlobal": true,
   "dependencies": {
     "event-stream": "^3.3.4",
+    "inquirer": "^3.0.6",
+    "java": "^0.8.0",
     "meow": "^3.7.0",
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
