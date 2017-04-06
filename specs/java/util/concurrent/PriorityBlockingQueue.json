@@ -1,0 +1,176 @@
+{
+  "class": "java.util.concurrent.PriorityBlockingQueue",
+  "methods": [
+    {
+      "name": "add",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "clear",
+      "parameters": [],
+      "void": true,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "comparator",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "contains",
+      "parameters": [
+        "java.lang.Object"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "drainTo",
+      "parameters": [
+        "java.util.Collection<? super E>",
+        "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "drainTo",
+      "parameters": [
+        "java.util.Collection<? super E>"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "iterator",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "offer",
+      "parameters": [
+        "int",
+        "long",
+        "java.util.concurrent.TimeUnit"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "offer",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "peek",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "poll",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "poll",
+      "parameters": [
+        "long",
+        "java.util.concurrent.TimeUnit"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "put",
+      "parameters": [
+        "int"
+      ],
+      "void": true,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "remainingCapacity",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "remove",
+      "parameters": [
+        "java.lang.Object"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "size",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "spliterator",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "take",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "toArray",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "toArray",
+      "parameters": [
+        "T[]"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "toString",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    }
+  ]
+}

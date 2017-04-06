@@ -1,0 +1,140 @@
+{
+  "class": "java.util.concurrent.atomic.AtomicLong",
+  "methods": [
+    {
+      "name": "addAndGet",
+      "parameters": [
+        "long"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "compareAndSet",
+      "parameters": [
+        "long",
+        "long"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "decrementAndGet",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "doubleValue",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "floatValue",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "get",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "getAndAdd",
+      "parameters": [
+        "long"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "getAndDecrement",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "getAndIncrement",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "getAndSet",
+      "parameters": [
+        "long"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "incrementAndGet",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "intValue",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "lazySet",
+      "parameters": [
+        "long"
+      ],
+      "void": true,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "longValue",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "set",
+      "parameters": [
+        "long"
+      ],
+      "void": true,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "toString",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "weakCompareAndSet",
+      "parameters": [
+        "long",
+        "long"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    }
+  ]
+}

@@ -1,0 +1,272 @@
+{
+  "class": "java.util.concurrent.ConcurrentSkipListSet",
+  "methods": [
+    {
+      "name": "add",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "ceiling",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "clear",
+      "parameters": [],
+      "void": true,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "clone",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "clone",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "comparator",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "contains",
+      "parameters": [
+        "java.lang.Object"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "descendingIterator",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "descendingSet",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "equals",
+      "parameters": [
+        "java.lang.Object"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "first",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "floor",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "headSet",
+      "parameters": [
+        "int",
+        "boolean"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "headSet",
+      "parameters": [
+        "java.lang.Object"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "headSet",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "higher",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "isEmpty",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "iterator",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "last",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "lower",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "pollFirst",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "pollLast",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "remove",
+      "parameters": [
+        "java.lang.Object"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "removeAll",
+      "parameters": [
+        "java.util.Collection<?>"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "size",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "spliterator",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "subSet",
+      "parameters": [
+        "int",
+        "boolean",
+        "int",
+        "boolean"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "subSet",
+      "parameters": [
+        "int",
+        "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "subSet",
+      "parameters": [
+        "java.lang.Object",
+        "java.lang.Object"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "tailSet",
+      "parameters": [
+        "int",
+        "boolean"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "tailSet",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "tailSet",
+      "parameters": [
+        "java.lang.Object"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "class": "java.util.concurrent.atomic.LongAdder",
+  "methods": [
+    {
+      "name": "add",
+      "parameters": [
+        "long"
+      ],
+      "void": true,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "decrement",
+      "parameters": [],
+      "void": true,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "doubleValue",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "floatValue",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "increment",
+      "parameters": [],
+      "void": true,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "intValue",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "longValue",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "reset",
+      "parameters": [],
+      "void": true,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "sum",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "sumThenReset",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "toString",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    }
+  ]
+}

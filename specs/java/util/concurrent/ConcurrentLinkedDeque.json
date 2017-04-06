@@ -1,0 +1,262 @@
+{
+  "class": "java.util.concurrent.ConcurrentLinkedDeque",
+  "methods": [
+    {
+      "name": "add",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "addAll",
+      "parameters": [
+        "java.util.Collection<? extends E>"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "addFirst",
+      "parameters": [
+        "int"
+      ],
+      "void": true,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "addLast",
+      "parameters": [
+        "int"
+      ],
+      "void": true,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "clear",
+      "parameters": [],
+      "void": true,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "contains",
+      "parameters": [
+        "java.lang.Object"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "descendingIterator",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "element",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "getFirst",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "getLast",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "isEmpty",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "iterator",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "offer",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "offerFirst",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "offerLast",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "peek",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "peekFirst",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "peekLast",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "poll",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "pollFirst",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "pollLast",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "pop",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "push",
+      "parameters": [
+        "int"
+      ],
+      "void": true,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "remove",
+      "parameters": [
+        "java.lang.Object"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "remove",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "removeFirst",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "removeFirstOccurrence",
+      "parameters": [
+        "java.lang.Object"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "removeLast",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "removeLastOccurrence",
+      "parameters": [
+        "java.lang.Object"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "size",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "spliterator",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "toArray",
+      "parameters": [
+        "T[]"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "toArray",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    }
+  ]
+}
