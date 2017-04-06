@@ -44,6 +44,13 @@
       "trusted": false
     },
     {
+      "name": "contains",
+      "parameters": ["int"],
+      "void": false,
+      "readonly": true,
+      "trusted": false
+    },
+    {
       "name": "entrySet",
       "parameters": [],
       "void": false,
@@ -72,6 +79,13 @@
       "trusted": false
     },
     {
+      "name": "mappingCount",
+      "parameters": [],
+      "void": false,
+      "readonly": true,
+      "trusted": false
+    },
+    {
       "name": "toString",
       "parameters": [],
       "void": false,
@@ -83,6 +97,34 @@
       "parameters": [],
       "void": false,
       "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "hashCode",
+      "parameters": [],
+      "void": false,
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "elements",
+      "parameters": [],
+      "void": false,
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "keys",
+      "parameters": [],
+      "void": false,
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "putAll",
+      "parameters": [["int"]],
+      "void": true,
+      "readonly": false,
       "trusted": false
     }
   ]
