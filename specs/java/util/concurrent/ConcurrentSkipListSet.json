@@ -8,7 +8,25 @@
       ],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": true
+    },
+    {
+      "name": "contains",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": true,
+      "trusted": true
+    },
+    {
+      "name": "remove",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": true
     },
     {
       "name": "ceiling",
@@ -16,7 +34,7 @@
         "int"
       ],
       "void": false,
-      "readonly": false,
+      "readonly": true,
       "trusted": false
     },
     {
@@ -27,63 +45,10 @@
       "trusted": false
     },
     {
-      "name": "clone",
-      "parameters": [],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "clone",
-      "parameters": [],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "comparator",
-      "parameters": [],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "contains",
-      "parameters": [
-        "java.lang.Object"
-      ],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "descendingIterator",
-      "parameters": [],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "descendingSet",
-      "parameters": [],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "equals",
-      "parameters": [
-        "java.lang.Object"
-      ],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
       "name": "first",
       "parameters": [],
       "void": false,
-      "readonly": false,
+      "readonly": true,
       "trusted": false
     },
     {
@@ -92,26 +57,7 @@
         "int"
       ],
       "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "headSet",
-      "parameters": [
-        "int",
-        "boolean"
-      ],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "headSet",
-      "parameters": [
-        "java.lang.Object"
-      ],
-      "void": false,
-      "readonly": false,
+      "readonly": true,
       "trusted": false
     },
     {
@@ -120,7 +66,7 @@
         "int"
       ],
       "void": false,
-      "readonly": false,
+      "readonly": true,
       "trusted": false
     },
     {
@@ -129,28 +75,21 @@
         "int"
       ],
       "void": false,
-      "readonly": false,
+      "readonly": true,
       "trusted": false
     },
     {
       "name": "isEmpty",
       "parameters": [],
       "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "iterator",
-      "parameters": [],
-      "void": false,
-      "readonly": false,
+      "readonly": true,
       "trusted": false
     },
     {
       "name": "last",
       "parameters": [],
       "void": false,
-      "readonly": false,
+      "readonly": true,
       "trusted": false
     },
     {
@@ -159,7 +98,7 @@
         "int"
       ],
       "void": false,
-      "readonly": false,
+      "readonly": true,
       "trusted": false
     },
     {
@@ -177,18 +116,9 @@
       "trusted": false
     },
     {
-      "name": "remove",
-      "parameters": [
-        "java.lang.Object"
-      ],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
       "name": "removeAll",
       "parameters": [
-        "java.util.Collection<?>"
+        ["int"]
       ],
       "void": false,
       "readonly": false,
@@ -198,72 +128,59 @@
       "name": "size",
       "parameters": [],
       "void": false,
-      "readonly": false,
+      "readonly": true,
       "trusted": false
     },
     {
-      "name": "spliterator",
+      "name": "subSet",
+      "parameters": [
+        "int",
+        "int"
+      ],
+      "void": false,
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "tailSet",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": true,
+      "trusted": false
+    },
+        {
+      "name": "toArray",
       "parameters": [],
       "void": false,
       "readonly": false,
       "trusted": false
     },
     {
-      "name": "subSet",
-      "parameters": [
-        "int",
-        "boolean",
-        "int",
-        "boolean"
-      ],
+      "name": "toString",
+      "parameters": [],
       "void": false,
       "readonly": false,
       "trusted": false
     },
     {
-      "name": "subSet",
-      "parameters": [
-        "int",
-        "int"
-      ],
+      "name": "hashCode",
+      "parameters": [],
       "void": false,
       "readonly": false,
       "trusted": false
     },
     {
-      "name": "subSet",
-      "parameters": [
-        "java.lang.Object",
-        "java.lang.Object"
-      ],
+      "name": "containsAll",
+      "parameters": [["int"]],
       "void": false,
-      "readonly": false,
+      "readonly": true,
       "trusted": false
     },
     {
-      "name": "tailSet",
-      "parameters": [
-        "int",
-        "boolean"
-      ],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "tailSet",
-      "parameters": [
-        "int"
-      ],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "tailSet",
-      "parameters": [
-        "java.lang.Object"
-      ],
+      "name": "retainAll",
+      "parameters": [["int"]],
       "void": false,
       "readonly": false,
       "trusted": false
