@@ -1,0 +1,189 @@
+{
+  "class": "java.util.concurrent.ConcurrentSkipListSet",
+  "methods": [
+    {
+      "name": "add",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": true
+    },
+    {
+      "name": "contains",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": true,
+      "trusted": true
+    },
+    {
+      "name": "remove",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": true
+    },
+    {
+      "name": "ceiling",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "clear",
+      "parameters": [],
+      "void": true,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "first",
+      "parameters": [],
+      "void": false,
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "floor",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "headSet",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "higher",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "isEmpty",
+      "parameters": [],
+      "void": false,
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "last",
+      "parameters": [],
+      "void": false,
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "lower",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "pollFirst",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "pollLast",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "removeAll",
+      "parameters": [
+        ["int"]
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "size",
+      "parameters": [],
+      "void": false,
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "subSet",
+      "parameters": [
+        "int",
+        "int"
+      ],
+      "void": false,
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "tailSet",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": true,
+      "trusted": false
+    },
+        {
+      "name": "toArray",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "toString",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "hashCode",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "containsAll",
+      "parameters": [["int"]],
+      "void": false,
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "retainAll",
+      "parameters": [["int"]],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    }
+  ]
+}

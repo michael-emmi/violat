@@ -1,0 +1,159 @@
+{
+  "class": "java.util.concurrent.ConcurrentLinkedDeque",
+  "methods": [
+    {
+      "name": "offerFirst",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": true
+    },
+    {
+      "name": "offerLast",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": true
+    },
+    {
+      "name": "pollFirst",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": true
+    },
+    {
+      "name": "pollLast",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": true
+    },
+    {
+      "name": "getFirst",
+      "parameters": [],
+      "void": false,
+      "readonly": true,
+      "trusted": true
+    },
+    {
+      "name": "getLast",
+      "parameters": [],
+      "void": false,
+      "readonly": true,
+      "trusted": true
+    },
+    {
+      "name": "addAll",
+      "parameters": [
+        ["int"]
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "clear",
+      "parameters": [],
+      "void": true,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "contains",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "isEmpty",
+      "parameters": [],
+      "void": false,
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "remove",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "removeFirstOccurrence",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "removeLastOccurrence",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "size",
+      "parameters": [],
+      "void": false,
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "toArray",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "toString",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "hashCode",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "removeAll",
+      "parameters": [["int"]],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "containsAll",
+      "parameters": [["int"]],
+      "void": false,
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "retainAll",
+      "parameters": [["int"]],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    }
+  ]
+}

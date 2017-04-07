@@ -1,0 +1,136 @@
+{
+  "class": "java.util.concurrent.atomic.AtomicIntegerArray",
+  "methods": [
+    {
+      "name": "addAndGet",
+      "parameters": [
+        "int",
+        "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "compareAndSet",
+      "parameters": [
+        "int",
+        "int",
+        "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "decrementAndGet",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "get",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "getAndAdd",
+      "parameters": [
+        "int",
+        "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "getAndDecrement",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "getAndIncrement",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "getAndSet",
+      "parameters": [
+        "int",
+        "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "incrementAndGet",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "lazySet",
+      "parameters": [
+        "int",
+        "int"
+      ],
+      "void": true,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "length",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "set",
+      "parameters": [
+        "int",
+        "int"
+      ],
+      "void": true,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "toString",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "weakCompareAndSet",
+      "parameters": [
+        "int",
+        "int",
+        "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    }
+  ]
+}

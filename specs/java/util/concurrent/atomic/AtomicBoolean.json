@@ -1,0 +1,66 @@
+{
+  "class": "java.util.concurrent.atomic.AtomicBoolean",
+  "methods": [
+    {
+      "name": "compareAndSet",
+      "parameters": [
+        "boolean",
+        "boolean"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "get",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "getAndSet",
+      "parameters": [
+        "boolean"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "lazySet",
+      "parameters": [
+        "boolean"
+      ],
+      "void": true,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "set",
+      "parameters": [
+        "boolean"
+      ],
+      "void": true,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "toString",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "weakCompareAndSet",
+      "parameters": [
+        "boolean",
+        "boolean"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    }
+  ]
+}
