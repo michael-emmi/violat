@@ -64,13 +64,6 @@
       "trusted": false
     },
     {
-      "name": "take",
-      "parameters": [],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
       "name": "toArray",
       "parameters": [],
       "void": false,

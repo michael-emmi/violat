@@ -2,13 +2,27 @@
   "class": "java.util.concurrent.PriorityBlockingQueue",
   "methods": [
     {
-      "name": "add",
+      "name": "offer",
       "parameters": [
         "int"
       ],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": true
+    },
+    {
+      "name": "peek",
+      "parameters": [],
+      "void": false,
+      "readonly": true,
+      "trusted": true
+    },
+    {
+      "name": "poll",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": true
     },
     {
       "name": "clear",
@@ -18,111 +32,25 @@
       "trusted": false
     },
     {
-      "name": "comparator",
-      "parameters": [],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
       "name": "contains",
       "parameters": [
-        "java.lang.Object"
-      ],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "drainTo",
-      "parameters": [
-        "java.util.Collection<? super E>",
         "int"
       ],
       "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "drainTo",
-      "parameters": [
-        "java.util.Collection<? super E>"
-      ],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "iterator",
-      "parameters": [],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "offer",
-      "parameters": [
-        "int",
-        "long",
-        "java.util.concurrent.TimeUnit"
-      ],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "offer",
-      "parameters": [
-        "int"
-      ],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "peek",
-      "parameters": [],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "poll",
-      "parameters": [],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "poll",
-      "parameters": [
-        "long",
-        "java.util.concurrent.TimeUnit"
-      ],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "put",
-      "parameters": [
-        "int"
-      ],
-      "void": true,
-      "readonly": false,
+      "readonly": true,
       "trusted": false
     },
     {
       "name": "remainingCapacity",
       "parameters": [],
       "void": false,
-      "readonly": false,
+      "readonly": true,
       "trusted": false
     },
     {
       "name": "remove",
       "parameters": [
-        "java.lang.Object"
+        "int"
       ],
       "void": false,
       "readonly": false,
@@ -132,45 +60,69 @@
       "name": "size",
       "parameters": [],
       "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "spliterator",
-      "parameters": [],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "take",
-      "parameters": [],
-      "void": false,
-      "readonly": false,
+      "readonly": true,
       "trusted": false
     },
     {
       "name": "toArray",
       "parameters": [],
       "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "toArray",
-      "parameters": [
-        "T[]"
-      ],
-      "void": false,
-      "readonly": false,
+      "readonly": true,
       "trusted": false
     },
     {
       "name": "toString",
       "parameters": [],
       "void": false,
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "hashCode",
+      "parameters": [],
+      "void": false,
       "readonly": false,
       "trusted": false
-    }
+    },
+    {
+      "name": "containsAll",
+      "parameters": [["int"]],
+      "void": false,
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "retainAll",
+      "parameters": [["int"]],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "removeAll",
+      "parameters": [
+        ["int"]
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "addAll",
+      "parameters": [
+        ["int"]
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "isEmpty",
+      "parameters": [],
+      "void": false,
+      "readonly": true,
+      "trusted": false
+    },
+
   ]
 }
