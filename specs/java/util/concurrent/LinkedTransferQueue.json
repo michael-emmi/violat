@@ -2,135 +2,78 @@
   "class": "java.util.concurrent.LinkedTransferQueue",
   "methods": [
     {
-      "name": "add",
-      "parameters": [
-        "int"
-      ],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "contains",
-      "parameters": [
-        "java.lang.Object"
-      ],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "drainTo",
-      "parameters": [
-        "java.util.Collection<? super E>"
-      ],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "drainTo",
-      "parameters": [
-        "java.util.Collection<? super E>",
-        "int"
-      ],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "getWaitingConsumerCount",
-      "parameters": [],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "hasWaitingConsumer",
-      "parameters": [],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "isEmpty",
-      "parameters": [],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "iterator",
-      "parameters": [],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "offer",
-      "parameters": [
-        "int",
-        "long",
-        "java.util.concurrent.TimeUnit"
-      ],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "offer",
-      "parameters": [
-        "int"
-      ],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
       "name": "peek",
       "parameters": [],
       "void": false,
-      "readonly": false,
-      "trusted": false
+      "readonly": true,
+      "trusted": true
     },
     {
-      "name": "poll",
-      "parameters": [
-        "long",
-        "java.util.concurrent.TimeUnit"
-      ],
+      "name": "offer",
+      "parameters": ["int"],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": true
     },
     {
       "name": "poll",
       "parameters": [],
       "void": false,
       "readonly": false,
+      "trusted": true
+    },
+    {
+      "name": "addAll",
+      "parameters": [["int"]],
+      "void": false,
+      "readonly": false,
       "trusted": false
     },
     {
-      "name": "put",
-      "parameters": [
-        "int"
-      ],
+      "name": "removeAll",
+      "parameters": [["int"]],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "containsAll",
+      "parameters": [["int"]],
+      "void": false,
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "retainAll",
+      "parameters": [["int"]],
+      "void": false,
+      "readonly": false,
+      "trusted": false
+    },
+    {
+      "name": "clear",
+      "parameters": [],
       "void": true,
       "readonly": false,
       "trusted": false
     },
     {
-      "name": "remainingCapacity",
+      "name": "contains",
+      "parameters": ["int"],
+      "void": false,
+      "readonly": true,
+      "trusted": false
+    },    
+    {
+      "name": "isEmpty",
       "parameters": [],
       "void": false,
-      "readonly": false,
+      "readonly": true,
       "trusted": false
     },
     {
       "name": "remove",
-      "parameters": [
-        "java.lang.Object"
-      ],
+      "parameters": ["int"],
       "void": false,
       "readonly": false,
       "trusted": false
@@ -139,50 +82,28 @@
       "name": "size",
       "parameters": [],
       "void": false,
-      "readonly": false,
+      "readonly": true,
       "trusted": false
     },
     {
-      "name": "spliterator",
+      "name": "toArray",
       "parameters": [],
       "void": false,
-      "readonly": false,
+      "readonly": true,
       "trusted": false
     },
     {
-      "name": "take",
+      "name": "hashCode",
       "parameters": [],
       "void": false,
-      "readonly": false,
+      "readonly": true,
       "trusted": false
     },
     {
-      "name": "transfer",
-      "parameters": [
-        "int"
-      ],
-      "void": true,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "tryTransfer",
-      "parameters": [
-        "int"
-      ],
+      "name": "toString",
+      "parameters": [],
       "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "tryTransfer",
-      "parameters": [
-        "int",
-        "long",
-        "java.util.concurrent.TimeUnit"
-      ],
-      "void": false,
-      "readonly": false,
+      "readonly": true,
       "trusted": false
     }
   ]

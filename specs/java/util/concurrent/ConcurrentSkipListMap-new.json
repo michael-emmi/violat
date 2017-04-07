@@ -1,127 +1,39 @@
 {
-  "class": "java.util.concurrent.ConcurrentSkipListSet",
+  "class": "java.util.concurrent.ConcurrentSkipListMap",
   "methods": [
     {
-      "name": "add",
-      "parameters": [
-        "int"
-      ],
+      "name": "put",
+      "parameters": ["int", "int"],
       "void": false,
       "readonly": false,
-      "trusted": true
-    },
-    {
-      "name": "contains",
-      "parameters": [
-        "int"
-      ],
-      "void": false,
-      "readonly": true,
       "trusted": true
     },
     {
       "name": "remove",
-      "parameters": [
-        "int"
-      ],
+      "parameters": ["int"],
       "void": false,
       "readonly": false,
       "trusted": true
     },
     {
-      "name": "ceiling",
-      "parameters": [
-        "int"
-      ],
+      "name": "containsValue",
+      "parameters": ["int"],
       "void": false,
       "readonly": true,
       "trusted": false
     },
     {
-      "name": "clear",
-      "parameters": [],
-      "void": true,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "first",
+      "name": "entrySet",
       "parameters": [],
       "void": false,
       "readonly": true,
       "trusted": false
     },
     {
-      "name": "floor",
-      "parameters": [
-        "int"
-      ],
-      "void": false,
-      "readonly": true,
-      "trusted": false
-    },
-    {
-      "name": "headSet",
-      "parameters": [
-        "int"
-      ],
-      "void": false,
-      "readonly": true,
-      "trusted": false
-    },
-    {
-      "name": "higher",
-      "parameters": [
-        "int"
-      ],
-      "void": false,
-      "readonly": true,
-      "trusted": false
-    },
-    {
-      "name": "isEmpty",
+      "name": "keySet",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
-    },
-    {
-      "name": "last",
-      "parameters": [],
-      "void": false,
-      "readonly": true,
-      "trusted": false
-    },
-    {
-      "name": "lower",
-      "parameters": [
-        "int"
-      ],
-      "void": false,
-      "readonly": true,
-      "trusted": false
-    },
-    {
-      "name": "pollFirst",
-      "parameters": [],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "pollLast",
-      "parameters": [],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "removeAll",
-      "parameters": [
-        ["int"]
-      ],
-      "void": false,
-      "readonly": false,
       "trusted": false
     },
     {
@@ -132,56 +44,100 @@
       "trusted": false
     },
     {
-      "name": "subSet",
-      "parameters": [
-        "int",
-        "int"
-      ],
-      "void": false,
-      "readonly": true,
-      "trusted": false
-    },
-    {
-      "name": "tailSet",
-      "parameters": [
-        "int"
-      ],
-      "void": false,
-      "readonly": true,
-      "trusted": false
-    },
-        {
-      "name": "toArray",
-      "parameters": [],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
       "name": "toString",
       "parameters": [],
       "void": false,
-      "readonly": false,
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "values",
+      "parameters": [],
+      "void": false,
+      "readonly": true,
       "trusted": false
     },
     {
       "name": "hashCode",
       "parameters": [],
       "void": false,
-      "readonly": false,
+      "readonly": true,
       "trusted": false
     },
     {
-      "name": "containsAll",
-      "parameters": [["int"]],
+      "name": "ceilingKey",
+      "parameters": ["int"],
       "void": false,
       "readonly": true,
       "trusted": false
     },
     {
-      "name": "retainAll",
-      "parameters": [["int"]],
+      "name": "firstKey",
+      "parameters": [],
       "void": false,
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "lastKey",
+      "parameters": [],
+      "void": false,
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "floorKey",
+      "parameters": ["int"],
+      "void": false,
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "higherKey",
+      "parameters": ["int"],
+      "void": false,
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "lowerKey",
+      "parameters": ["int"],
+      "void": false,
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "isEmpty",
+      "parameters": [],
+      "void": false,
+      "readonly": true,
+      "trusted": false
+    },    
+    {
+      "name": "headMap",
+      "parameters": ["int"],
+      "void": false,
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "tailMap",
+      "parameters": ["int"],
+      "void": false,
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "subMap",
+      "parameters": ["int","int"],
+      "void": false,
+      "readonly": true,
+      "trusted": false
+    },
+    {
+      "name": "putAll",
+      "parameters": [["int"]],
+      "void": true,
       "readonly": false,
       "trusted": false
     }

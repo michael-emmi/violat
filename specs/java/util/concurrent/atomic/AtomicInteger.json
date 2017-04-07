@@ -2,6 +2,27 @@
   "class": "java.util.concurrent.atomic.AtomicInteger",
   "methods": [
     {
+      "name": "decrementAndGet",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": true
+    },
+    {
+      "name": "incrementAndGet",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": true
+    },
+    {
+      "name": "get",
+      "parameters": [],
+      "void": false,
+      "readonly": true,
+      "trusted": true
+    },
+    {
       "name": "addAndGet",
       "parameters": [
         "int"
@@ -21,31 +42,17 @@
       "trusted": false
     },
     {
-      "name": "decrementAndGet",
-      "parameters": [],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
       "name": "doubleValue",
       "parameters": [],
       "void": false,
-      "readonly": false,
+      "readonly": true,
       "trusted": false
     },
     {
       "name": "floatValue",
       "parameters": [],
       "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
-      "name": "get",
-      "parameters": [],
-      "void": false,
-      "readonly": false,
+      "readonly": true,
       "trusted": false
     },
     {
@@ -81,17 +88,10 @@
       "trusted": false
     },
     {
-      "name": "incrementAndGet",
-      "parameters": [],
-      "void": false,
-      "readonly": false,
-      "trusted": false
-    },
-    {
       "name": "intValue",
       "parameters": [],
       "void": false,
-      "readonly": false,
+      "readonly": true,
       "trusted": false
     },
     {
@@ -107,7 +107,7 @@
       "name": "longValue",
       "parameters": [],
       "void": false,
-      "readonly": false,
+      "readonly": true,
       "trusted": false
     },
     {
@@ -123,7 +123,7 @@
       "name": "toString",
       "parameters": [],
       "void": false,
-      "readonly": false,
+      "readonly": true,
       "trusted": false
     },
     {
