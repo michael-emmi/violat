@@ -40,12 +40,15 @@ public class Invocation {
 
     public Object invoke(Object target)
     throws IllegalAccessException,
-           IllegalArgumentException,
-           InvocationTargetException {
+           IllegalArgumentException {
 
-        if (method instanceof Method)
-            return ((Method) method).invoke(target, arguments);
-        else
+        if (method instanceof Method) {
+            try {
+                return ((Method) method).invoke(target, arguments);
+            } catch (InvocationTargetException e) {
+                return e;
+            }
+        } else
             throw new IllegalArgumentException("Invalid method.");
     }
 

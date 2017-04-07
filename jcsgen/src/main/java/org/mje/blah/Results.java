@@ -7,7 +7,10 @@ import javax.json.*;
 public class Results {
 
     static String of(Object a) {
-        if (a instanceof Object[])
+        if (a instanceof Exception)
+            return String.valueOf(a.getClass().getSimpleName());
+
+        else if (a instanceof Object[])
             return "[" + Arrays.stream((Object[]) a)
                 .map(Results::of)
                 .collect(Collectors.joining(",")) + "]";
