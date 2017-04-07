@@ -6,7 +6,10 @@ import java.util.stream.*;
 public class ResultAdapter {
 
     public static String get(Object a) {
-        if (a instanceof Object[])
+        if (a instanceof Exception)
+            return String.valueOf(a.getClass().getSimpleName());
+
+        else if (a instanceof Object[])
             return "[" + Arrays.stream((Object[]) a)
                 .map(ResultAdapter::get)
                 .collect(Collectors.joining(",")) + "]";
