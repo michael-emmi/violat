@@ -51,11 +51,13 @@ if (!cli.flags.spec)
     : await checker.testUntrustedMethods(cli.flags.spec, cli.flags.values, cli.flags.sequences, cli.flags.invocations);
 
   for (let result of ([].concat(results))) {
-    if (result.status == 'fail') {
-      console.log(`Bug found!`);
-      console.log(`The following harness got ${result.values}:`);
+    if (result.failedHarness) {
+      console.log(`Violation discovered in the following harness.`);
       console.log(`---`);
-      console.log(result.harness);
+      console.log(result.harnessCode);
+      console.log(`---`);
+      for (let r of result.forbiddenResults)
+        console.log(`${r.count} of ${result.numExecutions} executions gave outcome: ${r.outcome}`);
       console.log(`---`);
     }
   }
