@@ -14,6 +14,7 @@ let cli = meow(`
   Options
     --spec <spec-file.json>     Java class specification file (required).
     --method <method-name>      Name of a method to test.
+    --values N                  Number of distinct argument values.
     --sequences N               Number of concurrent invocation sequences.
     --invocations N             Total nuber of invocations.
 
@@ -26,7 +27,8 @@ let cli = meow(`
 `, {
   default: {
     sequences: 2,
-    invocations: 2
+    invocations: 2,
+    values: 2
   }
 });
 
@@ -39,13 +41,14 @@ if (!cli.flags.spec)
   console.log(`class: ${JSON.parse(fs.readFileSync(cli.flags.spec)).class}`);
   if (cli.flags.method)
     console.log(`method: ${cli.flags.method}`);
+  console.log(`values: ${cli.flags.values}`);
   console.log(`sequences: ${cli.flags.sequences}`);
   console.log(`invocations: ${cli.flags.invocations}`)
   console.log(`---`);
 
   let results = cli.flags.method
-    ? await checker.testMethod(cli.flags.spec, cli.flags.method, cli.flags.sequences, cli.flags.invocations)
-    : await checker.testUntrustedMethods(cli.flags.spec, cli.flags.sequences, cli.flags.invocations);
+    ? await checker.testMethod(cli.flags.spec, cli.flags.method, cli.flags.values, cli.flags.sequences, cli.flags.invocations)
+    : await checker.testUntrustedMethods(cli.flags.spec, cli.flags.values, cli.flags.sequences, cli.flags.invocations);
 
   for (let result of ([].concat(results))) {
     if (result.status == 'fail') {
