@@ -122,7 +122,6 @@
       "void": false,
       "readonly": true,
       "trusted": false
-    },
-
+    }
   ]
 }
