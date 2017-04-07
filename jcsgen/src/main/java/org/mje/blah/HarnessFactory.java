@@ -39,7 +39,10 @@ public class HarnessFactory {
                 numbering.get(ordering.getInt(0)),
                 numbering.get(ordering.getInt(1)));
 
-        return new Harness(f.get(), p);
+        return new Harness(f.get(
+            object.getJsonArray("parameters").stream()
+                .map(HarnessFactory::fromJsonValue).toArray()),
+            p);
     }
 
     static Object fromJsonValue(JsonValue value) {

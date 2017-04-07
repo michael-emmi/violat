@@ -32,11 +32,18 @@ public class InvocationFactory {
 
         Constructor<?>[] constructors =
             Arrays.stream(_class.getConstructors())
-            .filter(c -> isAssignableFrom(c.getParameterTypes(), types))
+            .filter(c -> {
+                return isAssignableFrom(c.getParameterTypes(), types);
+            })
             .toArray(Constructor<?>[]::new);
 
-        if (constructors.length != 1)
-            throw new NoSuchMethodException("unknown or ambiguous constructor");
+        if (constructors.length < 1)
+            throw new NoSuchMethodException(
+                "unknown constructor " + _class.getName() + "(" + Arrays.toString(types) + ")"
+            );
+
+        if (constructors.length > 1)
+            throw new NoSuchMethodException("ambiguous constructor");
 
         return get(constructors[0], args);
 
@@ -83,8 +90,27 @@ public class InvocationFactory {
         if (params.length != args.length)
             return false;
         for (int i = 0; i < params.length; i++)
-            if (!params[i].isAssignableFrom(args[i]))
+            if (!isSortOfAssignableFrom(params[i], args[i]))
                 return false;
         return true;
+    }
+
+    static String normalizeTypeName(String typeName) {
+        switch (typeName) {
+            case "java.lang.Integer":
+                return "int";
+            default:
+                return typeName;
+        }
+    }
+
+    static boolean compatiblePrimitiveTypes(Class<?> x, Class<?> y) {
+        return normalizeTypeName(x.getTypeName())
+            .equals(normalizeTypeName(y.getTypeName()));
+    }
+
+    static boolean isSortOfAssignableFrom(Class<?> x, Class<?> y) {
+        return x.isAssignableFrom(y)
+            || compatiblePrimitiveTypes(x,y);
     }
 }

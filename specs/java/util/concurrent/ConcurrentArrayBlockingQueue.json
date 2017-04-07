@@ -1,5 +1,7 @@
 {
   "class": "java.util.concurrent.ArrayBlockingQueue",
+  "parameters": ["int"],
+  "default_parameters": [20],
   "methods": [
     {
       "name": "peek",
@@ -35,7 +37,7 @@
       "void": false,
       "readonly": true,
       "trusted": false
-    },    
+    },
     {
       "name": "addAll",
       "parameters": [["int"]],
