@@ -1,5 +1,5 @@
 {
-  "class": "java.util.concurrent.ConcurrentLinkedDeque",
+  "class": "java.util.concurrent.LinkedBlockingDeque",
   "methods": [
     {
       "name": "offerFirst",
