@@ -10,10 +10,15 @@ public class Results {
         if (a instanceof Exception)
             return String.valueOf(a.getClass().getSimpleName());
 
-        else if (a instanceof Object[])
-            return "[" + Arrays.stream((Object[]) a)
+        else if (a instanceof Enumeration)
+            return Collections.list((Enumeration<?>) a).stream()
                 .map(Results::of)
-                .collect(Collectors.joining(",")) + "]";
+                .collect(Collectors.joining(",", "[", "]"));
+
+        else if (a instanceof Object[])
+            return Arrays.stream((Object[]) a)
+                .map(Results::of)
+                .collect(Collectors.joining(",", "[", "]"));
         else
             return String.valueOf(a);
     }

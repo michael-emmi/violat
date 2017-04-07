@@ -9,11 +9,15 @@ public class ResultAdapter {
         if (a instanceof Exception)
             return String.valueOf(a.getClass().getSimpleName());
 
-        else if (a instanceof Object[])
-            return "[" + Arrays.stream((Object[]) a)
+        else if (a instanceof Enumeration)
+            return Collections.list((Enumeration<?>) a).stream()
                 .map(ResultAdapter::get)
-                .collect(Collectors.joining(",")) + "]";
+                .collect(Collectors.joining(",", "[", "]"));
 
+        else if (a instanceof Object[])
+            return Arrays.stream((Object[]) a)
+                .map(ResultAdapter::get)
+                .collect(Collectors.joining(",", "[", "]"));
         else
             return String.valueOf(a);
     }
