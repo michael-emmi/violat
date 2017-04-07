@@ -6,7 +6,7 @@
       "parameters": [
         "int"
       ],
-      "void": true,
+      "void": false,
       "readonly": false,
       "trusted": true
     },
@@ -15,21 +15,21 @@
       "parameters": [
         "int"
       ],
-      "void": true,
+      "void": false,
       "readonly": false,
       "trusted": true
     },
     {
       "name": "pollFirst",
       "parameters": [],
-      "void": true,
+      "void": false,
       "readonly": false,
       "trusted": true
     },
     {
       "name": "pollLast",
       "parameters": [],
-      "void": true,
+      "void": false,
       "readonly": false,
       "trusted": true
     },
@@ -52,7 +52,7 @@
       "parameters": [
         ["int"]
       ],
-      "void": true,
+      "void": false,
       "readonly": false,
       "trusted": false
     },
