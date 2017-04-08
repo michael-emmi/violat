@@ -122,7 +122,7 @@
     },
     {
       "name": "putAll",
-      "parameters": [["int","int"]],
+      "parameters": [{"int": "int"}],
       "void": true,
       "readonly": false,
       "trusted": false

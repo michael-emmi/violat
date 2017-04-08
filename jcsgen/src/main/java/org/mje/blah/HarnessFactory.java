@@ -61,6 +61,12 @@ public class HarnessFactory {
                 return ((JsonArray) value).stream()
                     .map(HarnessFactory::fromJsonValue)
                     .collect(Collectors.toList());
+            case OBJECT:
+                return ((JsonObject) value).entrySet().stream()
+                    .collect(Collectors.toMap(
+                        e -> Integer.parseInt(e.getKey()),
+                        e -> fromJsonValue(e.getValue())
+                    ));
         }
 
         throw new RuntimeException("Unexpected JSON value: " + value);
