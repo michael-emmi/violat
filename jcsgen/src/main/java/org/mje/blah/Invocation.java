@@ -46,7 +46,7 @@ public class Invocation {
             try {
                 return ((Method) method).invoke(target, arguments);
             } catch (InvocationTargetException e) {
-                return e;
+                return e.getCause();
             }
         } else
             throw new IllegalArgumentException("Invalid method.");
