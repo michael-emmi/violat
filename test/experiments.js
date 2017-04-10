@@ -15,7 +15,12 @@ async function run(specDir) {
     console.log(`Checking specification: ${specFile}`);
     console.log(`---`);
 
-    let result = await checker.testUntrustedMethods(specFile, numValues, sequences, invocations);
+    let result = await checker.testUntrustedMethods({
+      spec: specFile,
+      values: 2,
+      sequences: 2,
+      invocations: 4
+    });
 
     console.log(`---`);
     console.log(`Checking completed for: ${specFile}`);
@@ -26,6 +31,7 @@ async function run(specDir) {
   try {
     await run(path.join(config.resourcesPath, /* FIXME */ "../specs"));
   } catch (e) {
-    console.log(`caught: ${e}`);
+    console.log(`caught exception`);
+    console.log(e.stack);
   }
 })();

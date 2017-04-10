@@ -47,8 +47,8 @@ if (!cli.flags.spec)
   console.log(`---`);
 
   let results = cli.flags.method
-    ? await checker.testMethod(cli.flags.spec, cli.flags.method, cli.flags.values, cli.flags.sequences, cli.flags.invocations)
-    : await checker.testUntrustedMethods(cli.flags.spec, cli.flags.values, cli.flags.sequences, cli.flags.invocations);
+    ? await checker.testMethod(cli.flags)
+    : await checker.testUntrustedMethods(cli.flags);
 
   for (let result of ([].concat(results))) {
     if (result.failedHarness) {
