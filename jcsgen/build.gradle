@@ -21,4 +21,4 @@ jar {
     }
 }
 
-defaultTasks 'installDist'
+defaultTasks 'jar'
