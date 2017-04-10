@@ -1,6 +1,6 @@
 {
   "name": "find-non-linearizability-tests",
-  "version": "0.1.17",
+  "version": "0.1.18",
   "description": "Find test harnesses that expose linearizability violations.",
   "main": "index.js",
   "bin": {
