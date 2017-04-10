@@ -26,9 +26,6 @@ let cli = meow(`
       --invocations 4
 `, {
   default: {
-    sequences: 2,
-    invocations: 2,
-    values: 2
   }
 });
 
@@ -39,11 +36,6 @@ if (!cli.flags.spec)
   console.log(`${meta.name} version ${meta.version}`);
   console.log(`---`);
   console.log(`class: ${JSON.parse(fs.readFileSync(cli.flags.spec)).class}`);
-  if (cli.flags.method)
-    console.log(`method: ${cli.flags.method}`);
-  console.log(`values: ${cli.flags.values}`);
-  console.log(`sequences: ${cli.flags.sequences}`);
-  console.log(`invocations: ${cli.flags.invocations}`)
   console.log(`---`);
 
   let results = cli.flags.method
