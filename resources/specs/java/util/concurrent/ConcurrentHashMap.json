@@ -34,14 +34,20 @@
       "parameters": [],
       "void": true,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "harnessParameters": {
+        "invocations": 5
+      }
     },
     {
       "name": "containsValue",
       "parameters": ["int"],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "harnessParameters": {
+        "invocations": 5
+      }
     },
     {
       "name": "contains",
