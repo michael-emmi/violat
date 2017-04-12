@@ -201,7 +201,7 @@
       "harnessParameters": {
         "invocations": 3
       }
-    }
+    },
     {
       "name": "addAll",
       "parameters": [["int"]],
