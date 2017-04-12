@@ -48,9 +48,10 @@ public class Main {
                 try (JsonReader reader = Json.createReader(new StringReader(scanner.next()))) {
                     JsonObject o = reader.readObject();
                     Harness h = HarnessFactory.fromJson(o);
+                    int n = h.getLinearizations().size();
                     JsonWriter writer = Json.createWriter(System.out);
                     System.out.println("---");
-                    writer.write(Results.add(o, h.getResults()));
+                    writer.write(Results.add(o, h.getResults(), n));
                     System.out.println();
                 }
             }

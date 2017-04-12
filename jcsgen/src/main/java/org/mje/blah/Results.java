@@ -24,7 +24,8 @@ public class Results {
     }
 
     public static JsonObject add(JsonObject src,
-            Collection<SortedMap<Integer,String>> results) {
+            Collection<SortedMap<Integer,String>> results,
+            int numLinearizations) {
 
         JsonObjectBuilder b0 = Json.createObjectBuilder();
         src.entrySet().forEach(e -> b0.add(e.getKey(), e.getValue()));
@@ -36,7 +37,10 @@ public class Results {
                 b2.add(x);
             b1.add(b2.build());
         }
-        return b0.add("outcomes", b1.build()).build();
+        return b0
+            .add("outcomes", b1.build())
+            .add("linearizations", numLinearizations)
+            .build();
     }
 
 }
