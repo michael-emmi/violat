@@ -29,8 +29,7 @@
       "name": "addAll",
       "parameters": [["int"]],
       "void": false,
-      "readonly": false,
-      "trusted": false
+      "readonly": false
     },
     {
       "name": "removeAll",
@@ -38,7 +37,6 @@
       "void": false,
       "readonly": false,
       "trusted": false,
-      "nonAtomic": true,
       "harnessParameters": {
         "invocations": 3
       }
@@ -48,8 +46,7 @@
       "parameters": [["int"]],
       "void": false,
       "readonly": true,
-      "trusted": false,
-      "nonAtomic": true
+      "trusted": false
     },
     {
       "name": "retainAll",
@@ -57,7 +54,6 @@
       "void": false,
       "readonly": false,
       "trusted": false,
-      "nonAtomic": true,
       "harnessParameters": {
         "invocations": 3
       }
@@ -67,60 +63,52 @@
       "parameters": [],
       "void": true,
       "readonly": false,
-      "trusted": false,
-      "nonAtomic": true
+      "trusted": false
     },
     {
       "name": "contains",
       "parameters": ["int"],
       "void": false,
-      "readonly": true,
-      "trusted": false
+      "readonly": true
     },    
     {
       "name": "isEmpty",
       "parameters": [],
       "void": false,
-      "readonly": true,
-      "trusted": false
+      "readonly": true
     },
     {
       "name": "remove",
       "parameters": ["int"],
       "void": false,
-      "readonly": false,
-      "trusted": false
+      "readonly": false
     },
     {
       "name": "size",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false,
-      "nonAtomic": true
+      "trusted": false
     },
     {
       "name": "toArray",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false,
-      "nonAtomic": true
+      "trusted": false
     },
     {
       "name": "hashCode",
       "parameters": [],
       "void": false,
-      "readonly": true,
-      "trusted": false
+      "readonly": true
     },
     {
       "name": "toString",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false,
-      "nonAtomic": true
+      "trusted": false
     }
   ]
 }

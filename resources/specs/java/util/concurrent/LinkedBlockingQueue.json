@@ -32,8 +32,7 @@
       "parameters": [],
       "void": true,
       "readonly": false,
-      "trusted": false,
-      "nonAtomic": true
+      "trusted": false
     },
     {
       "name": "contains",
@@ -43,7 +42,6 @@
       "void": false,
       "readonly": true,
       "trusted": false,
-      "nonAtomic": true,
       "harnessParameters": {
         "invocations": 6
       }
@@ -53,8 +51,7 @@
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false,
-      "nonAtomic": true
+      "trusted": false
     },
     {
       "name": "remove",
@@ -63,16 +60,14 @@
       ],
       "void": false,
       "readonly": false,
-      "trusted": false,
-      "nonAtomic": true
+      "trusted": false
     },
     {
       "name": "size",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false,
-      "nonAtomic": true
+      "trusted": false
     },
     {
       "name": "toArray",
@@ -80,7 +75,6 @@
       "void": false,
       "readonly": true,
       "trusted": false,
-      "nonAtomic": true,
       "harnessParameters": {
         "invocations": 6
       }
@@ -91,7 +85,6 @@
       "void": false,
       "readonly": true,
       "trusted": false,
-      "nonAtomic": true,
       "harnessParameters": {
         "invocations": 6
       }
@@ -100,8 +93,7 @@
       "name": "hashCode",
       "parameters": [],
       "void": false,
-      "readonly": false,
-      "trusted": false
+      "readonly": false
     },
     {
       "name": "containsAll",
@@ -109,7 +101,6 @@
       "void": false,
       "readonly": true,
       "trusted": false,
-      "nonAtomic": true,
       "harnessParameters": {
         "invocations": 4
       }
@@ -120,7 +111,6 @@
       "void": false,
       "readonly": false,
       "trusted": false,
-      "nonAtomic": true,
       "harnessParameters": {
         "invocations": 3
       }
@@ -133,7 +123,6 @@
       "void": false,
       "readonly": false,
       "trusted": false,
-      "nonAtomic": true,
       "harnessParameters": {
         "invocations": 3
       }
@@ -146,7 +135,6 @@
       "void": false,
       "readonly": false,
       "trusted": false,
-      "nonAtomic": true,
       "harnessParameters": {
         "invocations": 3
       }
@@ -156,8 +144,7 @@
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false,
-      "nonAtomic": true
+      "trusted": false
     }
   ]
 }

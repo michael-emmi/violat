@@ -57,15 +57,13 @@
       ],
       "void": false,
       "readonly": false,
-      "trusted": false,
-      "nonAtomic": true
+      "trusted": false
     },
     {
       "name": "clear",
       "parameters": [],
       "void": true,
-      "readonly": false,
-      "trusted": false
+      "readonly": false
     },
     {
       "name": "contains",
@@ -73,15 +71,13 @@
         "int"
       ],
       "void": false,
-      "readonly": true,
-      "trusted": false
+      "readonly": true
     },
     {
       "name": "isEmpty",
       "parameters": [],
       "void": false,
-      "readonly": true,
-      "trusted": false
+      "readonly": true
     },
     {
       "name": "remove",
@@ -89,8 +85,7 @@
         "int"
       ],
       "void": false,
-      "readonly": false,
-      "trusted": false
+      "readonly": false
     },
     {
       "name": "removeFirstOccurrence",
@@ -98,8 +93,7 @@
         "int"
       ],
       "void": false,
-      "readonly": false,
-      "trusted": false
+      "readonly": false
     },
     {
       "name": "removeLastOccurrence",
@@ -107,44 +101,38 @@
         "int"
       ],
       "void": false,
-      "readonly": false,
-      "trusted": false
+      "readonly": false
     },
     {
       "name": "size",
       "parameters": [],
       "void": false,
-      "readonly": true,
-      "trusted": false
+      "readonly": true
     },
     {
       "name": "toArray",
       "parameters": [],
       "void": false,
-      "readonly": false,
-      "trusted": false
+      "readonly": false
     },
     {
       "name": "toString",
       "parameters": [],
       "void": false,
-      "readonly": false,
-      "trusted": false
+      "readonly": false
     },
     {
       "name": "hashCode",
       "parameters": [],
       "void": false,
-      "readonly": false,
-      "trusted": false
+      "readonly": false
     },
     {
       "name": "removeAll",
       "parameters": [["int"]],
       "void": false,
       "readonly": false,
-      "trusted": false,
-      "nonAtomic": true
+      "trusted": false
     },
     {
       "name": "containsAll",
@@ -152,7 +140,6 @@
       "void": false,
       "readonly": true,
       "trusted": false,
-      "nonAtomic": true,
       "harnessParameters": {
         "invocations": 4
       }
@@ -162,8 +149,7 @@
       "parameters": [["int"]],
       "void": false,
       "readonly": false,
-      "trusted": false,
-      "nonAtomic": true
+      "trusted": false
     }
   ]
 }

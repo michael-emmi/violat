@@ -37,23 +37,20 @@
         "int"
       ],
       "void": false,
-      "readonly": true,
-      "trusted": false
+      "readonly": true
     },
     {
       "name": "clear",
       "parameters": [],
       "void": true,
       "readonly": false,
-      "trusted": false,
-      "nonAtomic": true
+      "trusted": false
     },
     {
       "name": "first",
       "parameters": [],
       "void": false,
-      "readonly": true,
-      "trusted": false
+      "readonly": true
     },
     {
       "name": "floor",
@@ -61,8 +58,7 @@
         "int"
       ],
       "void": false,
-      "readonly": true,
-      "trusted": false
+      "readonly": true
     },
     {
       "name": "headSet",
@@ -72,7 +68,6 @@
       "void": false,
       "readonly": true,
       "trusted": false,
-      "nonAtomic": true,
       "harnessParameters": {
         "invocations": 5,
         "sequences": 2,
@@ -85,22 +80,19 @@
         "int"
       ],
       "void": false,
-      "readonly": true,
-      "trusted": false
+      "readonly": true
     },
     {
       "name": "isEmpty",
       "parameters": [],
       "void": false,
-      "readonly": true,
-      "trusted": false
+      "readonly": true
     },
     {
       "name": "last",
       "parameters": [],
       "void": false,
-      "readonly": true,
-      "trusted": false
+      "readonly": true
     },
     {
       "name": "lower",
@@ -108,24 +100,21 @@
         "int"
       ],
       "void": false,
-      "readonly": true,
-      "trusted": false
+      "readonly": true
     },
     {
       "name": "pollFirst",
       "parameters": [],
       "void": false,
       "readonly": false,
-      "trusted": false,
-      "nonAtomic": true
+      "trusted": false
     },
     {
       "name": "pollLast",
       "parameters": [],
       "void": false,
       "readonly": false,
-      "trusted": false,
-      "nonAtomic": true
+      "trusted": false
     },
     {
       "name": "removeAll",
@@ -134,16 +123,14 @@
       ],
       "void": false,
       "readonly": false,
-      "trusted": false,
-      "nonAtomic": true
+      "trusted": false
     },
     {
       "name": "size",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false,
-      "nonAtomic": true
+      "trusted": false
     },
     {
       "name": "subSet",
@@ -154,7 +141,6 @@
       "void": false,
       "readonly": true,
       "trusted": false,
-      "nonAtomic": true,
       "harnessParameters": {
         "sequences": 3,
         "invocations": 4,
@@ -169,7 +155,6 @@
       "void": false,
       "readonly": true,
       "trusted": false,
-      "nonAtomic": true,
       "harnessParameters": {
         "invocations": 5
       }
@@ -180,7 +165,6 @@
       "void": false,
       "readonly": false,
       "trusted": false,
-      "nonAtomic": true,
       "harnessParameters": {
         "invocations": 5
       }
@@ -191,7 +175,6 @@
       "void": false,
       "readonly": false,
       "trusted": false,
-      "nonAtomic": true,
       "harnessParameters": {
         "invocations": 5
       }
@@ -200,16 +183,14 @@
       "name": "hashCode",
       "parameters": [],
       "void": false,
-      "readonly": false,
-      "trusted": false
+      "readonly": false
     },
     {
       "name": "containsAll",
       "parameters": [["int"]],
       "void": false,
       "readonly": true,
-      "trusted": false,
-      "nonAtomic": true
+      "trusted": false
     },
     {
       "name": "retainAll",
@@ -217,7 +198,6 @@
       "void": false,
       "readonly": false,
       "trusted": false,
-      "nonAtomic": true,
       "harnessParameters": {
         "invocations": 3
       }
@@ -228,7 +208,6 @@
       "void": false,
       "readonly": false,
       "trusted": false,
-      "nonAtomic": true,
       "harnessParameters": {
         "invocations": 3
       }

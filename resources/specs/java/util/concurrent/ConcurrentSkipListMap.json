@@ -37,16 +37,14 @@
       "parameters": ["int"],
       "void": false,
       "readonly": true,
-      "trusted": false,
-      "nonAtomic": true
+      "trusted": false
     },
     {
       "name": "entrySet",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false,
-      "nonAtomic": true
+      "trusted": false
     },
     {
       "name": "keySet",
@@ -60,24 +58,21 @@
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false,
-      "nonAtomic": true
+      "trusted": false
     },
     {
       "name": "toString",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false,
-      "nonAtomic": true
+      "trusted": false
     },
     {
       "name": "values",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false,
-      "nonAtomic": true
+      "trusted": false
     },
     {
       "name": "hashCode",
@@ -90,57 +85,49 @@
       "name": "ceilingKey",
       "parameters": ["int"],
       "void": false,
-      "readonly": true,
-      "trusted": false
+      "readonly": true
     },
     {
       "name": "firstKey",
       "parameters": [],
       "void": false,
-      "readonly": true,
-      "trusted": false
+      "readonly": true
     },
     {
       "name": "lastKey",
       "parameters": [],
       "void": false,
-      "readonly": true,
-      "trusted": false
+      "readonly": true
     },
     {
       "name": "floorKey",
       "parameters": ["int"],
       "void": false,
-      "readonly": true,
-      "trusted": false
+      "readonly": true
     },
     {
       "name": "higherKey",
       "parameters": ["int"],
       "void": false,
-      "readonly": true,
-      "trusted": false
+      "readonly": true
     },
     {
       "name": "lowerKey",
       "parameters": ["int"],
       "void": false,
-      "readonly": true,
-      "trusted": false
+      "readonly": true
     },
     {
       "name": "isEmpty",
       "parameters": [],
       "void": false,
-      "readonly": true,
-      "trusted": false
+      "readonly": true
     },    
     {
       "name": "headMap",
       "parameters": ["int"],
       "void": false,
-      "readonly": true,
-      "trusted": false
+      "readonly": true
     },
     {
       "name": "tailMap",
@@ -148,7 +135,6 @@
       "void": false,
       "readonly": true,
       "trusted": false,
-      "nonAtomic": true,
       "harnessParameters": {
         "invocations": 5
       }
@@ -157,8 +143,7 @@
       "name": "subMap",
       "parameters": ["int","int"],
       "void": false,
-      "readonly": true,
-      "trusted": false
+      "readonly": true
     },
     {
       "name": "putAll",
@@ -166,7 +151,6 @@
       "void": true,
       "readonly": false,
       "trusted": false,
-      "nonAtomic": true,
       "harnessParameters": {
         "invocations": 3
       }
@@ -176,8 +160,7 @@
       "parameters": [],
       "void": true,
       "readonly": false,
-      "trusted": false,
-      "nonAtomic": true
+      "trusted": false
     }
   ]
 }
