@@ -1,15 +1,9 @@
 {
   "class": "java.util.concurrent.ConcurrentLinkedDeque",
+  "harnessParameters": {
+        "invocations": 4
+  },
   "methods": [
-    {
-      "name": "offerFirst",
-      "parameters": [
-        "int"
-      ],
-      "void": false,
-      "readonly": false,
-      "trusted": true
-    },
     {
       "name": "offerLast",
       "parameters": [
@@ -27,25 +21,69 @@
       "trusted": true
     },
     {
-      "name": "pollLast",
-      "parameters": [],
-      "void": false,
-      "readonly": false,
-      "trusted": true
-    },
-    {
-      "name": "getFirst",
+      "name": "peekFirst",
       "parameters": [],
       "void": false,
       "readonly": true,
       "trusted": true
+    },
+    {
+      "name": "offerFirst",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false,
+      "nonAtomic": true,
+      "harnessParameters": {
+        "invocations": 3
+      }
+    },
+    {
+      "name": "addFirst",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": false,
+      "nonAtomic": true,
+      "harnessParameters": {
+        "invocations": 3
+      }
+    },
+    {
+      "name": "pollLast",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false,
+      "nonAtomic": true
+    },
+    {
+      "name": "removeLast",
+      "parameters": [],
+      "void": false,
+      "readonly": false,
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "getLast",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": true
+      "trusted": false,
+      "nonAtomic": true
+    },
+    {
+      "name": "peekLast",
+      "parameters": [],
+      "void": false,
+      "readonly": true,
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "addAll",
@@ -61,7 +99,8 @@
       "parameters": [],
       "void": true,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "contains",
@@ -104,28 +143,32 @@
       ],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "size",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "toArray",
       "parameters": [],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "toString",
       "parameters": [],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "hashCode",
@@ -139,21 +182,30 @@
       "parameters": [["int"]],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true,
+      "harnessParameters": {
+        "invocations": 3
+      }
     },
     {
       "name": "containsAll",
       "parameters": [["int"]],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "retainAll",
       "parameters": [["int"]],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true,
+      "harnessParameters": {
+        "invocations": 3
+      }
     }
   ]
 }

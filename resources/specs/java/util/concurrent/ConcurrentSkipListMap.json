@@ -1,5 +1,8 @@
 {
   "class": "java.util.concurrent.ConcurrentSkipListMap",
+  "harnessParameters": {
+        "invocations": 4
+  },
   "methods": [
     {
       "name": "containsKey",
@@ -34,14 +37,16 @@
       "parameters": ["int"],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "entrySet",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "keySet",
@@ -55,21 +60,24 @@
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "toString",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "values",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "hashCode",
@@ -139,7 +147,11 @@
       "parameters": ["int"],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true,
+      "harnessParameters": {
+        "invocations": 5
+      }
     },
     {
       "name": "subMap",
@@ -153,7 +165,19 @@
       "parameters": [["int"]],
       "void": true,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true,
+      "harnessParameters": {
+        "invocations": 3
+      }
+    },
+    {
+      "name": "clear",
+      "parameters": [],
+      "void": true,
+      "readonly": false,
+      "trusted": false,
+      "nonAtomic": true
     }
   ]
 }

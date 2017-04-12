@@ -1,5 +1,8 @@
 {
   "class": "java.util.concurrent.ConcurrentLinkedQueue",
+  "harnessParameters": {
+        "invocations": 4
+  },
   "methods": [
     {
       "name": "peek",
@@ -34,28 +37,38 @@
       "parameters": [["int"]],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true,
+      "harnessParameters": {
+        "invocations": 3
+      }
     },
     {
       "name": "containsAll",
       "parameters": [["int"]],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "retainAll",
       "parameters": [["int"]],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true,
+      "harnessParameters": {
+        "invocations": 3
+      }
     },
     {
       "name": "clear",
       "parameters": [],
       "void": true,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "contains",
@@ -83,14 +96,16 @@
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "toArray",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "hashCode",
@@ -104,7 +119,8 @@
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     }
   ]
 }

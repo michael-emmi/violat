@@ -1,5 +1,8 @@
 {
   "class": "java.util.concurrent.ConcurrentHashMap",
+  "harnessParameters": {
+        "invocations": 3
+  },
   "methods": [
     {
       "name": "containsKey",
@@ -35,6 +38,7 @@
       "void": true,
       "readonly": false,
       "trusted": false,
+      "nonAtomic": true,
       "harnessParameters": {
         "invocations": 5
       }
@@ -45,6 +49,7 @@
       "void": false,
       "readonly": true,
       "trusted": false,
+      "nonAtomic": true,
       "harnessParameters": {
         "invocations": 5
       }
@@ -54,56 +59,67 @@
       "parameters": ["int"],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true,
+      "harnessParameters": {
+        "invocations": 4
+      }
     },
     {
       "name": "entrySet",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "isEmpty",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "keySet",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "size",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "mappingCount",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "toString",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "values",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "hashCode",
@@ -117,21 +133,24 @@
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "keys",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "putAll",
       "parameters": [{"int": "int"}],
       "void": true,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     }
   ]
 }

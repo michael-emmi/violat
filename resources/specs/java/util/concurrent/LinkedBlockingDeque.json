@@ -1,5 +1,8 @@
 {
   "class": "java.util.concurrent.LinkedBlockingDeque",
+    "harnessParameters": {
+        "invocations": 3
+  },
   "methods": [
     {
       "name": "offerFirst",
@@ -54,7 +57,8 @@
       ],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "clear",
@@ -139,21 +143,27 @@
       "parameters": [["int"]],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "containsAll",
       "parameters": [["int"]],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true,
+      "harnessParameters": {
+        "invocations": 4
+      }
     },
     {
       "name": "retainAll",
       "parameters": [["int"]],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     }
   ]
 }

@@ -1,5 +1,8 @@
 {
   "class": "java.util.concurrent.LinkedBlockingQueue",
+  "harnessParameters": {
+        "invocations": 5
+  },
   "methods": [
     {
       "name": "offer",
@@ -29,7 +32,8 @@
       "parameters": [],
       "void": true,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "contains",
@@ -38,14 +42,19 @@
       ],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true,
+      "harnessParameters": {
+        "invocations": 6
+      }
     },
     {
       "name": "remainingCapacity",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "remove",
@@ -54,28 +63,38 @@
       ],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "size",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "toArray",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true,
+      "harnessParameters": {
+        "invocations": 6
+      }
     },
     {
       "name": "toString",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true,
+      "harnessParameters": {
+        "invocations": 6
+      }
     },
     {
       "name": "hashCode",
@@ -89,14 +108,22 @@
       "parameters": [["int"]],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true,
+      "harnessParameters": {
+        "invocations": 4
+      }
     },
     {
       "name": "retainAll",
       "parameters": [["int"]],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true,
+      "harnessParameters": {
+        "invocations": 3
+      }
     },
     {
       "name": "removeAll",
@@ -105,7 +132,11 @@
       ],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true,
+      "harnessParameters": {
+        "invocations": 3
+      }
     },
     {
       "name": "addAll",
@@ -114,14 +145,19 @@
       ],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true,
+      "harnessParameters": {
+        "invocations": 3
+      }
     },
     {
       "name": "isEmpty",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     }
   ]
 }

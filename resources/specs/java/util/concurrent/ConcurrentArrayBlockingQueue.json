@@ -2,6 +2,9 @@
   "class": "java.util.concurrent.ArrayBlockingQueue",
   "parameters": ["int"],
   "default_parameters": [20],
+  "harnessParameters": {
+        "invocations": 3
+  },
   "methods": [
     {
       "name": "peek",
@@ -43,28 +46,35 @@
       "parameters": [["int"]],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "removeAll",
       "parameters": [["int"]],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "containsAll",
       "parameters": [["int"]],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true,
+      "harnessParameters": {
+        "invocations": 4
+      }
     },
     {
       "name": "retainAll",
       "parameters": [["int"]],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "isEmpty",

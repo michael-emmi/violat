@@ -1,5 +1,8 @@
 {
   "class": "java.util.concurrent.ConcurrentSkipListSet",
+  "harnessParameters": {
+        "invocations": 4
+  },
   "methods": [
     {
       "name": "add",
@@ -42,7 +45,8 @@
       "parameters": [],
       "void": true,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "first",
@@ -67,7 +71,13 @@
       ],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true,
+      "harnessParameters": {
+        "invocations": 5,
+        "sequences": 2,
+        "values": 3
+      }
     },
     {
       "name": "higher",
@@ -106,14 +116,16 @@
       "parameters": [],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "pollLast",
       "parameters": [],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "removeAll",
@@ -122,14 +134,16 @@
       ],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "size",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "subSet",
@@ -139,7 +153,13 @@
       ],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true,
+      "harnessParameters": {
+        "sequences": 3,
+        "invocations": 4,
+        "values": 4
+      }
     },
     {
       "name": "tailSet",
@@ -148,21 +168,33 @@
       ],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true,
+      "harnessParameters": {
+        "invocations": 5
+      }
     },
         {
       "name": "toArray",
       "parameters": [],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true,
+      "harnessParameters": {
+        "invocations": 5
+      }
     },
     {
       "name": "toString",
       "parameters": [],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true,
+      "harnessParameters": {
+        "invocations": 5
+      }
     },
     {
       "name": "hashCode",
@@ -176,14 +208,30 @@
       "parameters": [["int"]],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "retainAll",
       "parameters": [["int"]],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true,
+      "harnessParameters": {
+        "invocations": 3
+      }
+    }
+    {
+      "name": "addAll",
+      "parameters": [["int"]],
+      "void": false,
+      "readonly": false,
+      "trusted": false,
+      "nonAtomic": true,
+      "harnessParameters": {
+        "invocations": 3
+      }
     }
   ]
 }

@@ -1,5 +1,8 @@
 {
   "class": "java.util.concurrent.PriorityBlockingQueue",
+  "harnessParameters": {
+        "invocations": 3
+  },
   "methods": [
     {
       "name": "offer",
@@ -89,14 +92,19 @@
       "parameters": [["int"]],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true,
+      "harnessParameters": {
+        "invocations": 4
+      }
     },
     {
       "name": "retainAll",
       "parameters": [["int"]],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "removeAll",
@@ -105,7 +113,8 @@
       ],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "addAll",
@@ -114,7 +123,8 @@
       ],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "nonAtomic": true
     },
     {
       "name": "isEmpty",
