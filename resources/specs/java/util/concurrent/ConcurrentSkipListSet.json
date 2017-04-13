@@ -133,21 +133,6 @@
       "trusted": false
     },
     {
-      "name": "subSet",
-      "parameters": [
-        "int",
-        "int"
-      ],
-      "void": false,
-      "readonly": true,
-      "trusted": false,
-      "harnessParameters": {
-        "sequences": 3,
-        "invocations": 4,
-        "values": 4
-      }
-    },
-    {
       "name": "tailSet",
       "parameters": [
         "int"
