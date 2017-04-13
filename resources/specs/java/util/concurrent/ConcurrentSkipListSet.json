@@ -61,20 +61,6 @@
       "readonly": true
     },
     {
-      "name": "headSet",
-      "parameters": [
-        "int"
-      ],
-      "void": false,
-      "readonly": true,
-      "trusted": false,
-      "harnessParameters": {
-        "invocations": 5,
-        "sequences": 2,
-        "values": 3
-      }
-    },
-    {
       "name": "higher",
       "parameters": [
         "int"
