@@ -93,30 +93,57 @@ let TABLES = [
   ]
 ];
 
+function formatTable(table, data) {
+  let firstInTable = true;
+  console.log(`---`);
+  console.log(`TABLE`);
+  console.log(`---`);
+  console.log(frontMatter());
+  for (let className of table) {
+    console.log(formatHeader(className, firstInTable));
+    for (let row of data[className])
+      console.log(formatRow(row));
+    firstInTable = false;
+  }
+  console.log(endMatter());
+}
+
+function frequencyStats(data) {
+  let freqs = data.map(d => d.results[0].count / d.numExecutions).sort();
+  return {
+    count: freqs.length,
+    avg: freqs.reduce((s,f) => s + f, 0) / freqs.length,
+    min: Math.min(...freqs),
+    med: freqs[Math.floor(freqs.length/2)],
+    max: Math.max(...freqs)
+  };
+}
+
 (async () => {
   let results = {};
 
   for (let fileName of files) {
     let className = fileName.replace(/.*[/]([^/]*((List|Hash)Map|(List|Hash)Set|Queue|Deque)).*Test[0-9]+.java/,'$1');
     let data = getData(fileName);
-
     results[className] = results[className] || [];
-    results[className].push(formatRow(data));
+    results[className].push(data);
   }
 
   for (let table of TABLES) {
-    let firstInTable = true;
-    console.log(`---`);
-    console.log(`TABLE`);
-    console.log(`---`);
-    console.log(frontMatter());
-    for (let className of table) {
-      console.log(formatHeader(className, firstInTable));
-      for (let row of results[className])
-        console.log(row);
-      firstInTable = false;
-    }
-    console.log(endMatter());
+    formatTable(table, results);
   }
+
+  console.log(`---`);
+  let data = Object.values(results)
+    .reduce((xs,x) => xs.concat(x), []);
+
+  console.log(`frequencies`);
+  console.log(JSON.stringify(frequencyStats(data), null, 2));
+
+  console.log(`frequencies (without *All)`);
+  console.log(JSON.stringify(frequencyStats(data.filter(d => !d.method.match(/All/))), null, 2));
+
+  console.log(`frequencies (without *All, clear, hashCode)`);
+  console.log(JSON.stringify(frequencyStats(data.filter(d => !d.method.match(/All|clear|hashCode/))), null, 2));
 
 })();
