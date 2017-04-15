@@ -77,8 +77,7 @@
       "name": "hashCode",
       "parameters": [],
       "void": false,
-      "readonly": true,
-      "trusted": false
+      "readonly": true
     },
     {
       "name": "ceilingKey",

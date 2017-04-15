@@ -112,12 +112,6 @@
       "trusted": false
     },
     {
-      "name": "hashCode",
-      "parameters": [],
-      "void": false,
-      "readonly": true
-    },
-    {
       "name": "elements",
       "parameters": [],
       "void": false,
@@ -137,6 +131,12 @@
       "void": true,
       "readonly": false,
       "trusted": false
+    },
+    {
+      "name": "hashCode",
+      "parameters": [],
+      "void": false,
+      "readonly": true
     }
   ]
 }

@@ -47,8 +47,7 @@
       "name": "pollLast",
       "parameters": [],
       "void": false,
-      "readonly": false,
-      "trusted": false
+      "readonly": false
     },
     {
       "name": "getFirst",
@@ -60,15 +59,13 @@
       "name": "getLast",
       "parameters": [],
       "void": false,
-      "readonly": true,
-      "trusted": false
+      "readonly": true
     },
     {
       "name": "offerFirst",
       "parameters": ["int"],
       "void": false,
-      "readonly": false,
-      "trusted": false
+      "readonly": false
     },
     {
       "name": "addAll",
@@ -145,7 +142,7 @@
       "name": "hashCode",
       "parameters": [],
       "void": false,
-      "readonly": false
+      "readonly": true
     },
     {
       "name": "removeAll",

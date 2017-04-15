@@ -107,13 +107,13 @@
       "readonly": true
     },
     {
-      "name": "hashCode",
+      "name": "toString",
       "parameters": [],
       "void": false,
       "readonly": true
     },
     {
-      "name": "toString",
+      "name": "hashCode",
       "parameters": [],
       "void": false,
       "readonly": true

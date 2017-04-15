@@ -77,7 +77,7 @@
       "name": "hashCode",
       "parameters": [],
       "void": false,
-      "readonly": false
+      "readonly": true
     },
     {
       "name": "containsAll",
