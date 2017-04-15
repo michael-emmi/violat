@@ -5,9 +5,25 @@
   },
   "methods": [
     {
-      "name": "offerFirst",
+      "name": "offer",
       "parameters": [
         "int"
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": true
+    },
+    {
+      "name": "poll",
+      "parameters": [
+      ],
+      "void": false,
+      "readonly": false,
+      "trusted": true
+    },
+    {
+      "name": "peek",
+      "parameters": [
       ],
       "void": false,
       "readonly": false,
@@ -19,36 +35,40 @@
         "int"
       ],
       "void": false,
-      "readonly": false,
-      "trusted": true
+      "readonly": false
     },
     {
       "name": "pollFirst",
       "parameters": [],
       "void": false,
-      "readonly": false,
-      "trusted": true
+      "readonly": false
     },
     {
       "name": "pollLast",
       "parameters": [],
       "void": false,
       "readonly": false,
-      "trusted": true
+      "trusted": false
     },
     {
       "name": "getFirst",
       "parameters": [],
       "void": false,
-      "readonly": true,
-      "trusted": true
+      "readonly": true
     },
     {
       "name": "getLast",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": true
+      "trusted": false
+    },
+    {
+      "name": "offerFirst",
+      "parameters": ["int"],
+      "void": false,
+      "readonly": false,
+      "trusted": false
     },
     {
       "name": "addAll",

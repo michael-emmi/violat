@@ -5,7 +5,7 @@
   },
   "methods": [
     {
-      "name": "offerLast",
+      "name": "offer",
       "parameters": [
         "int"
       ],
@@ -14,18 +14,38 @@
       "trusted": true
     },
     {
-      "name": "pollFirst",
+      "name": "poll",
       "parameters": [],
       "void": false,
       "readonly": false,
       "trusted": true
     },
     {
-      "name": "peekFirst",
+      "name": "peek",
       "parameters": [],
       "void": false,
       "readonly": true,
       "trusted": true
+    },
+    {
+      "name": "offerLast",
+      "parameters": [
+        "int"
+      ],
+      "void": false,
+      "readonly": false
+    },
+    {
+      "name": "pollFirst",
+      "parameters": [],
+      "void": false,
+      "readonly": false
+    },
+    {
+      "name": "peekFirst",
+      "parameters": [],
+      "void": false,
+      "readonly": true
     },
     {
       "name": "offerFirst",
