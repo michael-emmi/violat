@@ -9,6 +9,7 @@
   },
   "preferGlobal": true,
   "dependencies": {
+    "debug": "^2.6.4",
     "event-stream": "^3.3.4",
     "inquirer": "^3.0.6",
     "java": "^0.8.0",
