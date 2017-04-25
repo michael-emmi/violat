@@ -1,4 +1,4 @@
-## find-non-linearizability-tests
+## Violat
 
 Find test harnesses that expose linearizability violations.
 
@@ -16,11 +16,11 @@ linearizability violations via stress testing with OpenJDK’s jcstress tool.
 
 # Installation
 
-    $ npm i -g find-non-linearizability-tests
+    $ npm i -g violat
 
 # Usage
 
-    $ find-non-linearizability-tests
+    $ violat
 
 [Node.js]: https://nodejs.org
 [concurrent collections]: https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/package-summary.html
