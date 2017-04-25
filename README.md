@@ -1,11 +1,11 @@
 ## Violat
 
-Find test harnesses that expose linearizability violations.
+Find test harnesses that expose atomicity violations.
 
 This project demonstrates that many of the methods in Java’s library of
 [concurrent collections][] are non-linearizable. For each non-linearizable
 method in the selected collection classes, a small test harness witnesses
-linearizability violations via stress testing with OpenJDK’s jcstress tool.
+violations via stress testing with OpenJDK’s [jcstress][] tool.
 
 # Requirements
 
@@ -27,3 +27,4 @@ linearizability violations via stress testing with OpenJDK’s jcstress tool.
 [Java SE Development Kit 8]: http://www.oracle.com/technetwork/java/javase
 [Gradle]: http://gradle.org
 [Maven]: https://maven.apache.org
+[jcstress]: http://openjdk.java.net/projects/code-tools/jcstress/
