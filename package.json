@@ -1,10 +1,10 @@
 {
-  "name": "find-non-linearizability-tests",
+  "name": "violat",
   "version": "0.1.22",
   "description": "Find test harnesses that expose linearizability violations.",
   "main": "index.js",
   "bin": {
-    "find-non-linearizability-tests": "./bin/cli.js",
+    "violat": "./bin/cli.js",
     "generate-class-spec": "./bin/cli-spec-generator.js"
   },
   "preferGlobal": true,
@@ -30,13 +30,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/michael-emmi/find-non-linearizability-tests.git"
+    "url": "git+https://github.com/michael-emmi/violat.git"
   },
   "keywords": [],
   "author": "Michael Emmi <michael.emmi@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/michael-emmi/find-non-linearizability-tests/issues"
+    "url": "https://github.com/michael-emmi/violat/issues"
   },
-  "homepage": "https://github.com/michael-emmi/find-non-linearizability-tests#readme"
+  "homepage": "https://github.com/michael-emmi/violat#readme"
 }
