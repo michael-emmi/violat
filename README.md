@@ -22,6 +22,17 @@ violations via stress testing with OpenJDK’s [jcstress][] tool.
 
     $ violat
 
+# Development
+
+Emulate installation of local repository:
+
+    $ npm link
+
+Release a new version to npm:
+
+    $ npm version [major|minor|patch]
+    $ npm publish
+
 [Node.js]: https://nodejs.org
 [concurrent collections]: https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/package-summary.html
 [Java SE Development Kit 8]: http://www.oracle.com/technetwork/java/javase
