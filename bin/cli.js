@@ -17,6 +17,7 @@ let cli = meow(`
     --values N                  Number of distinct argument values.
     --sequences N               Number of concurrent invocation sequences.
     --invocations N             Total nuber of invocations.
+    --all                       Collect all non-atomic harnesses.
 
   Examples
     $ ${meta.name} \\
