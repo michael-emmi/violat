@@ -1,0 +1,8 @@
+language: node_js
+deploy:
+  provider: npm
+  email: michael.emmi@gmail.com
+  api_key:
+    secure: fb6w56kidImcY3tDT9kgfNwukJPSDy1jFgGSvQ97GlC9Gmsqc+1zrm52nTHAnbzxKRusbiEMfVX6Dm6hppzWAPnGG2N7b2aOeUVYc7maSHgvFHDqKP/KTw6qsEJHEH+TW0NlQmfHoJ6aS5gb80fgs4n23ne5+3N/vabb6rDQFpqhVbLqn8gwP+rS0VsjCTt6dHKaSgUE6Yj2tLBx2gATgsXiU61qIiX0edZt9emMi3Qpp9DbQgNoCrOhpQlvHDJzMLbx1WVjVaUBHjMCpE9S/ixwbJa3si3c+tMhu1jzp7E5Krg4ALuKyd9Y0XvRYE5ByJsOYk48QEOvMse88UercNszQO31wCGN5gqQ5b6/RdEJIQ6+Y8MMs6t/165WXAImEI7f+qbsGxrjv1m7srh0SufmmgKsRUReWP7yIwrSt4pnAutKgK8AVX/jH2hs/GhT2bBYl7bMdcH7mzf2HsCfpBdE9ZHdmAC/1ZNT7lbtHDuvVZyZB/mOnkDD7IUT1L1XdC0DdCBcSp+RagH3I7KqWeFBUQuCgwIHY1zddwCh04rq/X9z2jE6Aai0kNKZQo0OthnmqQzVYpw5oWqCSVKEd5XZmkR/xYI295+ff8GXz+VOAD2zl4v+YEQS6JJgRsuVHXIddMAQSGMwJXA7FIKtzPcFJsmJvbm0+JE+EtBZyuw=
+  on:
+    tags: true
