@@ -1,5 +1,7 @@
-## Violat
+[![Build Status](https://travis-ci.org/michael-emmi/violat.svg?branch=master)](https://travis-ci.org/michael-emmi/violat)
+[![npm version](https://badge.fury.io/js/violat.svg)](https://badge.fury.io/js/violat)
 
+## Violat
 Find test harnesses that expose atomicity violations.
 
 This project demonstrates that many of the methods in Java’s library of
