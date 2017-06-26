@@ -47,7 +47,7 @@ function formatRow(data) {
   return `${data.invocations}, ${data.sequences}, ${data.values}
     & ${data.explored.toLocaleString()} / ${data.total.toLocaleString()}
     & \\tt ${formatHarness(data.harness, data.method)}
-    & \\tt ${formatOutcome(data.results[0].outcome)}
+    & \\tt ${formatOutcome(data.forbiddenResults[0].outcome)}
     & ${data.results[0].count.toLocaleString()} / ${data.numExecutions.toLocaleString()}
     & ${parseInt(data.time).toFixed(0)}s
     \\\\`.replace(/\s+/g, ' ');
@@ -101,7 +101,7 @@ function formatTable(table, data) {
   console.log(frontMatter());
   for (let className of table) {
     console.log(formatHeader(className, firstInTable));
-    for (let row of data[className])
+    for (let row of (data[className] || []))
       console.log(formatRow(row));
     firstInTable = false;
   }
