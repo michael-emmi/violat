@@ -121,7 +121,7 @@ function formatTable(table, data) {
 }
 
 function frequencyStats(data) {
-  let freqs = data.map(d => d.results[0].count / d.numExecutions).sort();
+  let freqs = data.map(d => d.forbiddenResults[0].count / d.numExecutions).sort();
   return {
     count: freqs.length,
     avg: freqs.reduce((s,f) => s + f, 0) / freqs.length,
