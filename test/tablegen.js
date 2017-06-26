@@ -48,7 +48,7 @@ function formatRow(data) {
     & ${data.explored.toLocaleString()} / ${data.total.toLocaleString()}
     & \\tt ${formatHarness(data.harness, data.method)}
     & \\tt ${formatOutcome(data.forbiddenResults[0].outcome)}
-    & ${data.results[0].count.toLocaleString()} / ${data.numExecutions.toLocaleString()}
+    & ${data.forbiddenResults[0].count.toLocaleString()} / ${data.numExecutions.toLocaleString()}
     & ${parseInt(data.time).toFixed(0)}s
     \\\\`.replace(/\s+/g, ' ');
 }
