@@ -1,4 +1,6 @@
-let fs = require('fs');
+const assert = require('assert');
+const fs = require('fs');
+
 let files = process.argv.splice(2);
 
 function getData(file) {
@@ -44,6 +46,16 @@ function formatOutcome(code) {
 }
 
 function formatRow(data) {
+  let fields = `invocations sequences values
+    explored total
+    harness method
+    forbiddenResults
+    numExecutions
+    time`.split(/\s+/);
+
+  for (let field of fields)
+    assert.ok(data[field], `expected field: ${field}`);
+
   return `${data.invocations}, ${data.sequences}, ${data.values}
     & ${data.explored.toLocaleString()} / ${data.total.toLocaleString()}
     & \\tt ${formatHarness(data.harness, data.method)}
