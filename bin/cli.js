@@ -4,54 +4,57 @@
 let fs = require('fs');
 let path = require('path');
 let meow = require('meow');
+var config = require(path.join(__dirname, '../lib', 'config.js'));
 let checker = require(path.join(__dirname, '../lib', 'index.js'));
 let meta = require('../package.json');
+let defaults = config.defaultParameters;
 
 let cli = meow(`
   Usage
-    $ ${meta.name} --spec <spec-file.json>
+    $ ${meta.name} <spec-file.json>
 
   Options
-    --spec <spec-file.json>     Java class specification file (required).
     --method <method-name>      Name of a method to test.
     --values N                  Number of distinct argument values.
     --sequences N               Number of concurrent invocation sequences.
     --invocations N             Total nuber of invocations.
-    --all                       Collect all non-atomic harnesses.
+    --enum [complete|shuffle|random]  Enumeration strategy (default: ${defaults.enum}).
+    --limit N                   Limit to N violations (default: ${defaults.limit}).
 
   Examples
     $ ${meta.name} \\
-      --spec specs/java/util/concurrent/ConcurrentSkipListMap.json \\
       --method clear \\
       --sequences 2 \\
-      --invocations 4
+      --invocations 4 \\
+      specs/java/util/concurrent/ConcurrentSkipListMap.json
 `, {
   default: {
   }
 });
 
-if (!cli.flags.spec)
-  cli.showHelp();
-
 (async () => {
-  console.log(`${meta.name} version ${meta.version}`);
+
+  let args = Object.assign({}, cli.flags, {
+    specFile: cli.input.length == 1 && cli.input[0] || cli.showHelp(),
+    spec: JSON.parse(fs.readFileSync(cli.input[0]))
+  });
+
+  console.log(`${cli.pkg.name} version ${cli.pkg.version}`);
   console.log(`---`);
-  console.log(`class: ${JSON.parse(fs.readFileSync(cli.flags.spec)).class}`);
+  console.log(`class: ${args.spec.class}`);
   console.log(`---`);
 
-  let results = cli.flags.method
-    ? await checker.testMethod(cli.flags)
-    : await checker.testUntrustedMethods(cli.flags);
+  let violations = args.method
+    ? await checker.testMethod(args)
+    : await checker.testUntrustedMethods(args);
 
-  for (let result of ([].concat(results))) {
-    for (let res of result.results) {
-      console.log(`Violation discovered in the following harness.`);
-      console.log(`---`);
-      console.log(res.harnessCode);
-      console.log(`---`);
-      for (let r of res.forbiddenResults)
-        console.log(`${r.count} of ${res.numExecutions} executions gave outcome: ${r.outcome}`);
-      console.log(`---`);
-    }
+  for (let violation of violations) {
+    console.log(`Violation discovered in the following harness.`);
+    console.log(`---`);
+    console.log(violation.harnessCode);
+    console.log(`---`);
+    for (let r of violation.forbiddenResults)
+      console.log(`${r.count} of ${violation.numExecutions} executions gave outcome: ${r.outcome}`);
+    console.log(`---`);
   }
 })();
