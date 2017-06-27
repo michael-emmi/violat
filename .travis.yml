@@ -4,12 +4,6 @@ dist: trusty
 node_js:
   - "node"
 
-addons:
-  apt:
-    packages:
-    - gradle
-    - oracle-java8-set-default
-
 before_script:
   - echo $JAVA_HOME
   - java -version
