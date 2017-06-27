@@ -1,6 +1,10 @@
 language: node_js
 node_js:
   - "node"
+addons:
+  apt:
+    packages:
+    - gradle
 deploy:
   provider: npm
   email: michael.emmi@gmail.com
