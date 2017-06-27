@@ -5,6 +5,7 @@ addons:
   apt:
     packages:
     - gradle
+    - oracle-java8-set-default
 deploy:
   provider: npm
   email: michael.emmi@gmail.com
