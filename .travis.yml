@@ -1,4 +1,7 @@
 language: node_js
+node_js:
+  - "node"
+  - "7"
 deploy:
   provider: npm
   email: michael.emmi@gmail.com
