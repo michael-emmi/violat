@@ -4,7 +4,7 @@
   "description": "Find test harnesses that expose linearizability violations.",
   "main": "index.js",
   "bin": {
-    "violat": "./bin/cli.js",
+    "violat": "./bin/cli.js"
   },
   "preferGlobal": true,
   "dependencies": {
