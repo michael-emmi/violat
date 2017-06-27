@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 const cp = require('child_process');
-const config = require('../lib/config.js');
-const checker = require('../lib/index.js');
+const config = require('../../lib/config.js');
+const checker = require('../../lib/index.js');
 
 async function run(specDir) {
   let specFiles = cp.execSync(`find ${specDir} -name "*.json"`).toString().split('\n');
