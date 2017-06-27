@@ -5,6 +5,8 @@ const annotate = require('../lib/annotation');
 const spec = require('../resources/specs/java/util/concurrent/ConcurrentHashMap.json');
 
 describe('annotate()', function() {
+  this.timeout(5000);
+
   const n = 5;
   const schemaGenerator = generator({
     enum: 'random',
