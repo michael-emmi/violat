@@ -4,7 +4,7 @@ const generator = require('../lib/enumeration');
 const annotate = require('../lib/annotation');
 const spec = require('../resources/specs/java/util/concurrent/ConcurrentHashMap.json');
 
-describe.skip('annotate()', function() {
+describe('annotate()', function() {
   this.timeout(50000);
 
   const n = 5;
