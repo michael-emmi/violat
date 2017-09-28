@@ -38,9 +38,29 @@ public class InvocationSequence {
         return new InvocationSequence(invocations);
     }
 
+    public Invocation last() {
+        return invocations.isEmpty() ? null : invocations.get(invocations.size() - 1);
+    }
+
     public String toString() {
         return invocations.stream()
             .map(Invocation::toString)
             .collect(Collectors.joining("; "));
+    }
+
+    public int size() {
+        return invocations.size();
+    }
+
+    public InvocationSequence prefix(int length) {
+        return new InvocationSequence(
+            invocations.stream().limit(length).collect(Collectors.toList())
+        );
+    }
+
+    public InvocationSequence projection(Collection<Invocation> invocations) {
+        return new InvocationSequence(
+            this.invocations.stream().filter(i -> invocations.contains(i)).collect(Collectors.toList())
+        );
     }
 }

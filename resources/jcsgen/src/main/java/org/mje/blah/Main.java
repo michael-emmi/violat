@@ -16,6 +16,14 @@ public class Main {
             .desc("print this message")
             .build());
 
+        options.addOption(Option.builder().longOpt("weak")
+            .desc("use weak atomicity")
+            .build());
+
+        options.addOption(Option.builder().longOpt("weak-relax-returns")
+            .desc("relax return values for weak atomicity")
+            .build());
+
         return options;
     }
 
@@ -42,16 +50,19 @@ public class Main {
         }
 
         Scanner scanner = new Scanner(System.in).useDelimiter("---");
+        OutcomeCollector collector = new OutcomeCollector(
+            line.hasOption("weak"),
+            line.hasOption("weak-relax-returns"));
         int status = 0;
         try {
             while (scanner.hasNext()) {
                 try (JsonReader reader = Json.createReader(new StringReader(scanner.next()))) {
                     JsonObject o = reader.readObject();
                     Harness h = HarnessFactory.fromJson(o);
-                    int n = h.getLinearizations().size();
+                    int n = collector.getLinearizations(h).size();
                     JsonWriter writer = Json.createWriter(System.out);
                     System.out.println("---");
-                    writer.write(Results.add(o, h.getResults(), n));
+                    writer.write(Results.add(o, collector.getOutcomes(h), n));
                     System.out.println();
                 }
             }
