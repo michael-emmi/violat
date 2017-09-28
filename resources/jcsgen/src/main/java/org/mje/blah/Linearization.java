@@ -14,7 +14,7 @@ public class Linearization {
         public PartialOrder<InvocationSequence> getRemainder() { return remainder; }
     }
 
-    static List<InvocationSequence> get(PartialOrder<InvocationSequence> sequences) {
+    static List<InvocationSequence> enumerate(PartialOrder<InvocationSequence> sequences) {
         List<InvocationSequence> linearizations = new LinkedList<>();
         Queue<PartialLinearization> partials = new LinkedList<>();
         partials.add(new PartialLinearization(new InvocationSequence(), sequences));
