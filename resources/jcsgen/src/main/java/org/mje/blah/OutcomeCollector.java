@@ -23,7 +23,7 @@ public class OutcomeCollector {
         logger.finer("weak atomicity: " + weakAtomicity);
         logger.finer("relax returns: " + relaxReturns);
 
-        for (InvocationSequence sequence : getLinearizations(harness)) {
+        for (InvocationSequence sequence : Linearization.get(harness.getSequences())) {
             logger.finest("sequence: " + sequence);
             outcomes.addAll(getOutcomes(harness, sequence));
         }
@@ -89,50 +89,6 @@ public class OutcomeCollector {
             relations.add(new VisibilityRelation(sequence.getInvocations()));
         }
         return relations;
-    }
-
-    static class PartialLinearization {
-        InvocationSequence sequence;
-        PartialOrder<InvocationSequence> remainder;
-        public PartialLinearization(InvocationSequence s, PartialOrder<InvocationSequence> o) {
-            this.sequence = s;
-            this.remainder = o;
-        }
-        public InvocationSequence getSequence() { return sequence; }
-        public PartialOrder<InvocationSequence> getRemainder() { return remainder; }
-    }
-
-    List<InvocationSequence> getLinearizations(Harness harness) {
-        List<InvocationSequence> linearizations = new LinkedList<>();
-
-        Queue<PartialLinearization> partials = new LinkedList<>();
-        partials.add(new PartialLinearization(new InvocationSequence(), harness.getSequences()));
-
-        while (!partials.isEmpty()) {
-            PartialLinearization p = partials.poll();
-            InvocationSequence sequence = p.getSequence();
-            PartialOrder<InvocationSequence> remainder = p.getRemainder();
-
-            if (remainder.isEmpty())
-                linearizations.add(sequence);
-
-            else {
-                for (InvocationSequence s : remainder.getMinimals()) {
-                    PartialOrder<InvocationSequence> rest = remainder.clone();
-
-                    Invocation head = s.head();
-                    InvocationSequence tail = s.tail();
-
-                    partials.offer(new PartialLinearization(
-                        sequence.snoc(head),
-                        tail.getInvocations().isEmpty()
-                            ? rest.drop(s)
-                            : rest.replace(s, tail)
-                    ));
-                }
-            }
-        }
-        return linearizations;
     }
 
     boolean compatibleReturnValue(Integer id, String r1, String r2) {
