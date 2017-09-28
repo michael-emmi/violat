@@ -9,16 +9,23 @@ public class OutcomeCollector {
     static Logger logger = Logger.getLogger("outcomes");
 
     boolean weakAtomicity;
+    boolean relaxHappensBefore;
     boolean relaxReturns;
 
-    public OutcomeCollector(boolean weakAtomicity, boolean relaxReturns) {
+    public OutcomeCollector(
+            boolean weakAtomicity,
+            boolean relaxHappensBefore,
+            boolean relaxReturns) {
+
         this.weakAtomicity = weakAtomicity;
+        this.relaxHappensBefore = weakAtomicity && relaxHappensBefore;
         this.relaxReturns = weakAtomicity && relaxReturns;
     }
 
     public Set<SortedMap<Integer,String>> collect(Harness harness) {
         logger.fine("computing outcomes for harness:\n" + harness);
         logger.fine("weak atomicity: " + weakAtomicity);
+        logger.fine("relax happens before: " + relaxHappensBefore);
         logger.fine("relax returns: " + relaxReturns);
 
         Set<SortedMap<Integer,String>> outcomes = collect(
@@ -28,7 +35,7 @@ public class OutcomeCollector {
         return outcomes;
     }
 
-    public Set<SortedMap<Integer,String>> collect(
+    Set<SortedMap<Integer,String>> collect(
             Invocation constructor,
             PartialOrder<InvocationSequence> sequences,
             Map<Invocation,Integer> numbering) {
@@ -37,24 +44,15 @@ public class OutcomeCollector {
 
         for (InvocationSequence linearization : Linearization.enumerate(sequences)) {
             logger.finer("linearization: " + linearization);
-            outcomes.addAll(collect(constructor, linearization, numbering));
-        }
-        return outcomes;
-    }
 
-    public Set<SortedMap<Integer,String>> collect(
-            Invocation constructor,
-            InvocationSequence sequence,
-            Map<Invocation,Integer> numbering) {
+            for (Visibility visibility : Visibility.enumerate(sequences, linearization, weakAtomicity, relaxHappensBefore)) {
+                logger.finer("visibility: " + visibility);
 
-        Set<SortedMap<Integer,String>> outcomes = new HashSet<>();
-
-        for (Visibility visibility : Visibility.enumerate(sequence, weakAtomicity)) {
-            logger.finer("visibility: " + visibility);
-            SortedMap<Integer,String> outcome = execute(constructor, sequence, visibility, numbering);
-            logger.finer("outcome: " + outcome);
-            if (outcome != null)
-                outcomes.add(outcome);
+                SortedMap<Integer,String> outcome = execute(constructor, linearization, visibility, numbering);
+                logger.finer("outcome: " + outcome);
+                if (outcome != null)
+                    outcomes.add(outcome);
+            }
         }
         return outcomes;
     }
@@ -98,7 +96,7 @@ public class OutcomeCollector {
         SortedMap<Integer,String> outcome = new TreeMap<>();
         try {
             Object obj = constructor.invoke();
-            for (Invocation i : sequence.getInvocations())
+            for (Invocation i : sequence)
                 outcome.put(numbering.get(i), Results.of(i.invoke(obj)));
 
         } catch (Exception e) {

@@ -4,7 +4,7 @@ import java.lang.reflect.*;
 import java.util.*;
 import java.util.stream.*;
 
-public class Harness {
+public class Harness implements Iterable<InvocationSequence> {
 
     Invocation constructor;
     PartialOrder<InvocationSequence> sequences;
@@ -22,6 +22,10 @@ public class Harness {
         for (InvocationSequence sequence : sequences.getNodes())
             for (Invocation i : sequence.getInvocations())
                 numbering.put(i, ++count);
+    }
+
+    public Iterator<InvocationSequence> iterator() {
+        return sequences.iterator();
     }
 
     public Invocation getConstructor() {

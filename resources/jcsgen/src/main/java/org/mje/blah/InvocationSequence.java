@@ -3,7 +3,7 @@ package org.mje.blah;
 import java.util.*;
 import java.util.stream.*;
 
-public class InvocationSequence {
+public class InvocationSequence implements Iterable<Invocation> {
     List<Invocation> invocations;
 
     public InvocationSequence(List<Invocation> invocations) {
@@ -16,6 +16,10 @@ public class InvocationSequence {
 
     public InvocationSequence() {
         this(Collections.emptyList());
+    }
+
+    public Iterator<Invocation> iterator() {
+        return invocations.iterator();
     }
 
     public List<Invocation> getInvocations() {

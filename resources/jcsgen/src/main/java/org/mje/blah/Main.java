@@ -20,6 +20,10 @@ public class Main {
             .desc("use weak atomicity")
             .build());
 
+        options.addOption(Option.builder().longOpt("weak-relax-happens-before")
+            .desc("relax happens before in visibility for weak atomicity")
+            .build());
+
         options.addOption(Option.builder().longOpt("weak-relax-returns")
             .desc("relax return values for weak atomicity")
             .build());
@@ -52,6 +56,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in).useDelimiter("---");
         OutcomeCollector collector = new OutcomeCollector(
             line.hasOption("weak"),
+            line.hasOption("weak-relax-happens-before"),
             line.hasOption("weak-relax-returns"));
         int status = 0;
         try {

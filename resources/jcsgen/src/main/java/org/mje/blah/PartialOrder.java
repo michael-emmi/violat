@@ -2,7 +2,7 @@ package org.mje.blah;
 
 import java.util.*;
 
-public class PartialOrder<N> {
+public class PartialOrder<N> implements Iterable<N> {
 
     public static class Edge<N> {
         N source, sink;
@@ -41,6 +41,10 @@ public class PartialOrder<N> {
 
     public PartialOrder() {
         this(Collections.emptySet(), Collections.emptyList());
+    }
+
+    public Iterator<N> iterator() {
+        return nodes.iterator();
     }
 
     public void add(N n) {
