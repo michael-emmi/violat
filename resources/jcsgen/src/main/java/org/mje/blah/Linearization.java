@@ -1,50 +1,68 @@
 package org.mje.blah;
 
 import java.util.*;
+import java.util.stream.*;
 import java.util.logging.*;
 
 public class Linearization {
     static Logger logger = Logger.getLogger("linearization");
 
     static class PartialLinearization {
-        InvocationSequence sequence;
-        PartialOrder<Invocation> remainder;
-        public PartialLinearization(InvocationSequence s, PartialOrder<Invocation> o) {
-            this.sequence = s;
-            this.remainder = o;
+        final InvocationSequence sequence;
+        final PartialOrder<Invocation> remainder;
+        public PartialLinearization(
+                InvocationSequence sequence,
+                PartialOrder<Invocation> remainder) {
+            this.sequence = sequence;
+            this.remainder = remainder;
         }
-        public InvocationSequence getSequence() { return sequence; }
-        public PartialOrder<Invocation> getRemainder() { return remainder; }
     }
 
-    static List<InvocationSequence> enumerate(PartialOrder<Invocation> happensBefore) {
+    static List<InvocationSequence> enumerate(
+            PartialOrder<Invocation> happensBefore,
+            boolean relaxHappensBefore) {
+
         logger.fine("computing linearizations of: " + happensBefore);
 
         List<InvocationSequence> linearizations = new LinkedList<>();
         Queue<PartialLinearization> partials = new LinkedList<>();
+
+        if (relaxHappensBefore) {
+            for (Invocation i : happensBefore) {
+                if (!i.isAtomic()) {
+                    logger.finest("relaxing happens before for invocation: " + i);
+                    happensBefore = happensBefore.drop(i);
+                    happensBefore.add(i);
+                }
+            }
+            logger.finer("relaxed happens before: " + happensBefore);
+        }
+
         partials.add(new PartialLinearization(new InvocationSequence(), happensBefore));
 
         while (!partials.isEmpty()) {
             PartialLinearization p = partials.poll();
-            InvocationSequence sequence = p.getSequence();
-            PartialOrder<Invocation> remainder = p.getRemainder();
 
-            if (remainder.isEmpty()) {
-                logger.finer("got complete linearization: " + sequence);
-                linearizations.add(sequence);
+            if (p.remainder.isEmpty()) {
+                logger.finer("got complete linearization: " + p.sequence);
+                linearizations.add(p.sequence);
 
             } else {
-                logger.finest("got partial linearization: " + sequence);
-                logger.finest("with remainder: " + remainder);
+                logger.finest("got partial linearization: " + p.sequence);
+                logger.finest("with remainder: " + p.remainder);
 
-                for (Invocation i : remainder.getMinimals())
+                for (Invocation i : p.remainder.getMinimals())
                     partials.offer(new PartialLinearization(
-                        sequence.snoc(i),
-                        remainder.drop(i)));
+                        p.sequence.snoc(i),
+                        p.remainder.drop(i)));
             }
         }
 
-        logger.fine("computed " + linearizations.size() + " linearizations: " + linearizations);
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("computed " + linearizations.size() + " linearizations");
+            for (InvocationSequence s : linearizations)
+                logger.fine("" + s);
+        }
         return linearizations;
     }
 }

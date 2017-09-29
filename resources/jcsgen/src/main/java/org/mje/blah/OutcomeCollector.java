@@ -9,23 +9,27 @@ public class OutcomeCollector {
     static Logger logger = Logger.getLogger("outcomes");
 
     boolean weakAtomicity;
-    boolean relaxHappensBefore;
+    boolean relaxLinHappensBefore;
+    boolean relaxVisHappensBefore;
     boolean relaxReturns;
 
     public OutcomeCollector(
             boolean weakAtomicity,
-            boolean relaxHappensBefore,
+            boolean relaxLinHappensBefore,
+            boolean relaxVisHappensBefore,
             boolean relaxReturns) {
 
         this.weakAtomicity = weakAtomicity;
-        this.relaxHappensBefore = weakAtomicity && relaxHappensBefore;
+        this.relaxLinHappensBefore = weakAtomicity && relaxLinHappensBefore;
+        this.relaxVisHappensBefore = weakAtomicity && relaxVisHappensBefore;
         this.relaxReturns = weakAtomicity && relaxReturns;
     }
 
     public Set<SortedMap<Integer,String>> collect(Harness harness) {
         logger.fine("computing outcomes for harness: " + harness);
         logger.fine("weak atomicity: " + weakAtomicity);
-        logger.fine("relax happens before: " + relaxHappensBefore);
+        logger.fine("relax happens before for linearization: " + relaxLinHappensBefore);
+        logger.fine("relax happens before for visibility: " + relaxVisHappensBefore);
         logger.fine("relax returns: " + relaxReturns);
 
         Set<SortedMap<Integer,String>> outcomes = collect(
@@ -42,10 +46,10 @@ public class OutcomeCollector {
 
         Set<SortedMap<Integer,String>> outcomes = new HashSet<>();
 
-        for (InvocationSequence linearization : Linearization.enumerate(happensBefore)) {
+        for (InvocationSequence linearization : Linearization.enumerate(happensBefore, relaxLinHappensBefore)) {
             logger.finer("linearization: " + linearization);
 
-            for (Visibility visibility : Visibility.enumerate(happensBefore, linearization, weakAtomicity, relaxHappensBefore)) {
+            for (Visibility visibility : Visibility.enumerate(happensBefore, linearization, weakAtomicity, relaxVisHappensBefore)) {
                 logger.finer("visibility: " + visibility);
 
                 SortedMap<Integer,String> outcome = execute(constructor, linearization, visibility, numbering);

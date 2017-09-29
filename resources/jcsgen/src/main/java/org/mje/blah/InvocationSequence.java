@@ -43,7 +43,7 @@ public class InvocationSequence implements Iterable<Invocation> {
     }
 
     public String toString() {
-        return invocations.stream()
+        return "sequence " + invocations.stream()
             .map(Invocation::toString)
             .collect(Collectors.joining("; ", "[", "]"));
     }

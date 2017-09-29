@@ -31,7 +31,7 @@ public class Visibility {
         return false;
     }
     public String toString() {
-        return visibilityMap.toString();
+        return "visibility " + visibilityMap.toString();
     }
 
     public static Collection<Visibility> enumerate(
@@ -40,9 +40,9 @@ public class Visibility {
             boolean weakAtomicity,
             boolean relaxHappensBefore) {
 
-        logger.fine("computing visibility for linearization: " + linearization);
+        logger.fine("computing visibility for: " + linearization);
 
-        Visibility minimal = minimalVisibility(happensBefore, !relaxHappensBefore);
+        Visibility minimal = minimalVisibility(happensBefore, relaxHappensBefore);
         Queue<Visibility> workList = new LinkedList<>();
         workList.offer(minimal);
 
@@ -52,7 +52,8 @@ public class Visibility {
                 Queue<Visibility> nextWorkList = new LinkedList<>();
                 while (!workList.isEmpty()) {
                     Visibility base = workList.poll();
-                    if (weakAtomicity || base.isVisible(i,j))
+
+                    if (base.isVisible(i,j) || (weakAtomicity && (!i.isAtomic() || !j.isAtomic())))
                         nextWorkList.add(base);
 
                     if (!base.isVisible(i,j) && !happensBefore.isBefore(i,j)) {
@@ -65,22 +66,36 @@ public class Visibility {
             }
             previous.add(i);
         }
-        logger.fine("got " + workList.size() + " visibility relations: " + workList);
+
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("computed " + workList.size() + " visibilities");
+            for (Visibility v : workList)
+                logger.fine("" + v);
+        }
         return workList;
     }
 
     static Visibility minimalVisibility(
             PartialOrder<Invocation> happensBefore,
-            boolean includesHappensBefore) {
+            boolean relaxHappensBefore) {
 
         Visibility visibility = new Visibility(happensBefore);
 
-        if (includesHappensBefore) {
-            logger.finest("including happens before in visibility");
-            for (Invocation i : happensBefore)
-                for (Invocation j : happensBefore.getPredecessors(i))
-                    visibility.add(i,j);
+        if (relaxHappensBefore) {
+            for (Invocation i : happensBefore) {
+                if (!i.isAtomic()) {
+                    logger.finest("relaxing happens before for invocation: " + i);
+                    happensBefore = happensBefore.drop(i);
+                    happensBefore.add(i);
+                }
+            }
+            logger.finer("relaxed happens before: " + happensBefore);
         }
+
+        logger.finest("including happens before in visibility");
+        for (Invocation i : happensBefore)
+            for (Invocation j : happensBefore.getPredecessors(i))
+                visibility.add(i,j);
 
         logger.finest("minimal visibility: " + visibility);
         return visibility;

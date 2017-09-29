@@ -24,9 +24,9 @@ public class PartialOrder<N> implements Iterable<N> {
     HashMap<N,Set<N>> before;
     HashMap<N,Set<N>> after;
 
-    public PartialOrder(Collection<N> nodes, Collection<Edge<N>> edges) {
+    public PartialOrder(Iterable<N> nodes, Iterable<Edge<N>> edges) {
         this.nodes = new LinkedHashSet<>();
-        this.basis = new LinkedHashSet<>(edges);
+        this.basis = new LinkedHashSet<>();
         this.before = new HashMap<>();
         this.after = new HashMap<>();
         for (N n : nodes)
@@ -35,8 +35,12 @@ public class PartialOrder<N> implements Iterable<N> {
             add(edge);
     }
 
-    public PartialOrder(Collection<N> nodes) {
+    public PartialOrder(Iterable<N> nodes) {
         this(nodes, Collections.emptyList());
+    }
+
+    public PartialOrder(PartialOrder<N> that) {
+        this(that.nodes, that.basis);
     }
 
     public PartialOrder() {
@@ -114,10 +118,6 @@ public class PartialOrder<N> implements Iterable<N> {
         return isBefore(n2,n1);
     }
 
-    public Set<N> getNodes() {
-        return nodes;
-    }
-
     public Set<N> getMinimals() {
         Set<N> minimals = new LinkedHashSet<>();
         for (N n : nodes)
@@ -138,27 +138,19 @@ public class PartialOrder<N> implements Iterable<N> {
         return nodes.isEmpty();
     }
 
-    public Set<Edge<N>> getBasis() {
-        return basis;
-    }
-
-    public PartialOrder<N> clone() {
-        return new PartialOrder<>(getNodes(), getBasis());
-    }
-
     public PartialOrder<N> drop(Edge<N> edge) {
-        Set<Edge<N>> edges = new HashSet<>(getBasis());
+        Set<Edge<N>> edges = new HashSet<>(this.basis);
         edges.remove(edge);
-        return new PartialOrder<>(getNodes(), edges);
+        return new PartialOrder<>(nodes, edges);
     }
 
     public PartialOrder<N> replace(N n1, N n2) {
-        Set<N> nodes = new LinkedHashSet<>(getNodes());
+        Set<N> nodes = new LinkedHashSet<>(this.nodes);
         nodes.remove(n1);
         nodes.add(n2);
 
-        Set<Edge<N>> edges = new LinkedHashSet<>(getBasis());
-        for (Edge<N> edge : getBasis()) {
+        Set<Edge<N>> edges = new LinkedHashSet<>(this.basis);
+        for (Edge<N> edge : this.basis) {
             N src = edge.getSource();
             N snk = edge.getSink();
             if (src.equals(n1)) {
@@ -173,11 +165,11 @@ public class PartialOrder<N> implements Iterable<N> {
     }
 
     public PartialOrder<N> drop(N n) {
-        Set<N> nodes = new LinkedHashSet<>(getNodes());
+        Set<N> nodes = new LinkedHashSet<>(this.nodes);
         nodes.remove(n);
 
-        Set<Edge<N>> edges = new LinkedHashSet<>(getBasis());
-        for (Edge<N> edge : getBasis())
+        Set<Edge<N>> edges = new LinkedHashSet<>(this.basis);
+        for (Edge<N> edge : this.basis)
             if (edge.getSource().equals(n) || edge.getSink().equals(n))
                 edges.remove(edge);
         return new PartialOrder<>(nodes, edges);

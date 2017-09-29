@@ -20,7 +20,11 @@ public class Main {
             .desc("use weak atomicity")
             .build());
 
-        options.addOption(Option.builder().longOpt("weak-relax-happens-before")
+        options.addOption(Option.builder().longOpt("weak-relax-lin-happens-before")
+            .desc("relax happens before in linearizability for weak atomicity")
+            .build());
+
+        options.addOption(Option.builder().longOpt("weak-relax-vis-happens-before")
             .desc("relax happens before in visibility for weak atomicity")
             .build());
 
@@ -56,7 +60,8 @@ public class Main {
         Scanner scanner = new Scanner(System.in).useDelimiter("---");
         OutcomeCollector collector = new OutcomeCollector(
             line.hasOption("weak"),
-            line.hasOption("weak-relax-happens-before"),
+            line.hasOption("weak-relax-lin-happens-before"),
+            line.hasOption("weak-relax-vis-happens-before"),
             line.hasOption("weak-relax-returns"));
         int status = 0;
         try {
@@ -64,7 +69,7 @@ public class Main {
                 try (JsonReader reader = Json.createReader(new StringReader(scanner.next()))) {
                     JsonObject o = reader.readObject();
                     Harness h = HarnessFactory.fromJson(o);
-                    int n = Linearization.enumerate(h.getHappensBefore()).size();
+                    int n = Linearization.enumerate(h.getHappensBefore(), line.hasOption("weak-relax-lin-happens-before")).size();
                     JsonWriter writer = Json.createWriter(System.out);
                     System.out.println("---");
                     writer.write(Results.add(o, collector.collect(h), n));
