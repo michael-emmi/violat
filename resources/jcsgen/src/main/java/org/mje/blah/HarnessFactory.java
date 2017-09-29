@@ -22,6 +22,8 @@ public class HarnessFactory {
 
                 invocations.add(f.get(
                     i.getString("method"),
+                    i.getBoolean("atomic", true),
+                    i.getBoolean("readonly", false),
                     i.getJsonArray("arguments").stream()
                         .map(HarnessFactory::fromJsonValue).toArray()));
 

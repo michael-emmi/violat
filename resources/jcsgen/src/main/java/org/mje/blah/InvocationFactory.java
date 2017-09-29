@@ -16,8 +16,8 @@ public class InvocationFactory {
         this(Class.forName(className));
     }
 
-    public Invocation get(Executable method, Object... args) {
-        return new Invocation(method, args);
+    public Invocation get(Executable method, boolean isAtomic, boolean isReadOnly, Object... args) {
+        return new Invocation(method, isAtomic, isReadOnly, args);
     }
 
     public Invocation get(Class<?>[] params, Object... args)
@@ -45,7 +45,7 @@ public class InvocationFactory {
         if (constructors.length > 1)
             throw new NoSuchMethodException("ambiguous constructor");
 
-        return get(constructors[0], args);
+        return get(constructors[0], true, false, args);
 
     }
 
@@ -54,7 +54,7 @@ public class InvocationFactory {
         return get(_class.getMethod(methodName, params), args);
     }
 
-    public Invocation get(String methodName, Object... args)
+    public Invocation get(String methodName, boolean isAtomic, boolean isReadOnly, Object... args)
     throws NoSuchMethodException {
         Class<?>[] types =
             Arrays.stream(args).map(a -> a.getClass()).toArray(Class<?>[]::new);
@@ -83,7 +83,7 @@ public class InvocationFactory {
             throw new NoSuchMethodException(b.toString());
         }
 
-        return get(methods[0], args);
+        return get(methods[0], isAtomic, isReadOnly, args);
     }
 
     boolean isAssignableFrom(Class<?>[] params, Class<?>[] args) {

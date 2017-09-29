@@ -7,10 +7,22 @@ import java.util.stream.*;
 public class Invocation {
     Executable method;
     Object[] arguments;
+    boolean isAtomic;
+    boolean isReadOnly;
 
-    public Invocation(Executable method, Object... arguments) {
+    public Invocation(Executable method, boolean isAtomic, boolean isReadOnly, Object... arguments) {
         this.method = method;
+        this.isAtomic = isAtomic;
+        this.isReadOnly = isReadOnly;
         this.arguments = arguments;
+    }
+
+    public boolean isAtomic() {
+        return this.isAtomic;
+    }
+
+    public boolean isReadOnly() {
+        return this.isReadOnly;
     }
 
     public Executable getMethod() {
@@ -56,6 +68,8 @@ public class Invocation {
         return method.getName() + "("
             + Arrays.stream(arguments).map(Object::toString)
                 .collect(Collectors.joining(", "))
-            + ")";
+            + ")"
+            + (isReadOnly ? "/RO" : "")
+            + (isAtomic ? "" : "/W");
     }
 }
