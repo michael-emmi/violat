@@ -187,12 +187,14 @@ public class PartialOrder<N> implements Iterable<N> {
         StringBuilder s = new StringBuilder();
         Map<N,Integer> ids = new HashMap<>();
         int count = 0;
+        s.append("partial order {\n");
         for (N n : nodes) {
             ids.put(n, ++count);
-            s.append("n" + count + ": " + n + "\n");
+            s.append("  node n" + count + ": " + n + "\n");
         }
         for (Edge<N> edge : basis)
-            s.append("edge: n" + ids.get(edge.getSource()) + " < n" + ids.get(edge.getSink()) + "\n");
+            s.append("  edge: n" + ids.get(edge.getSource()) + " < n" + ids.get(edge.getSink()) + "\n");
+        s.append("}");
         return s.toString();
     }
 }

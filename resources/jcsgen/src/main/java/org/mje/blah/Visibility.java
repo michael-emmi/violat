@@ -35,14 +35,14 @@ public class Visibility {
     }
 
     public static Collection<Visibility> enumerate(
-            PartialOrder<InvocationSequence> sequences,
+            PartialOrder<Invocation> happensBefore,
             InvocationSequence linearization,
             boolean weakAtomicity,
             boolean relaxHappensBefore) {
 
         logger.fine("computing visibility for linearization: " + linearization);
 
-        Visibility minimal = minimalVisibility(sequences, !relaxHappensBefore);
+        Visibility minimal = minimalVisibility(happensBefore, !relaxHappensBefore);
         Queue<Visibility> workList = new LinkedList<>();
         workList.offer(minimal);
 
@@ -55,7 +55,7 @@ public class Visibility {
                     if (weakAtomicity || base.isVisible(i,j))
                         nextWorkList.add(base);
 
-                    if (!base.isVisible(i,j)) {
+                    if (!base.isVisible(i,j) && !happensBefore.isBefore(i,j)) {
                         Visibility extension = new Visibility(base);
                         extension.add(i,j);
                         nextWorkList.add(extension);
@@ -70,30 +70,18 @@ public class Visibility {
     }
 
     static Visibility minimalVisibility(
-            PartialOrder<InvocationSequence> sequences,
+            PartialOrder<Invocation> happensBefore,
             boolean includesHappensBefore) {
 
-        Map<Invocation, InvocationSequence> i2s = new HashMap<>();
-        for (InvocationSequence s : sequences.getNodes())
-            for (Invocation i : s)
-                i2s.put(i,s);
-
-        Visibility visibility = new Visibility(i2s.keySet());
+        Visibility visibility = new Visibility(happensBefore);
 
         if (includesHappensBefore) {
             logger.finest("including happens before in visibility");
-            assert sequences.getNodes().size() == 2 : "TODO: implement general case";
-            assert sequences.getMinimals().size() == 2 : "TODO: implement general case";
-
-            for (InvocationSequence s : sequences) {
-                List<Invocation> previous = new LinkedList<>();
-                for (Invocation i : s) {
-                    for (Invocation j : previous)
-                        visibility.add(i,j);
-                    previous.add(i);
-                }
-            }
+            for (Invocation i : happensBefore)
+                for (Invocation j : happensBefore.getPredecessors(i))
+                    visibility.add(i,j);
         }
+
         logger.finest("minimal visibility: " + visibility);
         return visibility;
     }

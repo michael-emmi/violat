@@ -64,7 +64,7 @@ public class Main {
                 try (JsonReader reader = Json.createReader(new StringReader(scanner.next()))) {
                     JsonObject o = reader.readObject();
                     Harness h = HarnessFactory.fromJson(o);
-                    int n = Linearization.enumerate(h.getSequences()).size();
+                    int n = Linearization.enumerate(h.getHappensBefore()).size();
                     JsonWriter writer = Json.createWriter(System.out);
                     System.out.println("---");
                     writer.write(Results.add(o, collector.collect(h), n));

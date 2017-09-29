@@ -23,13 +23,13 @@ public class OutcomeCollector {
     }
 
     public Set<SortedMap<Integer,String>> collect(Harness harness) {
-        logger.fine("computing outcomes for harness:\n" + harness);
+        logger.fine("computing outcomes for harness: " + harness);
         logger.fine("weak atomicity: " + weakAtomicity);
         logger.fine("relax happens before: " + relaxHappensBefore);
         logger.fine("relax returns: " + relaxReturns);
 
         Set<SortedMap<Integer,String>> outcomes = collect(
-            harness.getConstructor(), harness.getSequences(), harness.getNumbering());
+            harness.getConstructor(), harness.getHappensBefore(), harness.getNumbering());
 
         logger.fine("got " + outcomes.size() + " unique outcomes: " + outcomes);
         return outcomes;
@@ -37,15 +37,15 @@ public class OutcomeCollector {
 
     Set<SortedMap<Integer,String>> collect(
             Invocation constructor,
-            PartialOrder<InvocationSequence> sequences,
+            PartialOrder<Invocation> happensBefore,
             Map<Invocation,Integer> numbering) {
 
         Set<SortedMap<Integer,String>> outcomes = new HashSet<>();
 
-        for (InvocationSequence linearization : Linearization.enumerate(sequences)) {
+        for (InvocationSequence linearization : Linearization.enumerate(happensBefore)) {
             logger.finer("linearization: " + linearization);
 
-            for (Visibility visibility : Visibility.enumerate(sequences, linearization, weakAtomicity, relaxHappensBefore)) {
+            for (Visibility visibility : Visibility.enumerate(happensBefore, linearization, weakAtomicity, relaxHappensBefore)) {
                 logger.finer("visibility: " + visibility);
 
                 SortedMap<Integer,String> outcome = execute(constructor, linearization, visibility, numbering);

@@ -1,48 +1,50 @@
 package org.mje.blah;
 
 import java.util.*;
+import java.util.logging.*;
 
 public class Linearization {
+    static Logger logger = Logger.getLogger("linearization");
+
     static class PartialLinearization {
         InvocationSequence sequence;
-        PartialOrder<InvocationSequence> remainder;
-        public PartialLinearization(InvocationSequence s, PartialOrder<InvocationSequence> o) {
+        PartialOrder<Invocation> remainder;
+        public PartialLinearization(InvocationSequence s, PartialOrder<Invocation> o) {
             this.sequence = s;
             this.remainder = o;
         }
         public InvocationSequence getSequence() { return sequence; }
-        public PartialOrder<InvocationSequence> getRemainder() { return remainder; }
+        public PartialOrder<Invocation> getRemainder() { return remainder; }
     }
 
-    static List<InvocationSequence> enumerate(PartialOrder<InvocationSequence> sequences) {
+    static List<InvocationSequence> enumerate(PartialOrder<Invocation> happensBefore) {
+        logger.fine("computing linearizations of: " + happensBefore);
+
         List<InvocationSequence> linearizations = new LinkedList<>();
         Queue<PartialLinearization> partials = new LinkedList<>();
-        partials.add(new PartialLinearization(new InvocationSequence(), sequences));
+        partials.add(new PartialLinearization(new InvocationSequence(), happensBefore));
 
         while (!partials.isEmpty()) {
             PartialLinearization p = partials.poll();
             InvocationSequence sequence = p.getSequence();
-            PartialOrder<InvocationSequence> remainder = p.getRemainder();
+            PartialOrder<Invocation> remainder = p.getRemainder();
 
-            if (remainder.isEmpty())
+            if (remainder.isEmpty()) {
+                logger.finer("got complete linearization: " + sequence);
                 linearizations.add(sequence);
 
-            else {
-                for (InvocationSequence s : remainder.getMinimals()) {
-                    PartialOrder<InvocationSequence> rest = remainder.clone();
+            } else {
+                logger.finest("got partial linearization: " + sequence);
+                logger.finest("with remainder: " + remainder);
 
-                    Invocation head = s.head();
-                    InvocationSequence tail = s.tail();
-
+                for (Invocation i : remainder.getMinimals())
                     partials.offer(new PartialLinearization(
-                        sequence.snoc(head),
-                        tail.getInvocations().isEmpty()
-                            ? rest.drop(s)
-                            : rest.replace(s, tail)
-                    ));
-                }
+                        sequence.snoc(i),
+                        remainder.drop(i)));
             }
         }
+
+        logger.fine("computed " + linearizations.size() + " linearizations: " + linearizations);
         return linearizations;
     }
 }

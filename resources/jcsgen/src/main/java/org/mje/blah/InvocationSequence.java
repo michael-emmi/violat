@@ -22,10 +22,6 @@ public class InvocationSequence implements Iterable<Invocation> {
         return invocations.iterator();
     }
 
-    public List<Invocation> getInvocations() {
-        return invocations;
-    }
-
     public Invocation head() {
         return invocations.get(0);
     }
@@ -49,7 +45,7 @@ public class InvocationSequence implements Iterable<Invocation> {
     public String toString() {
         return invocations.stream()
             .map(Invocation::toString)
-            .collect(Collectors.joining("; "));
+            .collect(Collectors.joining("; ", "[", "]"));
     }
 
     public int size() {
