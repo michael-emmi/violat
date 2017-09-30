@@ -31,7 +31,10 @@ public class Visibility {
         return false;
     }
     public String toString() {
-        return "visibility " + visibilityMap.toString();
+        return "visibility " + visibilityMap.entrySet()
+            .stream()
+            .map(e -> "" + e.getKey() + ": " + e.getValue())
+            .collect(Collectors.joining("\n  ", "{\n  ", "\n}"));
     }
 
     public static Collection<Visibility> enumerate(

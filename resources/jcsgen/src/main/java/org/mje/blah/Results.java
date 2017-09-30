@@ -24,16 +24,16 @@ public class Results {
     }
 
     public static JsonObject add(JsonObject src,
-            Collection<SortedMap<Integer,String>> results,
+            Iterable<Outcome> outcomes,
             int numLinearizations) {
 
         JsonObjectBuilder b0 = Json.createObjectBuilder();
         src.entrySet().forEach(e -> b0.add(e.getKey(), e.getValue()));
 
         JsonArrayBuilder b1 = Json.createArrayBuilder();
-        for (SortedMap<Integer,String> result : results) {
+        for (Outcome outcome : outcomes) {
             JsonArrayBuilder b2 = Json.createArrayBuilder();
-            for (String x : result.values())
+            for (String x : outcome.values())
                 b2.add(x);
             b1.add(b2.build());
         }
