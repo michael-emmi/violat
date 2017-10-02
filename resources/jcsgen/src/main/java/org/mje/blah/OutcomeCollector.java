@@ -128,24 +128,6 @@ public class OutcomeCollector {
         return outcome;
     }
 
-    Outcome combineOutcomes(Outcome base, Outcome extension) {
-        if (base.isEmpty())
-            return extension;
-
-        Outcome combined = new Outcome(base);
-        for (Invocation i : extension.keySet()) {
-            if (!base.containsKey(i))
-                combined.put(i, extension.get(i));
-            else if (!compatibleReturnValue(i, extension.get(i), base.get(i)))
-                return null;
-        }
-        return combined;
-    }
-
-    boolean compatibleReturnValue(Invocation i, String r1, String r2) {
-        return relaxReturns || r1.equals(r2);
-    }
-
     Collection<Outcome> minimalOutcomes(Collection<Outcome> outcomes) {
         Map<SortedMap<Invocation,String>, List<Outcome>> groups = outcomes.stream()
             .collect(Collectors.groupingBy(o -> o.results));
