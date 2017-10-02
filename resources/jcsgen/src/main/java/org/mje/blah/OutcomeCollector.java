@@ -25,23 +25,31 @@ public class OutcomeCollector {
         this.relaxReturns = weakAtomicity && relaxReturns;
     }
 
-    public Set<Outcome> collect(Harness harness) {
+    public Collection<Outcome> collect(Harness harness) {
         logger.fine("computing outcomes for harness: " + harness);
         logger.fine("weak atomicity: " + weakAtomicity);
         logger.fine("relax happens before for linearization: " + relaxLinHappensBefore);
         logger.fine("relax happens before for visibility: " + relaxVisHappensBefore);
         logger.fine("relax returns: " + relaxReturns);
 
-        Set<Outcome> outcomes = collect(
+        Collection<Outcome> outcomes = collect(
             harness.getConstructor(), harness.getHappensBefore());
 
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer("computed " + outcomes.size() + " outcomes");
+            for (Outcome outcome : outcomes)
+                logger.finer("" + outcome);
+        }
+
+        Collection<Outcome> minimals = minimalOutcomes(outcomes);
 
         if (logger.isLoggable(Level.FINE)) {
-            logger.fine("computed " + outcomes.size() + " unique outcomes");
-            for (Outcome outcome : outcomes)
+            logger.fine("computed " + minimals.size() + " minimal outcomes");
+            for (Outcome outcome : minimals)
                 logger.fine("" + outcome);
         }
-        return outcomes;
+
+        return minimals;
     }
 
     Set<Outcome> collect(
@@ -50,13 +58,17 @@ public class OutcomeCollector {
 
         Set<Outcome> outcomes = new HashSet<>();
 
-        for (InvocationSequence linearization : Linearization.enumerate(happensBefore, relaxLinHappensBefore)) {
+        for (Linearization linearization : Linearization.enumerate(happensBefore, relaxLinHappensBefore)) {
             logger.finer("linearization: " + linearization);
 
             for (Visibility visibility : Visibility.enumerate(happensBefore, linearization, weakAtomicity, relaxVisHappensBefore)) {
                 logger.finer("visibility: " + visibility);
-
-                Outcome outcome = execute(constructor, linearization, visibility);
+                Properties properties = new Properties();
+                properties.put("W", false);
+                properties.put("L", linearization.isWeak());
+                properties.put("V", visibility.isWeak());
+                properties.put("R", false);
+                Outcome outcome = execute(constructor, linearization, visibility, properties);
                 logger.finer("outcome: " + outcome);
                 if (outcome != null)
                     outcomes.add(outcome);
@@ -67,40 +79,44 @@ public class OutcomeCollector {
 
     Outcome execute(
             Invocation constructor,
-            InvocationSequence sequence,
-            Visibility visibility) {
+            Iterable<Invocation> sequence,
+            Visibility visibility,
+            Properties properties) {
 
-        if (visibility.isComplete()) {
-            return execute(constructor, sequence);
+        Outcome outcome = new Outcome(properties);
+        List<Invocation> prefix = new LinkedList<>();
 
-        } else {
-            Outcome outcome = new Outcome();
+        for (Invocation i : sequence) {
+            prefix.add(i);
 
-            for (int i=1; i<=sequence.size(); i++) {
-                InvocationSequence prefix = sequence.prefix(i);
-                Invocation last = prefix.last();
-                InvocationSequence projection = prefix.projection(visibility.visibleSet(last));
-                logger.finest("prefix: " + prefix);
-                logger.finest("projection: " + projection);
+            Iterable<Invocation> projection = prefix.stream()
+                .filter(j -> visibility.visibleSet(i).contains(j))
+                .collect(Collectors.toList());
 
-                Outcome newOutcome = execute(constructor, projection);
-                logger.finest("projected: " + newOutcome);
+            logger.finest("prefix: " + prefix);
+            logger.finest("projection: " + projection);
 
-                outcome = combineOutcomes(outcome, newOutcome);
-                logger.finest("cummulative: " + outcome);
+            if (!prefix.equals(projection))
+                properties.put("W", true);
 
-                if (outcome == null)
-                    return null;
-            }
-            return outcome;
+            Outcome projected = execute(constructor, projection, properties);
+            logger.finest("projected: " + projected);
+
+            if (!outcome.combine(projected, Collections.singleton(i)))
+                properties.put("R", true);
+
+            logger.finest("cummulative: " + outcome);
         }
+
+        return outcome;
     }
 
     Outcome execute(
             Invocation constructor,
-            InvocationSequence sequence) {
+            Iterable<Invocation> sequence,
+            Properties properties) {
 
-        Outcome outcome = new Outcome();
+        Outcome outcome = new Outcome(properties);
         try {
             Object obj = constructor.invoke();
             for (Invocation i : sequence)
@@ -128,5 +144,29 @@ public class OutcomeCollector {
 
     boolean compatibleReturnValue(Invocation i, String r1, String r2) {
         return relaxReturns || r1.equals(r2);
+    }
+
+    Collection<Outcome> minimalOutcomes(Collection<Outcome> outcomes) {
+        Map<SortedMap<Invocation,String>, List<Outcome>> groups = outcomes.stream()
+            .collect(Collectors.groupingBy(o -> o.results));
+
+        for (SortedMap<Invocation,String> result : groups.keySet())
+            for (Outcome outcome : new ArrayList<>(groups.get(result)))
+                groups.get(result).removeIf(o ->  stricter(outcome, o));
+
+        return groups.values().stream()
+            .flatMap(l -> l.stream())
+            .collect(Collectors.toSet());
+    }
+
+    boolean stricter(Outcome o1, Outcome o2) {
+        return stricter(o1.properties, o2.properties);
+    }
+
+    boolean stricter(Properties p1, Properties p2) {
+        return !p1.equals(p2) && p1.entrySet().stream().allMatch(e ->
+            e.getValue().equals(false) ||
+            e.getValue().equals(p2.get(e.getKey()))
+        );
     }
 }

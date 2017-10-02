@@ -25,11 +25,18 @@ public class Harness implements Iterable<InvocationSequence> {
                 this.happensBefore.add(i);
 
         for (InvocationSequence s : sequences) {
-            Invocation i = null;
-            for (Invocation j : s)
-                if (i == null) i = j; else this.happensBefore.add(i,j);
-            for (InvocationSequence t : sequences.getSuccessors(s))
-                this.happensBefore.add(s.last(), t.head());
+            Invocation prev = null;
+            for (Invocation i : s) {
+                if (prev != null)
+                    this.happensBefore.add(prev, i);
+                prev = i;
+            }
+            for (InvocationSequence t : sequences.getSuccessors(s)) {
+                for (Invocation first : t) {
+                    this.happensBefore.add(prev, first);
+                    break;
+                }
+            }
         }
         logger.fine("created harness: " + this);
         logger.fine("happens before: " + this.happensBefore);

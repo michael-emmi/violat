@@ -7,19 +7,30 @@ import java.util.stream.*;
 public class Visibility {
     static Logger logger = Logger.getLogger("visibility");
 
-    Map<Invocation,Set<Invocation>> visibilityMap;
+    final Map<Invocation,Set<Invocation>> visibilityMap;
+    final boolean weak;
 
     public Visibility(Iterable<Invocation> invocations) {
-        visibilityMap = new HashMap<>();
-        invocations.forEach(i -> visibilityMap.put(i, new HashSet<>(Collections.singleton(i))));
+        this.visibilityMap = new HashMap<>();
+        invocations.forEach(i -> this.visibilityMap.put(i, new HashSet<>(Collections.singleton(i))));
+        this.weak = false;
     }
     public Visibility(Visibility that) {
+        this(that, false);
+    }
+    public Visibility(Visibility that, boolean weak) {
         this.visibilityMap = new HashMap<>();
         for (Invocation i : that.visibilityMap.keySet())
             this.visibilityMap.put(i, new HashSet<>(that.visibilityMap.get(i)));
+        this.weak = that.weak || weak;
     }
-    public void add(Invocation source, Invocation target) {
-        visibilityMap.get(source).add(target);
+    public Visibility extend(boolean weak) {
+        return new Visibility(this, weak);
+    }
+    public Visibility extend(Invocation source, Invocation target) {
+        Visibility that = new Visibility(this);
+        that.visibilityMap.get(source).add(target);
+        return that;
     }
     public boolean isVisible(Invocation source, Invocation target) {
         return visibilityMap.get(source).contains(target);
@@ -27,19 +38,20 @@ public class Visibility {
     public Set<Invocation> visibleSet(Invocation source) {
         return visibilityMap.get(source);
     }
-    public boolean isComplete() {
-        return false;
+    public boolean isWeak() {
+        return weak;
     }
     public String toString() {
-        return "visibility " + visibilityMap.entrySet()
+        return "visibility {\n" + visibilityMap.entrySet()
             .stream()
             .map(e -> "" + e.getKey() + ": " + e.getValue())
-            .collect(Collectors.joining("\n  ", "{\n  ", "\n}"));
+            .collect(Collectors.joining("\n  ", "  ", "\n")) +
+            "  weak: " + weak + "\n}";
     }
 
     public static Collection<Visibility> enumerate(
             PartialOrder<Invocation> happensBefore,
-            InvocationSequence linearization,
+            Iterable<Invocation> linearization,
             boolean weakAtomicity,
             boolean relaxHappensBefore) {
 
@@ -56,13 +68,15 @@ public class Visibility {
                 while (!workList.isEmpty()) {
                     Visibility base = workList.poll();
 
-                    if (base.isVisible(i,j) || (weakAtomicity && (!i.isAtomic() || !j.isAtomic())))
+                    if (base.isVisible(i,j)) {
                         nextWorkList.add(base);
 
-                    if (!base.isVisible(i,j) && !happensBefore.isBefore(i,j)) {
-                        Visibility extension = new Visibility(base);
-                        extension.add(i,j);
-                        nextWorkList.add(extension);
+                    } else {
+                        if (weakAtomicity && (!i.isAtomic() || !j.isAtomic()))
+                            nextWorkList.add(base.extend(happensBefore.isBefore(j,i)));
+
+                        if (!happensBefore.isBefore(i,j))
+                            nextWorkList.add(base.extend(i,j));
                     }
                 }
                 workList = nextWorkList;
@@ -98,7 +112,7 @@ public class Visibility {
         logger.finest("including happens before in visibility");
         for (Invocation i : happensBefore)
             for (Invocation j : happensBefore.getPredecessors(i))
-                visibility.add(i,j);
+                visibility.visibilityMap.get(i).add(j);
 
         logger.finest("minimal visibility: " + visibility);
         return visibility;

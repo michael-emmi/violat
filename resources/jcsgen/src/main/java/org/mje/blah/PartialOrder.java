@@ -138,6 +138,10 @@ public class PartialOrder<N> implements Iterable<N> {
         return nodes.isEmpty();
     }
 
+    public boolean contains(N n) {
+        return nodes.contains(n);
+    }
+
     public PartialOrder<N> drop(Edge<N> edge) {
         Set<Edge<N>> edges = new HashSet<>(this.basis);
         edges.remove(edge);
