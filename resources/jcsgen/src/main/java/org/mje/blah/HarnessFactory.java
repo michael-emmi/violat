@@ -12,6 +12,7 @@ public class HarnessFactory {
         Map<Integer, InvocationSequence> numbering = new HashMap<>();
 
         InvocationFactory f = new InvocationFactory(object.getString("class"));
+        int count = 0;
 
         for (JsonObject sequence : object.getJsonArray("sequences")
                 .getValuesAs(JsonObject.class)) {
@@ -21,6 +22,7 @@ public class HarnessFactory {
                     .getValuesAs(JsonObject.class))
 
                 invocations.add(f.get(
+                    count++,
                     i.getString("method"),
                     i.getBoolean("atomic", true),
                     i.getBoolean("readonly", false),

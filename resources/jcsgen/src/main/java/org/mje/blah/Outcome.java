@@ -7,7 +7,7 @@ import java.util.stream.*;
 public class Outcome {
     static Logger logger = Logger.getLogger("outcome");
 
-    final SortedMap<Integer,String> results;
+    final SortedMap<Invocation,String> results;
 
     public Outcome() {
         this.results = new TreeMap<>();
@@ -27,23 +27,23 @@ public class Outcome {
             : false;
     }
 
-    public void put(Integer id, String result) {
-        this.results.put(id, result);
+    public void put(Invocation i, String result) {
+        this.results.put(i, result);
     }
 
     public boolean isEmpty() {
         return this.results.isEmpty();
     }
 
-    public boolean containsKey(int key) {
+    public boolean containsKey(Invocation key) {
         return this.results.containsKey(key);
     }
 
-    public Set<Integer> keySet() {
+    public Set<Invocation> keySet() {
         return this.results.keySet();
     }
 
-    public String get(int key) {
+    public String get(Invocation key) {
         return this.results.get(key);
     }
 
@@ -52,6 +52,8 @@ public class Outcome {
     }
 
     public String toString() {
-        return "outcome " + results.toString();
+        return "outcome " + results.entrySet().stream()
+            .map(e -> e.getKey() + " => " + e.getValue())
+            .collect(Collectors.joining(", ", "{ ", " }"));
     }
 }

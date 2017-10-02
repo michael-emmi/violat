@@ -33,7 +33,7 @@ public class OutcomeCollector {
         logger.fine("relax returns: " + relaxReturns);
 
         Set<Outcome> outcomes = collect(
-            harness.getConstructor(), harness.getHappensBefore(), harness.getNumbering());
+            harness.getConstructor(), harness.getHappensBefore());
 
 
         if (logger.isLoggable(Level.FINE)) {
@@ -46,8 +46,7 @@ public class OutcomeCollector {
 
     Set<Outcome> collect(
             Invocation constructor,
-            PartialOrder<Invocation> happensBefore,
-            Map<Invocation,Integer> numbering) {
+            PartialOrder<Invocation> happensBefore) {
 
         Set<Outcome> outcomes = new HashSet<>();
 
@@ -57,7 +56,7 @@ public class OutcomeCollector {
             for (Visibility visibility : Visibility.enumerate(happensBefore, linearization, weakAtomicity, relaxVisHappensBefore)) {
                 logger.finer("visibility: " + visibility);
 
-                Outcome outcome = execute(constructor, linearization, visibility, numbering);
+                Outcome outcome = execute(constructor, linearization, visibility);
                 logger.finer("outcome: " + outcome);
                 if (outcome != null)
                     outcomes.add(outcome);
@@ -69,11 +68,10 @@ public class OutcomeCollector {
     Outcome execute(
             Invocation constructor,
             InvocationSequence sequence,
-            Visibility visibility,
-            Map<Invocation,Integer> numbering) {
+            Visibility visibility) {
 
         if (visibility.isComplete()) {
-            return execute(constructor, sequence, numbering);
+            return execute(constructor, sequence);
 
         } else {
             Outcome outcome = new Outcome();
@@ -85,7 +83,7 @@ public class OutcomeCollector {
                 logger.finest("prefix: " + prefix);
                 logger.finest("projection: " + projection);
 
-                Outcome newOutcome = execute(constructor, projection, numbering);
+                Outcome newOutcome = execute(constructor, projection);
                 logger.finest("projected: " + newOutcome);
 
                 outcome = combineOutcomes(outcome, newOutcome);
@@ -100,14 +98,13 @@ public class OutcomeCollector {
 
     Outcome execute(
             Invocation constructor,
-            InvocationSequence sequence,
-            Map<Invocation,Integer> numbering) {
+            InvocationSequence sequence) {
 
         Outcome outcome = new Outcome();
         try {
             Object obj = constructor.invoke();
             for (Invocation i : sequence)
-                outcome.put(numbering.get(i), Results.of(i.invoke(obj)));
+                outcome.put(i, Results.of(i.invoke(obj)));
 
         } catch (Exception e) {
             throw new RuntimeException("BAD CLASSES: " + e);
@@ -120,16 +117,16 @@ public class OutcomeCollector {
             return extension;
 
         Outcome combined = new Outcome(base);
-        for (int id : extension.keySet()) {
-            if (!base.containsKey(id))
-                combined.put(id, extension.get(id));
-            else if (!compatibleReturnValue(id, extension.get(id), base.get(id)))
+        for (Invocation i : extension.keySet()) {
+            if (!base.containsKey(i))
+                combined.put(i, extension.get(i));
+            else if (!compatibleReturnValue(i, extension.get(i), base.get(i)))
                 return null;
         }
         return combined;
     }
 
-    boolean compatibleReturnValue(Integer id, String r1, String r2) {
+    boolean compatibleReturnValue(Invocation i, String r1, String r2) {
         return relaxReturns || r1.equals(r2);
     }
 }

@@ -11,7 +11,6 @@ public class Harness implements Iterable<InvocationSequence> {
     Invocation constructor;
     PartialOrder<InvocationSequence> sequences;
     PartialOrder<Invocation> happensBefore;
-    Map<Invocation,Integer> numbering;
 
     public Harness(
             Invocation constructor,
@@ -20,13 +19,11 @@ public class Harness implements Iterable<InvocationSequence> {
         this.constructor = constructor;
         this.sequences = sequences;
 
-        int count = 0;
-        this.numbering = new HashMap<>();
-        for (InvocationSequence sequence : sequences)
-            for (Invocation i : sequence)
-                numbering.put(i, ++count);
+        this.happensBefore = new PartialOrder<>();
+        for (InvocationSequence s : sequences)
+            for (Invocation i : s)
+                this.happensBefore.add(i);
 
-        this.happensBefore = new PartialOrder<>(numbering.keySet());
         for (InvocationSequence s : sequences) {
             Invocation i = null;
             for (Invocation j : s)
@@ -52,10 +49,6 @@ public class Harness implements Iterable<InvocationSequence> {
 
     public PartialOrder<Invocation> getHappensBefore() {
         return happensBefore;
-    }
-
-    public Map<Invocation,Integer> getNumbering() {
-        return numbering;
     }
 
     public String toString() {

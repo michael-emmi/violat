@@ -4,17 +4,23 @@ import java.lang.reflect.*;
 import java.util.*;
 import java.util.stream.*;
 
-public class Invocation {
-    Executable method;
-    Object[] arguments;
-    boolean isAtomic;
-    boolean isReadOnly;
+public class Invocation implements Comparable<Invocation> {
+    final int id;
+    final Executable method;
+    final Object[] arguments;
+    final boolean isAtomic;
+    final boolean isReadOnly;
 
-    public Invocation(Executable method, boolean isAtomic, boolean isReadOnly, Object... arguments) {
+    public Invocation(int id, Executable method, boolean isAtomic, boolean isReadOnly, Object... arguments) {
+        this.id = id;
         this.method = method;
         this.isAtomic = isAtomic;
         this.isReadOnly = isReadOnly;
         this.arguments = arguments;
+    }
+
+    public int compareTo(Invocation that) {
+        return this.id - that.id;
     }
 
     public boolean isAtomic() {
