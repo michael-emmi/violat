@@ -9,6 +9,7 @@ public class Outcome {
 
     final SortedMap<Invocation,String> results;
     final Properties properties;
+    int frequency;
 
     public Outcome(Properties properties) {
         this(Collections.emptySortedMap(), properties);
@@ -21,6 +22,11 @@ public class Outcome {
     Outcome(SortedMap<Invocation,String> results, Properties properties) {
         this.results = new TreeMap<>(results);
         this.properties = properties;
+        this.frequency = 0;
+    }
+
+    public SortedMap<Invocation,String> getResults() {
+        return results;
     }
 
     public boolean combine(Outcome that, Collection<Invocation> overwrite) {

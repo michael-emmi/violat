@@ -17,9 +17,10 @@ let cli = meow(`
     --method <method-name>      Name of a method to test.
     --values N                  Number of distinct argument values.
     --sequences N               Number of concurrent invocation sequences.
-    --invocations N             Total nuber of invocations.
+    --invocations N             Total number of invocations.
     --enum [complete|shuffle|random]  Enumeration strategy (default: ${defaults.enum}).
     --limit N                   Limit to N violations (default: ${defaults.limit}).
+    --weak                      Check “weak” atomicity.
 
   Examples
     $ ${meta.name} \\

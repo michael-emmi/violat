@@ -69,10 +69,9 @@ public class Main {
                 try (JsonReader reader = Json.createReader(new StringReader(scanner.next()))) {
                     JsonObject o = reader.readObject();
                     Harness h = HarnessFactory.fromJson(o);
-                    int n = Linearization.enumerate(h.getHappensBefore(), line.hasOption("weak-relax-lin-happens-before")).size();
                     JsonWriter writer = Json.createWriter(System.out);
                     System.out.println("---");
-                    writer.write(Results.add(o, collector.collect(h), n));
+                    writer.write(Results.merge(o, Results.outcomes(collector.collect(h))));
                     System.out.println();
                 }
             }

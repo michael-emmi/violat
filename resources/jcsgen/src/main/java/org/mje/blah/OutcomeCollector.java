@@ -44,7 +44,7 @@ public class OutcomeCollector {
         Collection<Outcome> minimals = minimalOutcomes(outcomes);
 
         if (logger.isLoggable(Level.FINE)) {
-            logger.fine("computed " + minimals.size() + " minimal outcomes");
+            logger.fine("computed " + minimals.size() + " unique outcomes");
             for (Outcome outcome : minimals)
                 logger.fine("" + outcome);
         }
@@ -52,11 +52,11 @@ public class OutcomeCollector {
         return minimals;
     }
 
-    Set<Outcome> collect(
+    Collection<Outcome> collect(
             Invocation constructor,
             PartialOrder<Invocation> happensBefore) {
 
-        Set<Outcome> outcomes = new HashSet<>();
+        Collection<Outcome> outcomes = new LinkedList<>();
 
         for (Linearization linearization : Linearization.enumerate(happensBefore, relaxLinHappensBefore)) {
             logger.finer("linearization: " + linearization);
@@ -70,7 +70,8 @@ public class OutcomeCollector {
                 properties.put("R", false);
                 Outcome outcome = execute(constructor, linearization, visibility, properties);
                 logger.finer("outcome: " + outcome);
-                if (outcome != null)
+
+                if (relaxReturns || properties.get("R").equals(false))
                     outcomes.add(outcome);
             }
         }
@@ -102,7 +103,8 @@ public class OutcomeCollector {
             Outcome projected = execute(constructor, projection, properties);
             logger.finest("projected: " + projected);
 
-            if (!outcome.combine(projected, Collections.singleton(i)))
+            boolean consistent = outcome.combine(projected, Collections.singleton(i));
+            if (!consistent)
                 properties.put("R", true);
 
             logger.finest("cummulative: " + outcome);
@@ -130,7 +132,11 @@ public class OutcomeCollector {
 
     Collection<Outcome> minimalOutcomes(Collection<Outcome> outcomes) {
         Map<SortedMap<Invocation,String>, List<Outcome>> groups = outcomes.stream()
-            .collect(Collectors.groupingBy(o -> o.results));
+            .collect(Collectors.groupingBy(Outcome::getResults));
+
+        for (List<Outcome> group : groups.values())
+            for (Outcome outcome : group)
+                outcome.frequency = group.size();
 
         for (SortedMap<Invocation,String> result : groups.keySet())
             for (Outcome outcome : new ArrayList<>(groups.get(result)))
