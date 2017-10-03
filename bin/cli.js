@@ -14,7 +14,7 @@ let cli = meow(`
     $ ${meta.name} <spec-file.json>
 
   Options
-    --method <method-name>      Name of a method to test.
+    --methods <method-name(s)>  Name(s) of a method to test (jointly).
     --values N                  Number of distinct argument values.
     --sequences N               Number of concurrent invocation sequences.
     --invocations N             Total number of invocations.
@@ -25,7 +25,7 @@ let cli = meow(`
 
   Examples
     $ ${meta.name} \\
-      --method clear \\
+      --methods clear \\
       --sequences 2 \\
       --invocations 4 \\
       specs/java/util/concurrent/ConcurrentSkipListMap.json
@@ -38,7 +38,8 @@ let cli = meow(`
 
   let args = Object.assign({}, cli.flags, {
     specFile: cli.input.length == 1 && cli.input[0] || cli.showHelp(),
-    spec: JSON.parse(fs.readFileSync(cli.input[0]))
+    spec: JSON.parse(fs.readFileSync(cli.input[0])),
+    methods: cli.flags.methods && cli.flags.methods.split(',')
   });
 
   console.log(`${cli.pkg.name} version ${cli.pkg.version}`);
@@ -46,7 +47,7 @@ let cli = meow(`
   console.log(`class: ${args.spec.class}`);
   console.log(`---`);
 
-  let results = args.method
+  let results = args.methods
     ? await checker.testMethod(args)
     : await checker.testUntrustedMethods(args);
 
