@@ -61,7 +61,9 @@ let cli = meow(`
     console.log(`---`);
     let total = result.outcomes.reduce((sum,x) => sum + x.count, 0);
     for (let outcome of result.outcomes) {
-      if (outcome.expectation == 'FORBIDDEN')
+      if (outcome.count < 1)
+        continue;
+      else if (outcome.expectation == 'FORBIDDEN')
         console.log(`${outcome.count} of ${total} executions gave violating outcome: ${outcome.result}`);
       else if (outcome.expectation == 'ACCEPTABLE_INTERESTING')
         console.log(`${outcome.count} of ${total} executions gave weak(${outcome.description}) outcome: ${outcome.result}`);
