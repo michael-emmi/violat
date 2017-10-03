@@ -14,7 +14,7 @@ describe('generate()', function() {
         const schemaGenerator = generator({
           enum: e,
           spec: spec,
-          method: 'clear',
+          methods: ['clear'],
           values: 2,
           sequences: 2,
           invocations: 3

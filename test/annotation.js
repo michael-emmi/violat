@@ -11,7 +11,7 @@ describe('annotate()', function() {
   const schemaGenerator = generator({
     enum: 'random',
     spec: spec,
-    method: 'clear',
+    methods: ['clear'],
     values: 4,
     sequences: 2,
     invocations: n
