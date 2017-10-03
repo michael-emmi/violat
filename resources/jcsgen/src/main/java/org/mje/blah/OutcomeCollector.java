@@ -143,8 +143,21 @@ public class OutcomeCollector {
                 groups.get(result).removeIf(o ->  stricter(outcome, o));
 
         return groups.values().stream()
-            .flatMap(l -> l.stream())
+            .map(OutcomeCollector::disjunction)
             .collect(Collectors.toSet());
+    }
+
+    static Outcome disjunction(Iterable<Outcome> outcomes) {
+        Properties properties = new Properties();
+        for (Outcome o : outcomes) {
+            String s = o.properties.entrySet().stream()
+                .filter(e -> e.getValue().equals(true))
+                .map(e -> e.getKey().toString())
+                .collect(Collectors.joining("&"));
+            if (!s.isEmpty())
+                properties.put(s.toString(), true);
+        }
+        return new Outcome(outcomes.iterator().next().results, properties);
     }
 
     boolean stricter(Outcome o1, Outcome o2) {
