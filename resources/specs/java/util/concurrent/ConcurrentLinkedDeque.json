@@ -7,7 +7,7 @@
     {
       "name": "offer",
       "parameters": [
-        "int"
+        {"type": "java.lang.Object"}
       ],
       "void": false,
       "readonly": false,
@@ -30,7 +30,7 @@
     {
       "name": "offerLast",
       "parameters": [
-        "int"
+        {"type": "java.lang.Object"}
       ],
       "void": false,
       "readonly": false
@@ -50,7 +50,7 @@
     {
       "name": "offerFirst",
       "parameters": [
-        "int"
+        {"type": "java.lang.Object"}
       ],
       "void": false,
       "readonly": false,
@@ -62,7 +62,7 @@
     {
       "name": "addFirst",
       "parameters": [
-        "int"
+        {"type": "java.lang.Object"}
       ],
       "void": true,
       "readonly": false,
@@ -102,7 +102,7 @@
     {
       "name": "addAll",
       "parameters": [
-        ["int"]
+        {"type": "java.lang.Object"}
       ],
       "void": false,
       "readonly": false
@@ -117,7 +117,7 @@
     {
       "name": "contains",
       "parameters": [
-        "int"
+        {"type": "java.lang.Object"}
       ],
       "void": false,
       "readonly": true
@@ -131,7 +131,7 @@
     {
       "name": "remove",
       "parameters": [
-        "int"
+        {"type": "java.lang.Object"}
       ],
       "void": false,
       "readonly": false
@@ -139,7 +139,7 @@
     {
       "name": "removeFirstOccurrence",
       "parameters": [
-        "int"
+        {"type": "java.lang.Object"}
       ],
       "void": false,
       "readonly": false
@@ -147,7 +147,7 @@
     {
       "name": "removeLastOccurrence",
       "parameters": [
-        "int"
+        {"type": "java.lang.Object"}
       ],
       "void": false,
       "readonly": false,
@@ -182,7 +182,9 @@
     },
     {
       "name": "removeAll",
-      "parameters": [["int"]],
+      "parameters": [
+        {"type": ["java.lang.Object"]}
+      ],
       "void": false,
       "readonly": false,
       "trusted": false,
@@ -192,14 +194,18 @@
     },
     {
       "name": "containsAll",
-      "parameters": [["int"]],
+      "parameters": [
+        {"type": ["java.lang.Object"]}
+      ],
       "void": false,
       "readonly": true,
       "trusted": false
     },
     {
       "name": "retainAll",
-      "parameters": [["int"]],
+      "parameters": [
+        {"type": ["java.lang.Object"]}
+      ],
       "void": false,
       "readonly": false,
       "trusted": false,
