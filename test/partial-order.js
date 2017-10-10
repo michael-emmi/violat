@@ -31,14 +31,14 @@ function beforePairs(po) {
 
 describe('partial order', function() {
 
-  it (`computes values`, function() {
+  it (`values() returns the values`, function() {
     assert.deepEqual(new Set(PO1.values()), new Set([1,2,3,4]));
     assert.deepEqual(new Set(PO2.values()), new Set([1,2,3,4,5]));
     assert.deepEqual(new Set(PO3.values()), new Set([1,2,4,5]));
     assert.deepEqual(new Set(PO4.values()), new Set([1,2,3,8,9]));
   });
 
-  it (`computes transitive closure`, function() {
+  it (`isBefore() reflects transitive closure`, function() {
     assert.deepEqual(new Set(beforePairs(PO1)), new Set([
       [1,2], [1,3], [1,4],
       [2,3], [2,4],
@@ -46,21 +46,28 @@ describe('partial order', function() {
     ]));
   });
 
-  it (`maintains transitive closure after removals`, function() {
+  it (`isBefore() reflects transitive closure after drop()`, function() {
     assert.deepEqual(new Set(beforePairs(PO3)), new Set([
       [1,2],
       [4,5]
     ]));
   });
 
-  it (`computes minimals`, function() {
+  it (`before() reflects transitive closure`, function() {
+    assert.deepEqual(new Set(PO1.before(1)), new Set([]));
+    assert.deepEqual(new Set(PO1.before(2)), new Set([1]));
+    assert.deepEqual(new Set(PO1.before(3)), new Set([1,2]));
+    assert.deepEqual(new Set(PO1.before(4)), new Set([1,2,3]));
+  });
+
+  it (`minimals() returns the minimal values`, function() {
     assert.deepEqual(new Set(PO1.minimals()), new Set([1]));
     assert.deepEqual(new Set(PO2.minimals()), new Set([1]));
     assert.deepEqual(new Set(PO3.minimals()), new Set([1,4]));
     assert.deepEqual(new Set(PO4.minimals()), new Set([1,2,3]));
   });
 
-  it (`computes linearizations`, function() {
+  it (`linerization() returns the linearizations`, function() {
     assert.deepEqual(new Set(PO4.linearizations()), new Set([
       [1,2,3,8,9],
       [1,2,8,3,9],
