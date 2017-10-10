@@ -1,6 +1,4 @@
 const fs = require('fs');
-const path = require('path');
-const cp = require('child_process');
 const config = require('../../lib/config.js');
 const checker = require('../../lib/index.js');
 
@@ -16,13 +14,32 @@ async function run() {
     console.log(`---`);
     let args = experiment.parameters;
 
-    await checker.testMethod(Object.assign({},
+    let results = await checker.testMethod(Object.assign({},
       args,
       {spec: JSON.parse(fs.readFileSync(args.spec))}
     ));
+
+    for (let result of results) {
+      if (result.outcomes.every(x => x.expectation == 'ACCEPTABLE' || x.count < 1))
+        continue;
+
+      console.log(`Violation/weakness discovered in the following harness.`);
+      console.log(`---`);
+      console.log(result.harness);
+      console.log(`---`);
+      let total = result.outcomes.reduce((sum,x) => sum + x.count, 0);
+      for (let outcome of result.outcomes) {
+        if (outcome.count < 1)
+          continue;
+        else if (outcome.expectation == 'FORBIDDEN')
+          console.log(`${outcome.count} of ${total} executions gave violating outcome: ${outcome.result}`);
+        else if (outcome.expectation == 'ACCEPTABLE_INTERESTING')
+          console.log(`${outcome.count} of ${total} executions gave weak(${outcome.description}) outcome: ${outcome.result}`);
+      }
+      console.log(`---`);
+    }
   }
 
-  console.log(`---`);
   console.log(`Experiments completed`);
 }
 
