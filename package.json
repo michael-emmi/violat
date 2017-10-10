@@ -14,7 +14,8 @@
     "meow": "^3.7.0",
     "mkdirp": "^0.5.1",
     "ncp": "^2.0.0",
-    "seedrandom": "^2.4.2"
+    "seedrandom": "^2.4.2",
+    "split": "^1.0.1"
   },
   "devDependencies": {
     "mocha": "^3.4.2"
