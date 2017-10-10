@@ -4,27 +4,31 @@ const cp = require('child_process');
 const config = require('../../lib/config.js');
 const checker = require('../../lib/index.js');
 
-async function run(specDir) {
-  let specFiles = cp.execSync(`find ${specDir} -name "*.json"`).toString().split('\n');
+const experiments = require('./experiment-list.js');
 
-  for (let specFile of specFiles) {
-    console.log(`---`);
-    console.log(`Checking specification: ${specFile}`);
-    console.log(`---`);
+async function run() {
+  console.log(`---`);
+  console.log(`Running ${experiments.name}`);
 
-    let result = await checker.testUntrustedMethods({
-      specFile: specFile,
-      spec: JSON.parse(fs.readFileSync(specFile))
-    });
-
+  for (let experiment of experiments.list) {
     console.log(`---`);
-    console.log(`Checking completed for: ${specFile}`);
+    console.log(`running experiment: ${experiment.name}`);
+    console.log(`---`);
+    let args = experiment.parameters;
+
+    await checker.testMethod(Object.assign({},
+      args,
+      {spec: JSON.parse(fs.readFileSync(args.spec))}
+    ));
   }
+
+  console.log(`---`);
+  console.log(`Experiments completed`);
 }
 
 (async () => {
   try {
-    await run(path.join(config.resourcesPath, "specs"));
+    await run();
   } catch (e) {
     console.log(`caught exception`);
     console.log(e.stack);
