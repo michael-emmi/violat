@@ -24,7 +24,7 @@
     "node": ">=7.0"
   },
   "scripts": {
-    "test": "DEBUG=server mocha",
+    "test": "mocha",
     "experiments": "node resources/scripts/experiments.js"
   },
   "repository": {
