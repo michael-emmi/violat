@@ -23,7 +23,7 @@ describe('annotate()', function() {
   ];
   for (let objs of tests) {
     it(`annotates ${objs.length} random schemas`, async function() {
-      let annotated = await annotate(objs);
+      let annotated = await annotate(objs, {});
       assert.equal(annotated.length, objs.length);
       assert.ok(annotated.every(obj => 'outcomes' in obj));
       assert.ok(annotated.every(obj => obj['outcomes'].every(ary => ary.length = n)));
