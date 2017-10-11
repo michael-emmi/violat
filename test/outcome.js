@@ -13,11 +13,11 @@ const O6 = Outcome.results({0: 'a', 1: 'b'});
 O6.properties.add(Properties.unit('foo'));
 
 const O7 = Outcome.results({0: 'a', 1: 'b'});
-O7.properties.add(Properties.unit('bar'));
+O7.properties.add('bar');
 
 const O8 = Outcome.results({0: 'a', 1: 'b'});
-O8.properties.add(Properties.unit('foo'));
-O8.properties.add(Properties.unit('bar'));
+O8.properties.add('foo');
+O8.properties.add('bar');
 
 describe('outcome', function() {
 
