@@ -20,8 +20,11 @@ let cli = meow(`
     --invocations N             Total number of invocations.
     --enum [complete|shuffle|random]  Enumeration strategy (default: ${defaults.enum}).
     --limit N                   Limit to N violations (default: ${defaults.limit}).
-    --cutoff N                  Explore at most N harnesses (default: ${defaults.cutoff}).
-    --weak                      Check “weak” atomicity.
+    --cutoff N                  Run at most N tests (default: ${defaults.cutoff}).
+    --weak                      Admit weakly-atomic outcomes.
+    --weak-relax-linearization  Linearizations need not include program order.
+    --weak-relax-visibility     Visibility need not include program order.
+    --weak-relax-returns        Return values need not agree across views.
 
   Examples
     $ ${meta.name} \\
