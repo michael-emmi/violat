@@ -6,35 +6,35 @@
   "methods": [
     {
       "name": "containsKey",
-      "parameters": ["int"],
+      "parameters": [{"type": "java.lang.Object"}],
       "void": false,
       "readonly": true,
       "trusted": true
     },
     {
       "name": "get",
-      "parameters": ["int"],
+      "parameters": [{"type": "java.lang.Object"}],
       "void": false,
       "readonly": true,
       "trusted": true
     },
     {
       "name": "put",
-      "parameters": ["int", "int"],
+      "parameters": [{"type": "java.lang.Object"}, {"type": "java.lang.Object"}],
       "void": false,
       "readonly": false,
       "trusted": true
     },
     {
       "name": "remove",
-      "parameters": ["int"],
+      "parameters": [{"type": "java.lang.Object"}],
       "void": false,
       "readonly": false,
       "trusted": true
     },
     {
       "name": "containsValue",
-      "parameters": ["int"],
+      "parameters": [{"type": "java.lang.Object"}],
       "void": false,
       "readonly": true,
       "trusted": false
@@ -81,7 +81,7 @@
     },
     {
       "name": "ceilingKey",
-      "parameters": ["int"],
+      "parameters": [{"type": "java.lang.Object"}],
       "void": false,
       "readonly": true
     },
@@ -99,19 +99,31 @@
     },
     {
       "name": "floorKey",
-      "parameters": ["int"],
+      "parameters": [{"type": "java.lang.Object"}],
       "void": false,
       "readonly": true
     },
     {
       "name": "higherKey",
-      "parameters": ["int"],
+      "parameters": [{"type": "java.lang.Object"}],
       "void": false,
       "readonly": true
     },
     {
       "name": "lowerKey",
-      "parameters": ["int"],
+      "parameters": [{"type": "java.lang.Object"}],
+      "void": false,
+      "readonly": true
+    },
+    {
+      "name": "pollFirstEntry",
+      "parameters": [{"type": "java.lang.Object"}],
+      "void": false,
+      "readonly": true
+    },
+    {
+      "name": "pollLastEntry",
+      "parameters": [{"type": "java.lang.Object"}],
       "void": false,
       "readonly": true
     },
@@ -123,13 +135,13 @@
     },    
     {
       "name": "headMap",
-      "parameters": ["int"],
+      "parameters": [{"type": "java.lang.Object"}],
       "void": false,
       "readonly": true
     },
     {
       "name": "tailMap",
-      "parameters": ["int"],
+      "parameters": [{"type": "java.lang.Object"}],
       "void": false,
       "readonly": true,
       "trusted": false,
@@ -139,13 +151,13 @@
     },
     {
       "name": "subMap",
-      "parameters": ["int","int"],
+      "parameters": [{"type": "java.lang.Object"},{"type": "java.lang.Object"}],
       "void": false,
       "readonly": true
     },
     {
       "name": "putAll",
-      "parameters": [{"int": "int"}],
+      "parameters": [{"type": {"java.lang.Object": "java.lang.Object"}}],
       "void": true,
       "readonly": false,
       "trusted": false,
