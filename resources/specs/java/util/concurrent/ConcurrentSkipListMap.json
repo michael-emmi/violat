@@ -117,15 +117,17 @@
     },
     {
       "name": "pollFirstEntry",
-      "parameters": [{"type": "java.lang.Object"}],
+      "parameters": [],
       "void": false,
-      "readonly": true
+      "readonly": false,
+      "trusted": false
     },
     {
       "name": "pollLastEntry",
-      "parameters": [{"type": "java.lang.Object"}],
+      "parameters": [],
       "void": false,
-      "readonly": true
+      "readonly": false,
+      "trusted": false
     },
     {
       "name": "isEmpty",
