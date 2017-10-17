@@ -3,10 +3,13 @@ package org.mje.runjobj;
 import java.io.*;
 import java.lang.reflect.*;
 import java.util.*;
+import java.util.logging.*;
 import java.util.stream.*;
 import javax.json.*;
 
 public class Main {
+    static Logger logger = Logger.getLogger("runjobj");
+
     public static void main(String[] args) {
         try {
             BufferedReader reader =
@@ -26,15 +29,27 @@ public class Main {
 
     static String processRequest(String json) throws Exception {
         Object object = null;
-        List<Object> results = new LinkedList<>();
+        List<String> results = new LinkedList<>();
 
-        for (Invocation invocation : Invocation.parse(json))
-            if (object == null)
+        logger.fine("request: " + json);
+
+        for (Invocation invocation : Invocation.parse(json)) {
+            logger.fine("invocation: " + invocation);
+
+            if (object == null) {
                 object = invocation.construct();
-            else
-                results.add(invocation.invoke(object));
 
-        return Values.toJson(results).toString();
+            } else {
+                String result = Values.toString(invocation.invoke(object));
+                logger.fine("result: " + result);
+                results.add(result);
+            }
+        }
+
+        String response = Values.toJson(results).toString();
+        logger.fine("response: " + response);
+
+        return response;
     }
 
     static class Invocation {
@@ -108,6 +123,13 @@ public class Main {
             assert executable instanceof Method : "expected method invocation";
             return ((Method) executable).invoke(target, arguments);
         }
+
+        public String toString() {
+            return executable.getName() +
+                Stream.of(arguments)
+                .map(Object::toString)
+                .collect(Collectors.joining(",", "(", ")"));
+        }
     }
 
     static class Values {
@@ -139,10 +161,10 @@ public class Main {
                 "Cannot convert JSON value '" + value + "' to primitive type");
         }
 
-        static JsonValue toJson(List<Object> results) {
+        static JsonValue toJson(List<String> results) {
             JsonArrayBuilder builder = Json.createArrayBuilder();
-            for (Object result : results)
-                builder.add(toString(result));
+            for (String result : results)
+                builder.add(result);
             return builder.build();
         }
 
