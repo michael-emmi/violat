@@ -53,7 +53,6 @@ describe('outcome', function() {
       new Set(Outcome.minimals([O1, O2, O6, O7, O8])),
       new Set([O1, O2])
     );
-    console.log(Outcome.minimals([O1, O6, O7, O8]));
     assert.deepEqual(
       new Set(Outcome.minimals([O1, O6, O7, O8])),
       new Set([O1, O6, O7])

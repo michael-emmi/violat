@@ -12,7 +12,7 @@ P3.merge(P2);
 P3.add('blah');
 const P4 = P1.join(P2);
 
-describe('outcome', function() {
+describe('outcome-properties', function() {
 
   it (`isEmpty() reflects emptiness`, function() {
     assert.ok(P0.isEmpty());
