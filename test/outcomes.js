@@ -1,6 +1,7 @@
 const fs = require('fs');
 const assert = require('assert');
 const outcomes = require('../lib/outcomes');
+const Atomicity = require('./atomicity');
 
 function schema(klass, ...seqs) {
   let count = 0;
@@ -30,22 +31,13 @@ function testcase(schema, opts, expected) {
   };
 }
 
-const ATOMIC = {};
-const WEAK = {weak: true};
-const WEAKEST = {
-  weak: true,
-  weakRelaxLinearization: true,
-  weakRelaxVisibility: true,
-  weakRelaxReturns: true
-};
-
 const T1 = testcase(
   schema('java.util.concurrent.ConcurrentHashMap',
     [ ['clear', [], [], false],
       ['put', ['java.lang.Object','java.lang.Object'], [0,1], true] ],
     [ ['containsKey', ['java.lang.Object'], [1], true],
       ['remove', ['java.lang.Object'], [0], true] ] ),
-  WEAKEST,
+  Atomicity.WEAKEST,
   [ ['null', 'null', 'false', '1'],
     ['null', 'null', 'false', 'null'] ] );
 
@@ -56,7 +48,7 @@ const T2 = testcase(
       ['remove', ['java.lang.Object'], [1], true] ],
     [ ['put', ['java.lang.Object','java.lang.Object'], [0,1], true],
       ['clear', [], [], false] ] ),
-    WEAKEST,
+    Atomicity.WEAKEST,
     [ ['null', 'null', 'false', '1'],
       ['null', 'null', 'false', 'null'] ] );
 
