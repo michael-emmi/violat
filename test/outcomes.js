@@ -27,7 +27,7 @@ async function get(schema, opts) {
 function testcase(schema, opts, expected) {
   return {
     compute: async () => new Set(await get(schema, opts)),
-    expected: new Set(expected)
+    expected: () => new Set(expected)
   };
 }
 
@@ -49,14 +49,18 @@ const T2 = testcase(
     [ ['put', ['java.lang.Object','java.lang.Object'], [0,1], true],
       ['clear', [], [], false] ] ),
     Atomicity.WEAKEST,
-    [ ['null', 'null', 'false', '1'],
-      ['null', 'null', 'false', 'null'] ] );
+    [ ['null', 'null', '0', '0', 'null'],
+      ['null', 'null', 'null', '0', 'null'],
+      ['1', 'null', '0', 'null', 'null'],
+      ['1', 'null', 'null', 'null', 'null'],
+      ['null', 'null', '0', 'null', 'null'],
+     ] );
 
 describe('outcomes', function() {
   this.timeout(50000);
 
   it (`outcomes() reflects the correct outcomes`, async function() {
-    assert.deepEqual(await T1.compute(), T1.expected);
-    assert.deepEqual(await T2.compute(), T2.expected);
+    assert.deepEqual(await T1.compute(), T1.expected());
+    assert.deepEqual(await T2.compute(), T2.expected());
   });
 });
