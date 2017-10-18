@@ -19,6 +19,13 @@ const O8 = Outcome.results({0: 'a', 1: 'b'});
 O8.properties.add('foo');
 O8.properties.add('bar');
 
+const OX1 = Outcome.results({0: 'a', 1: 'b'});
+OX1.properties.add('foo');
+const OX2 = Outcome.results({0: 'a', 1: 'b'});
+OX2.properties.add('bar');
+const OX3 = Outcome.results({0: 'a', 1: 'b'});
+const OX4 = Outcome.results({0: 'a', 1: 'c'});
+
 describe('outcome', function() {
 
   it (`consistent() reflects consistency`, function() {
@@ -60,6 +67,10 @@ describe('outcome', function() {
     assert.deepEqual(
       new Set(Outcome.minimals([O1, O8])),
       new Set([O1, O8])
+    );
+    assert.deepEqual(
+      new Set(Outcome.minimals([OX1, OX2, OX3, OX4])),
+      new Set([OX3, OX4])
     );
   });
 });

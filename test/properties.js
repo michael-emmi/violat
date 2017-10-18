@@ -12,6 +12,10 @@ P3.merge(P2);
 P3.add('blah');
 const P4 = P1.join(P2);
 
+const PX1 = Properties.unit('foo');
+const PX2 = Properties.unit('bar');
+const PX3 = Properties.empty();
+
 describe('outcome-properties', function() {
 
   it (`isEmpty() reflects emptiness`, function() {
@@ -53,6 +57,10 @@ describe('outcome-properties', function() {
     assert.deepEqual(
       new Set(Properties.minimals([P3, P4])),
       new Set([P4])
+    );
+    assert.deepEqual(
+      new Set(Properties.minimals([PX1, PX2, PX3])),
+      new Set([PX3])
     );
   });
 });
