@@ -11,7 +11,9 @@ let meta = require('../package.json');
 let name = Object.keys(meta.bin)
   .find(key => meta.bin[key].match(path.basename(__filename)));
 
-let outcomes = require(path.join(__dirname, '../lib', 'outcomes.js'));
+const annotate = require(path.join(__dirname, '../lib', 'outcomes.js'));
+const translate = require(path.join(__dirname, '../lib', 'translation.js'));
+const test = require(path.join(__dirname, '../lib', 'jcstress.js'));
 
 let cli = meow(`
   Usage
@@ -39,12 +41,24 @@ let cli = meow(`
   let args = Object.assign({}, cli.flags);
 
   console.log(`${cli.pkg.name} version ${cli.pkg.version}`);
-  let results = (await outcomes([schema], args))[0].outcomes;
+  let annotated = await annotate([schema], args);
 
-  console.log(`computed ${results.length} outcomes`);
+  console.log(`predicted ${annotated[0].outcomes.length} outcomes`);
+  console.log(`---`);
 
-  for (let result of results) {
+  for (let outcome of annotated[0].outcomes) {
+    console.log(outcome);
     console.log(`---`);
-    console.log(result);
+  }
+
+  let translated = await translate(annotated, 'Blah');
+  let testResults = await test(translated);
+
+  console.log(`observed ${testResults[0].outcomes.length} outcomes`);
+  console.log(`---`);
+
+  for (let outcome of testResults[0].outcomes) {
+    console.log(outcome);
+    console.log(`---`);
   }
 })();
