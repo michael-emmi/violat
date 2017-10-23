@@ -28,8 +28,13 @@ let cli = meow(`
   Examples
     $ ${name} --weak my_test_harness_schema.json
 `, {
-  default: {
-  }
+  boolean: [
+    'weak',
+    'weak-relax-linearization',
+    'weak-relax-visibility',
+    'weak-relax-returns'
+  ],
+  default: {}
 });
 
 (async () => {
