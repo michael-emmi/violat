@@ -53,11 +53,12 @@ let cli = meow(`
 
   let translated = await translate(annotated, 'Blah');
   let testResults = await test(translated);
+  let outcomes = testResults[0].outcomes.filter(o => o.count > 0);
 
-  console.log(`observed ${testResults[0].outcomes.length} outcomes`);
+  console.log(`observed ${outcomes.length} outcomes`);
   console.log(`---`);
 
-  for (let outcome of testResults[0].outcomes) {
+  for (let outcome of outcomes) {
     console.log(outcome);
     console.log(`---`);
   }
