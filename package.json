@@ -1,6 +1,6 @@
 {
   "name": "violat",
-  "version": "0.4.6",
+  "version": "0.4.7",
   "description": "Find test harnesses that expose linearizability violations.",
   "main": "index.js",
   "bin": {
