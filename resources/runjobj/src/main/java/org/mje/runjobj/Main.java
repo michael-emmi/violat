@@ -65,7 +65,7 @@ public class Main {
             List<Invocation> invocations = new LinkedList<>();
 
             invocations.add(new Invocation(klass,
-                getParameters(sequence.getJsonObject("constructor")),
+                getParameterTypes(sequence.getJsonObject("constructor")),
                 getArguments(sequence)));
 
             for (JsonObject invocation : sequence.getJsonArray("invocations")
@@ -73,20 +73,34 @@ public class Main {
 
                 invocations.add(new Invocation(klass,
                     invocation.getJsonObject("method").getString("name"),
-                    getParameters(invocation.getJsonObject("method")),
+                    getParameterTypes(invocation.getJsonObject("method")),
                     getArguments(invocation)));
 
             return invocations;
         }
 
-        static Class<?>[] getParameters(JsonObject method)
+        static Class<?>[] getParameterTypes(JsonObject method)
         throws ClassNotFoundException {
             List<Class<?>> parameters = new LinkedList<>();
             for (JsonObject parameter : method
                     .getJsonArray("parameters")
                     .getValuesAs(JsonObject.class))
-                parameters.add(Class.forName(parameter.getString("type")));
+                parameters.add(getParameterType(parameter.get("type")));
             return parameters.toArray(new Class<?>[0]);
+        }
+
+        static Class<?> getParameterType(JsonValue type)
+        throws ClassNotFoundException {
+            switch (type.getValueType()) {
+                case STRING:
+                    return Class.forName(((JsonString) type).getString());
+                case ARRAY:
+                    return Class.forName("java.util.Collection");
+                case OBJECT:
+                    return Class.forName("java.util.Map");
+                default:
+                    throw new RuntimeException("Unexpected parameter type: "+ type);
+            }
         }
 
         static Object[] getArguments(JsonObject invocation) {
