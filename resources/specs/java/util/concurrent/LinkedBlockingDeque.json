@@ -74,7 +74,11 @@
       ],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "bulk": {
+        "primitive": "add",
+        "combine": "any"
+      }
     },
     {
       "name": "clear",
@@ -149,7 +153,11 @@
       "parameters": [["int"]],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "bulk": {
+        "primitive": "remove",
+        "combine": "any"
+      }
     },
     {
       "name": "containsAll",
@@ -159,6 +167,10 @@
       "trusted": false,
       "harnessParameters": {
         "invocations": 4
+      },
+      "bulk": {
+        "primitive": "contains",
+        "combine": "all"
       }
     },
     {
@@ -166,7 +178,11 @@
       "parameters": [["int"]],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "bulk": {
+        "primitive": "XXX",
+        "combine": "any"
+      }
     }
   ]
 }
