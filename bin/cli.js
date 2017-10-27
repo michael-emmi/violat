@@ -45,32 +45,34 @@ let cli = meow(`
     methods: cli.flags.methods && cli.flags.methods.split(',')
   });
 
+  let weaknesses = 0;
+  let violations = 0;
+
   console.log(`${cli.pkg.name} version ${cli.pkg.version}`);
   console.log(`---`);
   console.log(`class: ${args.spec.class}`);
   console.log(`---`);
 
+  args.onResult = function(result) {
+    console.log(`Violation or weakness discovered in the following harness.`);
+    console.log(`---`);
+    console.log(result.harness);
+    console.log(`---`);
+    for (let outcome of result.outcomes) {
+      if (outcome.expectation == 'FORBIDDEN') {
+        violations++;
+        console.log(`${outcome.count} of ${result.total} executions gave violating outcome: ${outcome.result}`);
+      } else if (outcome.expectation == 'ACCEPTABLE_INTERESTING' && outcome.count > 0) {
+        weaknesses++;
+        console.log(`${outcome.count} of ${result.total} executions gave weak(${outcome.description}) outcome: ${outcome.result}`);
+      }
+    }
+    console.log(`---`);
+  };
+
   let results = args.methods
     ? await checker.testMethod(args)
     : await checker.testUntrustedMethods(args);
 
-  for (let result of results) {
-    if (result.outcomes.every(x => x.expectation == 'ACCEPTABLE' || x.count < 1))
-      continue;
-
-    console.log(`Violation/weakness discovered in the following harness.`);
-    console.log(`---`);
-    console.log(result.harness);
-    console.log(`---`);
-    let total = result.outcomes.reduce((sum,x) => sum + x.count, 0);
-    for (let outcome of result.outcomes) {
-      if (outcome.count < 1)
-        continue;
-      else if (outcome.expectation == 'FORBIDDEN')
-        console.log(`${outcome.count} of ${total} executions gave violating outcome: ${outcome.result}`);
-      else if (outcome.expectation == 'ACCEPTABLE_INTERESTING')
-        console.log(`${outcome.count} of ${total} executions gave weak(${outcome.description}) outcome: ${outcome.result}`);
-    }
-    console.log(`---`);
-  }
+  console.log(`Found ${weaknesses} weakness(es) and ${violations} violation(s).`);
 })();
