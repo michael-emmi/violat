@@ -145,7 +145,8 @@
       ],
       "void": true,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "split": "put"
     },
     {
       "name": "hashCode",
