@@ -1,7 +1,9 @@
 const assert = require('assert');
+const debug = require('debug')('consistency');
+
 const PartialOrder = require('../lib/partial-order');
 const {
-  RELATIONS, COMPOSITIONS, EXPRESSIONS,
+  RELATIONS, COMPOSITIONS, EXPRESSIONS, BASIC_LEVELS,
   Consistency } = require('../lib/consistency');
 
 const I1 = { id: 1, atomic: true };
@@ -30,6 +32,7 @@ V1.add(I2);
 
 let C1 = new Consistency();
 C1.integrate(RELATIONS.linearization, RELATIONS.programorder, L1, P1, I1, I2);
+C1.integrate(BASIC_LEVELS.consistentreturns, I3);
 
 let C2 = new Consistency();
 C2.integrate(RELATIONS.linearization, RELATIONS.programorder, L2, P1, I1, I2);
@@ -41,38 +44,50 @@ C3.integrate(RELATIONS.visibility, RELATIONS.linearization, V1, L3, I1, I2);
 describe('consistency', function() {
 
   it (`basic inclusion`, function() {
-    assert.ok(C1.includes(
+    assert.ok(C1.includes(Consistency.level(
       RELATIONS.linearization, RELATIONS.programorder,
       COMPOSITIONS.simple,
-      EXPRESSIONS.wildcard, EXPRESSIONS.wildcard));
+      EXPRESSIONS.wildcard, EXPRESSIONS.wildcard)));
+
+    assert.ok(C2.includes(Consistency.level(
+      BASIC_LEVELS.consistentreturns, EXPRESSIONS.atomic)));
+
+    assert.ok(C3.includes(Consistency.level(
+      BASIC_LEVELS.consistentreturns, EXPRESSIONS.atomic)));
   });
 
   it (`basic exclusion`, function() {
-    assert.ok(C2.includes(
-      RELATIONS.linearization, RELATIONS.programorder,
-      COMPOSITIONS.simple,
-      EXPRESSIONS.bottom, EXPRESSIONS.bottom));
+    assert.ok(C1.includes(Consistency.level(
+      BASIC_LEVELS.consistentreturns, EXPRESSIONS.atomic)));
 
-    assert.ok(!C2.includes(
+    assert.ok(!C1.includes(Consistency.level(
+      BASIC_LEVELS.consistentreturns, EXPRESSIONS.wildcard)));
+
+    assert.ok(C2.includes(Consistency.level(
       RELATIONS.linearization, RELATIONS.programorder,
       COMPOSITIONS.simple,
-      EXPRESSIONS.atomic, EXPRESSIONS.atomic));
+      EXPRESSIONS.bottom, EXPRESSIONS.bottom)));
+
+    assert.ok(!C2.includes(Consistency.level(
+      RELATIONS.linearization, RELATIONS.programorder,
+      COMPOSITIONS.simple,
+      EXPRESSIONS.atomic, EXPRESSIONS.atomic)));
   });
 
   it (`mixed levels`, function() {
-    assert.ok(C3.includes(
+    assert.ok(C3.includes(Consistency.level(
       RELATIONS.linearization, RELATIONS.programorder,
       COMPOSITIONS.simple,
-      EXPRESSIONS.wildcard, EXPRESSIONS.wildcard));
+      EXPRESSIONS.wildcard, EXPRESSIONS.wildcard)));
 
-    assert.ok(C3.includes(
+    assert.ok(C3.includes(Consistency.level(
       RELATIONS.visibility, RELATIONS.programorder,
       COMPOSITIONS.simple,
-      EXPRESSIONS.wildcard, EXPRESSIONS.wildcard));
+      EXPRESSIONS.wildcard, EXPRESSIONS.wildcard)));
 
-    assert.ok(!C3.includes(
+    assert.ok(!C3.includes(Consistency.level(
       RELATIONS.visibility, RELATIONS.linearization,
       COMPOSITIONS.simple,
-      EXPRESSIONS.wildcard, EXPRESSIONS.wildcard));
+      EXPRESSIONS.wildcard, EXPRESSIONS.wildcard)));
   });
 });
