@@ -79,4 +79,12 @@ describe('partial order', function() {
       [3,2,1,8,9]
     ]));
   });
+
+  it (`PartialOrder.from() sequences its arguments`, function() {
+    assert.deepEqual(new Set(beforePairs(PartialOrder.from([1,2,3,4]))), new Set([
+      [1,2], [1,3], [1,4],
+      [2,3], [2,4],
+      [3,4]
+    ]));
+  });
 });
