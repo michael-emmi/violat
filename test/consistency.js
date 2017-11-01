@@ -101,4 +101,10 @@ describe('consistency', function() {
     assert.ok(Consistency.full().compare(C1) === COMPARISONS.greater);
     assert.ok(C1.compare(C1) === COMPARISONS.equal);
   });
+
+  it (`join`, function() {
+    assert.equal(Consistency.join(C1,C1,C1).length, 1);
+    assert.equal(Consistency.join(C1,C2,C1).length, 2);
+    assert.equal(Consistency.join(C2,C3,C1).length, 3);
+  });
 });
