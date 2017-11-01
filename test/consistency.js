@@ -3,7 +3,7 @@ const debug = require('debug')('consistency');
 
 const PartialOrder = require('../lib/partial-order');
 const {
-  RELATIONS, COMPOSITIONS, EXPRESSIONS, BASIC_LEVELS,
+  RELATIONS, COMPOSITIONS, EXPRESSIONS, BASIC_LEVELS, COMPARISONS,
   Consistency } = require('../lib/consistency');
 
 const I1 = { id: 1, atomic: true };
@@ -91,5 +91,14 @@ describe('consistency', function() {
   it (`simplification`, function() {
     assert.ok(C1.simplify().includes(linIncludesPo));
     assert.ok(!C1.simplify().includes(consistentReturns));
+  });
+
+  it (`comparison`, function() {
+    assert.ok(C1.compare(C2) === COMPARISONS.incomparable);
+    assert.ok(C1.compare(C3) === COMPARISONS.incomparable);
+    assert.ok(C2.compare(C3) === COMPARISONS.incomparable);
+    assert.ok(C1.compare(Consistency.full()) === COMPARISONS.lesser);
+    assert.ok(Consistency.full().compare(C1) === COMPARISONS.greater);
+    assert.ok(C1.compare(C1) === COMPARISONS.equal);
   });
 });
