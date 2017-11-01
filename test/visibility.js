@@ -1,9 +1,9 @@
 const fs = require('fs');
 const assert = require('assert');
 const PartialOrder = require('../lib/partial-order');
-const Properties = require('../lib/outcome-properties');
 const visibility = require('../lib/visibility');
 const Atomicity = require('./atomicity');
+const { Consistency } = require('../lib/consistency');
 
 function pairs(values) {
   return [].concat(...values.map(x => values.map(y => [x,y])));
@@ -31,7 +31,7 @@ const PO1 = new PartialOrder();
 PO1.sequence(I1, I2);
 PO1.sequence(I3, I4);
 
-const L1 = { sequence: [I1, I4, I2, I3], properties: Properties.empty() };
+const L1 = { sequence: [I1, I4, I2, I3], consistency: Consistency.full() };
 
 const T1 = testcase(
   PO1, L1, Atomicity.ATOMIC,
