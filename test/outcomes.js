@@ -21,7 +21,7 @@ function schema(klass, ...seqs) {
 }
 
 async function get(schema, opts) {
-  return (await outcomes([schema], opts || ATOMIC))[0].outcomes.map(o => o.values);
+  return (await outcomes([schema], opts || ATOMIC))[0].outcomes.map(o => o.values());
 }
 
 function testcase(schema, opts, expected) {
