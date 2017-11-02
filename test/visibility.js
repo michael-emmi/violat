@@ -37,20 +37,20 @@ const T1 = testcase(
   PO1, L1, Atomicity.ATOMIC,
   [ [ [I1,I4], [I1,I2], [I1,I3],
       [I4,I2],
-      [I2,I3], [I3,I3] ] ] );
+      [I2,I3] ] ] );
 
 const T2 = testcase(
   PO1, L1, Atomicity.WEAKEST,
   [ [ [I1,I4], [I1,I2], [I1,I3],
       [I4,I2],
-      [I2,I3], [I3,I3] ],
+      [I2,I3] ],
     [ [I1,I4], [I1,I2], [I1,I3],
-      [I2,I3], [I3,I3] ],
+      [I2,I3] ],
     [ [I1,I2], [I1,I3],
       [I4,I2],
-      [I2,I3], [I3,I3] ],
+      [I2,I3] ],
     [ [I1,I2], [I1,I3],
-      [I2,I3], [I3,I3] ] ] );
+      [I2,I3] ] ] );
 
 describe('visibility', function() {
 
