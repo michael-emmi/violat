@@ -59,7 +59,7 @@ let cli = meow(`
     console.log(result.harness);
     console.log(`---`);
     for (let outcome of result.outcomes) {
-      if (outcome.expectation == 'FORBIDDEN') {
+      if (outcome.expectation == 'FORBIDDEN' && outcome.count > 0) {
         violations++;
         console.log(`${outcome.count} of ${result.total} executions gave violating outcome: ${outcome.result}`);
       } else if (outcome.expectation == 'ACCEPTABLE_INTERESTING' && outcome.count > 0) {
