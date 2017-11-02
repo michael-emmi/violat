@@ -11,6 +11,7 @@ let meta = require('../package.json');
 let name = Object.keys(meta.bin)
   .find(key => meta.bin[key].match(path.basename(__filename)));
 
+const { Schema } = require(path.join(__dirname, '../lib', 'schema.js'));
 const annotate = require(path.join(__dirname, '../lib', 'outcomes.js'));
 const translate = require(path.join(__dirname, '../lib', 'translation.js'));
 const test = require(path.join(__dirname, '../lib', 'jcstress.js'));
@@ -42,7 +43,7 @@ let cli = meow(`
   if (!(cli.input.length == 1 && cli.input[0]))
     cli.showHelp();
 
-  let schema = JSON.parse(fs.readFileSync(cli.input[0]));
+  let schema = Schema.fromJson(fs.readFileSync(cli.input[0]));
   let args = Object.assign({}, cli.flags);
 
   console.log(`${cli.pkg.name} version ${cli.pkg.version}`);
