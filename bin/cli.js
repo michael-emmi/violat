@@ -59,15 +59,21 @@ let cli = meow(`
     console.log(result.harness);
     console.log(`---`);
     for (let outcome of result.outcomes) {
-      if (outcome.expectation == 'FORBIDDEN' && outcome.count > 0) {
+      if (outcome.count < 1 || outcome.expectation === 'ACCEPTABLE')
+        continue;
+
+      if (outcome.expectation == 'FORBIDDEN') {
         violations++;
         console.log(`${outcome.count} of ${result.total} executions gave violating outcome: ${outcome.result}`);
-      } else if (outcome.expectation == 'ACCEPTABLE_INTERESTING' && outcome.count > 0) {
+
+      } else if (outcome.expectation == 'ACCEPTABLE_INTERESTING') {
         weaknesses++;
-        console.log(`${outcome.count} of ${result.total} executions gave weak(${outcome.description}) outcome: ${outcome.result}`);
+        console.log(`${outcome.count} of ${result.total} executions gave weak outcome: ${outcome.result}`);
+        console.log(`consistency: ${outcome.description}`);
       }
+
+      console.log(`---`);
     }
-    console.log(`---`);
   };
 
   let results = args.methods
