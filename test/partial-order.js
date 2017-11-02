@@ -48,7 +48,8 @@ describe('partial order', function() {
 
   it (`isBefore() reflects transitive closure after drop()`, function() {
     assert.deepEqual(new Set(beforePairs(PO3)), new Set([
-      [1,2],
+      [1,2], [1,4], [1,5],
+      [2,4], [2,5],
       [4,5]
     ]));
   });
@@ -63,7 +64,7 @@ describe('partial order', function() {
   it (`minimals() returns the minimal values`, function() {
     assert.deepEqual(new Set(PO1.minimals()), new Set([1]));
     assert.deepEqual(new Set(PO2.minimals()), new Set([1]));
-    assert.deepEqual(new Set(PO3.minimals()), new Set([1,4]));
+    assert.deepEqual(new Set(PO3.minimals()), new Set([1]));
     assert.deepEqual(new Set(PO4.minimals()), new Set([1,2,3]));
   });
 
