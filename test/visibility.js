@@ -31,28 +31,26 @@ const PO1 = new PartialOrder();
 PO1.sequence(I1, I2);
 PO1.sequence(I3, I4);
 
-const L1 = { sequence: [I1, I4, I2, I3], consistency: Consistency.full() };
+const L1 = { sequence: [I1, I4, I2, I3], consistency: Consistency.top() };
 
 const T1 = testcase(
   PO1, L1, Atomicity.ATOMIC,
-  [ [ [I1,I1], [I1,I4], [I1,I2], [I1,I3],
-      [I4,I4], [I4,I2],
-      [I2,I2], [I2,I3], [I3,I3] ] ] );
+  [ [ [I1,I4], [I1,I2], [I1,I3],
+      [I4,I2],
+      [I2,I3], [I3,I3] ] ] );
 
 const T2 = testcase(
   PO1, L1, Atomicity.WEAKEST,
-  [ [ [I1,I1], [I1,I4], [I1,I2], [I1,I3],
-      [I4,I4], [I4,I2],
-      [I2,I2], [I2,I3], [I3,I3] ],
-    [ [I1,I1], [I1,I4], [I1,I2], [I1,I3],
-      [I4,I4],
-      [I2,I2], [I2,I3], [I3,I3] ],
-    [ [I1,I1], [I1,I2], [I1,I3],
-      [I4,I4], [I4,I2],
-      [I2,I2], [I2,I3], [I3,I3] ],
-    [ [I1,I1], [I1,I2], [I1,I3],
-      [I4,I4],
-      [I2,I2], [I2,I3], [I3,I3] ] ] );
+  [ [ [I1,I4], [I1,I2], [I1,I3],
+      [I4,I2],
+      [I2,I3], [I3,I3] ],
+    [ [I1,I4], [I1,I2], [I1,I3],
+      [I2,I3], [I3,I3] ],
+    [ [I1,I2], [I1,I3],
+      [I4,I2],
+      [I2,I3], [I3,I3] ],
+    [ [I1,I2], [I1,I3],
+      [I2,I3], [I3,I3] ] ] );
 
 describe('visibility', function() {
 

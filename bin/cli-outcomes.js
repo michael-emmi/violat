@@ -52,7 +52,7 @@ let cli = meow(`
   console.log(`---`);
 
   for (let outcome of annotated[0].outcomes) {
-    console.log(outcome);
+    console.log(`${outcome}`);
     console.log(`---`);
   }
 

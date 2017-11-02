@@ -3,8 +3,9 @@ const debug = require('debug')('consistency');
 
 const PartialOrder = require('../lib/partial-order');
 const {
-  RELATIONS, COMPOSITIONS, EXPRESSIONS, BASIC_LEVELS, COMPARISONS,
-  Consistency } = require('../lib/consistency');
+  PROPERTIES, RELATIONS, COMPOSITIONS, EXPRESSIONS, ATTRIBUTES, COMPARISONS,
+  ConsistencyLevel, Consistency
+} = require('../lib/consistency');
 
 const I1 = { id: 1, atomic: true };
 const I2 = { id: 2, atomic: true };
@@ -30,75 +31,53 @@ const V1 = new PartialOrder();
 V1.sequence(I1, I3);
 V1.add(I2);
 
-let C1 = Consistency.full();
-C1 = C1.weakenRelationalLevel(RELATIONS.linearization, RELATIONS.programorder, L1, P1, I1, I2);
-C1 = C1.weakenSimpleLevel(BASIC_LEVELS.consistentreturns, I3);
+let C1 = Consistency.top()
+  .weakenRelationalLevel(RELATIONS.linearization, RELATIONS.programorder, L1, P1, I1, I2)
+  .weakenSimpleLevel('consistent_returns', I3);
 
-let C2 = Consistency.full();
-C2 = C2.weakenRelationalLevel(RELATIONS.linearization, RELATIONS.programorder, L2, P1, I1, I2);
+let C2 = Consistency.top()
+  .weakenRelationalLevel(RELATIONS.linearization, RELATIONS.programorder, L2, P1, I1, I2);
 
-let C3 = Consistency.full();
-C3 = C3.weakenRelationalLevel(RELATIONS.linearization, RELATIONS.programorder, L3, P1, I1, I2);
-C3 = C3.weakenRelationalLevel(RELATIONS.visibility, RELATIONS.linearization, V1, L3, I1, I2);
+let C3 = Consistency.top()
+  .weakenRelationalLevel(RELATIONS.linearization, RELATIONS.programorder, L3, P1, I1, I2)
+  .weakenRelationalLevel(RELATIONS.visibility, RELATIONS.linearization, V1, L3, I1, I2);
 
-let linIncludesPo = Consistency.level(
-  RELATIONS.linearization, RELATIONS.programorder,
-  COMPOSITIONS.simple,
-  EXPRESSIONS.wildcard, EXPRESSIONS.wildcard);
+const TOP1 = ConsistencyLevel.top(1);
+const TOP2 = ConsistencyLevel.top(2);
 
-let linIncludesPoB = Consistency.level(
-  RELATIONS.linearization, RELATIONS.programorder,
-  COMPOSITIONS.simple,
-  EXPRESSIONS.bottom, EXPRESSIONS.bottom);
+const ATOMIC1 = ConsistencyLevel.atomic(1);
+const ATOMIC2 = ConsistencyLevel.atomic(2);
 
-let visIndludesPo = Consistency.level(
-  RELATIONS.visibility, RELATIONS.programorder,
-  COMPOSITIONS.simple,
-  EXPRESSIONS.wildcard, EXPRESSIONS.wildcard);
-
-let visIndludesLin = Consistency.level(
-  RELATIONS.visibility, RELATIONS.linearization,
-  COMPOSITIONS.simple,
-  EXPRESSIONS.wildcard, EXPRESSIONS.wildcard);
-
-let consistentReturns = Consistency.level(
-  BASIC_LEVELS.consistentreturns, EXPRESSIONS.wildcard);
-
-let consistentReturnsA = Consistency.level(
-  BASIC_LEVELS.consistentreturns, EXPRESSIONS.atomic);
+const BOTTOM1 = ConsistencyLevel.bottom(1);
+const BOTTOM2 = ConsistencyLevel.bottom(2);
 
 describe('consistency', function() {
 
   it (`basic inclusion`, function() {
-    assert.ok(C1.includes(linIncludesPo));
-    assert.ok(C2.includes(consistentReturnsA));
-    assert.ok(C3.includes(consistentReturnsA));
+    assert.ok(C1.includes('lin_contains_po', TOP2));
+    assert.ok(C2.includes('consistent_returns', TOP1));
+    assert.ok(C3.includes('consistent_returns', ATOMIC1));
   });
 
   it (`basic exclusion`, function() {
-    assert.ok(C1.includes(consistentReturnsA));
-    assert.ok(!C1.includes(consistentReturns));
-    assert.ok(C2.includes(linIncludesPoB));
-    assert.ok(!C2.includes(linIncludesPo));
+    assert.ok(C1.includes('consistent_returns', ATOMIC1));
+    assert.ok(!C1.includes('consistent_returns', TOP1));
+    assert.ok(C2.includes('lin_contains_po', BOTTOM2));
+    assert.ok(!C2.includes('lin_contains_po', ATOMIC2));
   });
 
   it (`mixed levels`, function() {
-    assert.ok(C3.includes(linIncludesPo));
-    assert.ok(C3.includes(visIndludesPo));
-    assert.ok(!C3.includes(visIndludesLin));
-  });
-
-  it (`simplification`, function() {
-    assert.ok(C1.simplify().includes(linIncludesPo));
-    assert.ok(!C1.simplify().includes(consistentReturns));
+    assert.ok(C3.includes('lin_contains_po', ATOMIC2));
+    assert.ok(C3.includes('vis_contains_po', ATOMIC2));
+    assert.ok(!C3.includes('vis_contains_lin', ATOMIC2));
   });
 
   it (`comparison`, function() {
     assert.ok(C1.compare(C2) === COMPARISONS.incomparable);
     assert.ok(C1.compare(C3) === COMPARISONS.incomparable);
     assert.ok(C2.compare(C3) === COMPARISONS.incomparable);
-    assert.ok(C1.compare(Consistency.full()) === COMPARISONS.lesser);
-    assert.ok(Consistency.full().compare(C1) === COMPARISONS.greater);
+    assert.ok(C1.compare(Consistency.top()) === COMPARISONS.lesser);
+    assert.ok(Consistency.top().compare(C1) === COMPARISONS.greater);
     assert.ok(C1.compare(C1) === COMPARISONS.equal);
   });
 
