@@ -43,6 +43,8 @@ let cli = meow(`
     cli.showHelp();
 
   let schema = Schema.fromJson(fs.readFileSync(cli.input[0]));
+  if (!schema.id)
+    schema.id = 0;
   let args = Object.assign({}, cli.flags);
 
   console.log(`${cli.pkg.name} version ${cli.pkg.version}`);

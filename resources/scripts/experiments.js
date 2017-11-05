@@ -1,3 +1,4 @@
+const debug = require('debug')('experiments');
 const fs = require('fs');
 const config = require('../../lib/config.js');
 const checker = require('../../lib/index.js');
@@ -43,6 +44,7 @@ async function run() {
         } else if (outcome.expectation == 'ACCEPTABLE_INTERESTING') {
           console.log(`${outcome.count} of ${result.total} executions gave weak outcome: ${outcome.result}`);
           console.log(`consistency: ${outcome.consistency}`);
+          debug(outcome);
         }
 
         console.log(`---`);
