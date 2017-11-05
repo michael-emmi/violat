@@ -4,40 +4,55 @@ const checker = require('../../lib/index.js');
 
 const experiments = require('./experiment-list.js');
 
+function printTime(hrtime) {
+  return `${(0.0 + hrtime[0] + hrtime[1] / 1e9).toFixed(3)}s`;
+}
+
 async function run() {
-  console.log(`---`);
   console.log(`Running ${experiments.name}`);
+  console.log(`---`);
 
   for (let experiment of experiments.list) {
-    console.log(`---`);
     console.log(`running experiment: ${experiment.name}`);
     console.log(`---`);
     let args = experiment.parameters;
 
-    let results = await checker.testMethod(Object.assign({},
-      args,
-      {spec: JSON.parse(fs.readFileSync(args.spec))}
-    ));
+    args.spec = JSON.parse(fs.readFileSync(args.spec));
 
-    for (let result of results) {
-      if (result.outcomes.every(x => x.expectation == 'ACCEPTABLE' || x.count < 1))
-        continue;
+    let startTime = process.hrtime();
+    let firstTime;
 
-      console.log(`Violation/weakness discovered in the following harness.`);
-      console.log(`---`);
-      console.log(result.harness);
-      console.log(`---`);
-      let total = result.outcomes.reduce((sum,x) => sum + x.count, 0);
-      for (let outcome of result.outcomes) {
-        if (outcome.count < 1)
-          continue;
-        else if (outcome.expectation == 'FORBIDDEN')
-          console.log(`${outcome.count} of ${total} executions gave violating outcome: ${outcome.result}`);
-        else if (outcome.expectation == 'ACCEPTABLE_INTERESTING')
-          console.log(`${outcome.count} of ${total} executions gave weak(${outcome.description}) outcome: ${outcome.result}`);
+    args.onResult = function(result) {
+      if (!firstTime) {
+        firstTime = process.hrtime(startTime);
+        console.log(`first result after ${printTime(firstTime)}`);
+        console.log(`---`);
       }
+
+      console.log(`Violation or weakness discovered in the following schema.`);
       console.log(`---`);
-    }
+      console.log(`${result.schema}`);
+      console.log(`---`);
+      for (let outcome of result.outcomes) {
+        if (outcome.count < 1 || outcome.expectation === 'ACCEPTABLE')
+          continue;
+
+        if (outcome.expectation == 'FORBIDDEN') {
+          console.log(`${outcome.count} of ${result.total} executions gave violating outcome: ${outcome.result}`);
+
+        } else if (outcome.expectation == 'ACCEPTABLE_INTERESTING') {
+          console.log(`${outcome.count} of ${result.total} executions gave weak outcome: ${outcome.result}`);
+          console.log(`consistency: ${outcome.consistency}`);
+        }
+
+        console.log(`---`);
+      }
+    };
+
+    let results = await checker.testMethod(args);
+    let elapsedTime = process.hrtime(startTime);
+    console.log(`experiment ended after ${printTime(elapsedTime)}`);
+    console.log(`---`);
   }
 
   console.log(`Experiments completed`);
