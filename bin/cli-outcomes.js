@@ -13,7 +13,6 @@ let name = Object.keys(meta.bin)
 
 const { Schema } = require(path.join(__dirname, '../lib', 'schema.js'));
 const annotate = require(path.join(__dirname, '../lib', 'outcomes.js'));
-const translate = require(path.join(__dirname, '../lib', 'translation.js'));
 const test = require(path.join(__dirname, '../lib', 'jcstress.js'));
 
 let cli = meow(`
@@ -57,15 +56,15 @@ let cli = meow(`
     console.log(`---`);
   }
 
-  let translated = await translate(annotated, 'Blah');
-  let testResults = await test(translated);
+  let testResults = await test(annotated, 'Blah');
   let outcomes = testResults[0].outcomes.filter(o => o.count > 0);
 
   console.log(`observed ${outcomes.length} outcomes`);
   console.log(`---`);
 
   for (let outcome of outcomes) {
-    console.log(outcome);
+    console.log(`${outcome.count} of ${testResults[0].total} executions gave outcome: ${outcome.result}`);
+    console.log(`consistency: ${outcome.consistency}`);
     console.log(`---`);
   }
 })();

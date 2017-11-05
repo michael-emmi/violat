@@ -82,8 +82,8 @@ describe('consistency', function() {
   });
 
   it (`join`, function() {
-    assert.equal(Consistency.join(C1,C1,C1).length, 1);
-    assert.equal(Consistency.join(C1,C2,C1).length, 2);
-    assert.equal(Consistency.join(C2,C3,C1).length, 3);
+    assert.equal(Consistency.join(C1,C1,C1).size, 1);
+    assert.equal(Consistency.join(C1,C2,C1).size, 2);
+    assert.equal(Consistency.join(C2,C3,C1).size, 3);
   });
 });
