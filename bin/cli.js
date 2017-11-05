@@ -54,24 +54,21 @@ let cli = meow(`
   console.log(`---`);
 
   args.onResult = function(result) {
-    console.log(`Violation or weakness discovered in the following schema.`);
+    console.log(`Violation or weakness discovered over ${result.total} executions of the following schema.`);
     console.log(`---`);
     console.log(`${result.schema}`);
     console.log(`---`);
+
     for (let outcome of result.outcomes) {
-      if (outcome.count < 1 || outcome.expectation === 'ACCEPTABLE')
+      if (outcome.count < 1 || outcome.isAtomic())
         continue;
 
-      if (outcome.expectation == 'FORBIDDEN') {
+      if (outcome.isIncosistent())
         violations++;
-        console.log(`${outcome.count} of ${result.total} executions gave violating outcome: ${outcome.result}`);
-
-      } else if (outcome.expectation == 'ACCEPTABLE_INTERESTING') {
+      else if (outcome.isWeak())
         weaknesses++;
-        console.log(`${outcome.count} of ${result.total} executions gave weak outcome: ${outcome.result}`);
-        console.log(`consistency: ${outcome.consistency}`);
-      }
 
+      console.log(`${outcome}`);
       console.log(`---`);
     }
   };

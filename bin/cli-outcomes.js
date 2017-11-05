@@ -59,14 +59,14 @@ let cli = meow(`
   }
 
   let testResults = await test(annotated, 'Blah');
+  let total = testResults[0].total;
   let outcomes = testResults[0].outcomes.filter(o => o.count > 0);
 
-  console.log(`observed ${outcomes.length} outcomes`);
+  console.log(`observed ${outcomes.length} outcomes in ${total} executions`);
   console.log(`---`);
 
   for (let outcome of outcomes) {
-    console.log(`${outcome.count} of ${testResults[0].total} executions gave outcome: ${outcome.result}`);
-    console.log(`consistency: ${outcome.consistency}`);
+    console.log(`${outcome}`);
     console.log(`---`);
   }
 })();
