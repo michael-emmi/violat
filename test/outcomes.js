@@ -2,26 +2,30 @@ const fs = require('fs');
 const assert = require('assert');
 const outcomes = require('../lib/outcomes');
 const Atomicity = require('./atomicity');
+const { Schema } = require('../lib/schema.js');
 
 function schema(klass, ...seqs) {
   let count = 0;
-  return {
+  return new Schema({
     class: klass,
     parameters: [],
     sequences: seqs.map((invs,idx) => ({
       index: idx,
-      invocations: invs.map(([m,ps,args,at]) => ({
-        method: { name: m, parameters: ps.map(t => ({ type: t })) },
+      invocations: invs.map(([m,ps,args,at,v]) => ({
+        method: { name: m, parameters: ps.map(t => ({ type: t })), void: v },
         arguments: args,
-        atomic: at
+        atomic: at,
       }))
     })),
     order: []
-  };
+  });
 }
 
 async function get(schema, opts) {
-  return (await outcomes([schema], opts || ATOMIC))[0].outcomes.map(o => o.values());
+  let results = await outcomes([schema], opts || ATOMIC);
+  let first = results[0];
+  let values = first.outcomes.map(o => Object.values(o.results));
+  return values;
 }
 
 function testcase(schema, opts, expected) {
@@ -33,21 +37,21 @@ function testcase(schema, opts, expected) {
 
 const T1 = testcase(
   schema('java.util.concurrent.ConcurrentHashMap',
-    [ ['clear', [], [], false],
-      ['put', ['java.lang.Object','java.lang.Object'], [0,1], true] ],
-    [ ['containsKey', ['java.lang.Object'], [1], true],
-      ['remove', ['java.lang.Object'], [0], true] ] ),
+    [ ['clear', [], [], false, true],
+      ['put', ['java.lang.Object','java.lang.Object'], [0,1], true, false] ],
+    [ ['containsKey', ['java.lang.Object'], [1], true, false],
+      ['remove', ['java.lang.Object'], [0], true, false] ] ),
   Atomicity.WEAKEST,
   [ ['null', 'null', 'false', '1'],
     ['null', 'null', 'false', 'null'] ] );
 
 const T2 = testcase(
   schema('java.util.concurrent.ConcurrentHashMap',
-    [ ['put', ['java.lang.Object','java.lang.Object'], [0,0], true],
-      ['put', ['java.lang.Object','java.lang.Object'], [1,0], true],
-      ['remove', ['java.lang.Object'], [1], true] ],
-    [ ['put', ['java.lang.Object','java.lang.Object'], [0,1], true],
-      ['clear', [], [], false] ] ),
+    [ ['put', ['java.lang.Object','java.lang.Object'], [0,0], true, false],
+      ['put', ['java.lang.Object','java.lang.Object'], [1,0], true, false],
+      ['remove', ['java.lang.Object'], [1], true, false] ],
+    [ ['put', ['java.lang.Object','java.lang.Object'], [0,1], true, false],
+      ['clear', [], [], false, true] ] ),
     Atomicity.WEAKEST,
     [ ['null', 'null', '0', '0', 'null'],
       ['null', 'null', 'null', '0', 'null'],
