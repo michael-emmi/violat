@@ -12,7 +12,7 @@ function pairs(values) {
 }
 
 function vizPairs(po, lin, opts) {
-  return visibility(po, lin, opts).map(viz => {
+  return [...visibility(po, lin, opts)].map(viz => {
     return pairs(viz.values()).filter(([x,y]) => viz.isVisible(x,y));
   });
 }
