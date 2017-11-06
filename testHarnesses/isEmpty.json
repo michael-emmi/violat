@@ -18,12 +18,12 @@
         { "method": { "name": "put", "parameters": [
             { "type" : "java.lang.Object" },
             { "type" : "java.lang.Object" } ] },
-          "arguments": [ 1, 1 ],
+          "arguments": [ 1, 2 ],
           "atomic": true },
         { "method": { "name": "isEmpty", "parameters": [ ] },
           "arguments": [ ],
           "atomic": false }
           ] }
     ],
-  "order": [] 
+  "order": []
 }
