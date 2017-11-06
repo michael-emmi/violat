@@ -1,9 +1,11 @@
 const fs = require('fs');
 const assert = require('assert');
+const debug = require('debug')('visibility');
 const PartialOrder = require('../lib/partial-order');
 const visibility = require('../lib/visibility');
 const Atomicity = require('./atomicity');
 const { Consistency } = require('../lib/consistency');
+const { Schema, Invocation } = require('../lib/schema.js');
 
 function pairs(values) {
   return [].concat(...values.map(x => values.map(y => [x,y])));
@@ -22,10 +24,10 @@ function testcase(po, lin, opts, expected) {
   };
 }
 
-const I1 = { id: 1, atomic: true };
-const I2 = { id: 2, atomic: true };
-const I3 = { id: 3, atomic: true };
-const I4 = { id: 4, atomic: false };
+const I1 = new Invocation({ id: 1, atomic: true });
+const I2 = new Invocation({ id: 2, atomic: true });
+const I3 = new Invocation({ id: 3, atomic: true });
+const I4 = new Invocation({ id: 4, atomic: false });
 
 const PO1 = new PartialOrder();
 PO1.sequence(I1, I2);
@@ -55,6 +57,8 @@ const T2 = testcase(
 describe('visibility', function() {
 
   it (`visibility() reflects visibilities`, function() {
+    debug(T2.compute().size);
+    debug(T2.expected().size);
     assert.deepEqual(T1.compute(), T1.expected());
     assert.deepEqual(T2.compute(), T2.expected());
   });
