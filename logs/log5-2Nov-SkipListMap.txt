@@ -1,0 +1,4327 @@
+---
+Running Experiments V1.0
+---
+running experiment: ConcurrentSkipListMap - Weak atomicity in clear method
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, 0, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@State
+public class ConcurrentSkipListMapClearTest742 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult3 result) {
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+        try {
+            result.r1 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult3 result) {
+        try {
+            result.r3 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+1735 of 2598390 executions gave weak({ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A...) outcome: null, null, null
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentSkipListMapClearTest844 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult3 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult3 result) {
+        try {
+            result.r2 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.remove(1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+15 of 2759970 executions gave weak({ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A...) outcome: null, null, 1
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, 0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@State
+public class ConcurrentSkipListMapClearTest1265 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult3 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult3 result) {
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.remove(1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+765 of 2214940 executions gave weak({ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A...) outcome: null, null, null
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, 0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentSkipListMapClearTest1334 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult3 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult3 result) {
+        try {
+            result.r2 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.remove(1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+14 of 2406030 executions gave weak({ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A...) outcome: null, null, 0
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentSkipListMapClearTest1551 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult3 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult3 result) {
+        try {
+            result.r2 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.get(1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+6 of 2621060 executions gave weak({ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A...) outcome: null, null, 1
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, 0, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentSkipListMapClearTest2745 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult3 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.get(1));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult3 result) {
+        try {
+            result.r3 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+21 of 3250670 executions gave weak({ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A...) outcome: null, 0, null
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, true",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, false",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentSkipListMapClearTest3034 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult3 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult3 result) {
+        try {
+            result.r2 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.containsKey(1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+9 of 2543060 executions gave weak({ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A...) outcome: null, null, true
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, true, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, false, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentSkipListMapClearTest3271 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult3 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.containsKey(1));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult3 result) {
+        try {
+            result.r3 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+10 of 2462070 executions gave weak({ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A...) outcome: null, true, null
+---
+---
+running experiment: ConcurrentSkipListMap - Weak atomicity in pollFirstEntry method
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, null, null, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,A], W(vis,lin)[.][A,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null, 1=1, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null, 0=1, 1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null, 1=1, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, 0=1, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 1, null, null, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,A], W(vis,lin)[.][A,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 1, null, 1=1, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 1, null, 0=1, 1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 1, null, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][A,A], W(vis,vis)[L][*,*], W(ret)[!] }"
+         + "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 1, null, 1=1, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[!] }")
+@Outcome(
+    id = "null, 1, null, 0=1, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@State
+public class ConcurrentSkipListMapPollFirstEntryTest117 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult5 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.get(1));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult5 result) {
+        try {
+            result.r3 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.pollFirstEntry());
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+        try {
+            result.r5 = ResultAdapter.get(obj.remove(1));
+        } catch (Exception e) {
+            result.r5 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+242 of 1051430 executions gave weak({ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][*,A...) outcome: null, 1, null, 1=1, null
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, null, null, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0=1, null, null, 1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 1=1, null, null, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 1=1, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 0=1, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentSkipListMapPollFirstEntryTest694 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult5 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.pollFirstEntry());
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult5 result) {
+        try {
+            result.r3 = ResultAdapter.get(obj.remove(0));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+        try {
+            result.r5 = ResultAdapter.get(obj.get(1));
+        } catch (Exception e) {
+            result.r5 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+30 of 1657130 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A...) outcome: null, 1=1, null, null, 1
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, 1, true, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, 1, true, 0=1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, 1, true, 1=1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null, true, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "null, null, null, true, 0=1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, true, 1=1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "null, null, 1, false, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "null, null, 1, false, 1=1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentSkipListMapPollFirstEntryTest770 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult5 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.get(0));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.containsKey(1));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult5 result) {
+        try {
+            result.r5 = ResultAdapter.get(obj.pollFirstEntry());
+        } catch (Exception e) {
+            result.r5 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+12 of 1816290 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A...) outcome: null, null, 1, true, 1=1
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, null, null, 0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "0=0, null, null, null, 0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "1=0, null, null, null, 0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "1=0, null, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 0, null, null, 0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "0=0, 0, null, null, 0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "1=0, 0, null, null, 0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0, null, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "1=0, 0, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentSkipListMapPollFirstEntryTest812 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult5 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.pollFirstEntry());
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.get(0));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult5 result) {
+        try {
+            result.r3 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+        try {
+            result.r5 = ResultAdapter.get(obj.get(1));
+        } catch (Exception e) {
+            result.r5 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+443 of 1766250 executions gave weak({ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A...) outcome: 1=0, 0, null, null, 0
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, 1, null, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,A], W(vis,lin)[.][A,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0=1, 1, null, 1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 1=1, 1, null, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, 1, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,A], W(vis,lin)[.][A,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 1=1, 1, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[!] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "null, null, null, null, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][A,A], W(vis,vis)[L][*,*], W(ret)[!] }"
+         + "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 1=1, null, null, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[!] }"
+         + "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 1=1, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 0=1, null, null, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0=1, null, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0=1, 1, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentSkipListMapPollFirstEntryTest1054 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult5 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.pollFirstEntry());
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.get(1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult5 result) {
+        try {
+            result.r4 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+        try {
+            result.r5 = ResultAdapter.get(obj.get(1));
+        } catch (Exception e) {
+            result.r5 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+2 of 960540 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*...) outcome: null, 1=1, null, null, 1
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, 1, null, true",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,A], W(vis,lin)[.][A,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0=0, 1, null, true",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 1=1, 1, null, true",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, 1, null, false",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,A], W(vis,lin)[.][A,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 1=1, 1, null, false",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[!] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "null, null, null, null, true",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][A,A], W(vis,vis)[L][*,*], W(ret)[!] }"
+         + "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null, null, false",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 1=1, null, null, true",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[!] }"
+         + "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 1=1, null, null, false",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 0=0, null, null, true",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0=0, null, null, false",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0=0, 1, null, false",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentSkipListMapPollFirstEntryTest1152 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult5 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.pollFirstEntry());
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.get(1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult5 result) {
+        try {
+            result.r4 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+        try {
+            result.r5 = ResultAdapter.get(obj.containsKey(1));
+        } catch (Exception e) {
+            result.r5 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+12 of 1372290 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*...) outcome: null, 1=1, null, null, true
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, false, null, 1, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, false, null, 1, 1=1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, false, null, 1, 0=1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, true, null, 1, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, true, null, 1, 1=1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, true, null, 1, 0=1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, true, null, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, true, null, null, 0=1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, true, null, null, 1=1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, false, null, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "null, false, null, null, 1=1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentSkipListMapPollFirstEntryTest1582 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult5 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.containsKey(1));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult5 result) {
+        try {
+            result.r3 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.remove(0));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+        try {
+            result.r5 = ResultAdapter.get(obj.pollFirstEntry());
+        } catch (Exception e) {
+            result.r5 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+266 of 1685250 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A...) outcome: null, true, null, null, 1=1
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, null, 0, 0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0=0, null, 0, 0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 1=0, null, 0, 0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null, 0, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "null, 0=0, null, 0, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 1=0, null, 0, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "null, null, null, null, 0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 1=0, null, null, 0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 0=0, null, null, 0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "null, 1=0, null, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "null, 0=0, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentSkipListMapPollFirstEntryTest1639 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult5 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.pollFirstEntry());
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult5 result) {
+        try {
+            result.r3 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.get(1));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+        try {
+            result.r5 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r5 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+55 of 1088250 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A...) outcome: null, 1=0, null, 0, 0
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, true, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, true, null, 1=0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[!] }")
+@Outcome(
+    id = "null, null, true, null, 0=1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 0, true, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0, true, null, 1=0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[!] }")
+@Outcome(
+    id = "null, 0, true, null, 0=1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, false, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, false, null, 1=0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, false, null, 0=1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 0, false, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0, false, null, 1=0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0, false, null, 0=1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentSkipListMapPollFirstEntryTest1667 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult5 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.get(1));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult5 result) {
+        try {
+            result.r3 = ResultAdapter.get(obj.containsKey(0));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+        try {
+            result.r5 = ResultAdapter.get(obj.pollFirstEntry());
+        } catch (Exception e) {
+            result.r5 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+7 of 1153950 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A...) outcome: null, 0, false, null, 1=0
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "false, null, null, 0, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "false, null, null, 0, 1=0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "false, null, null, 0, 0=1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "false, null, null, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "false, null, null, null, 1=0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentSkipListMapPollFirstEntryTest1832 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult5 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.containsKey(0));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult5 result) {
+        try {
+            result.r5 = ResultAdapter.get(obj.pollFirstEntry());
+        } catch (Exception e) {
+            result.r5 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+13 of 1676080 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A...) outcome: false, null, null, 0, 1=0
+---
+---
+running experiment: ConcurrentSkipListMap - Weak atomicity in pollLastEntry method
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, true, null, 0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,A], W(vis,lin)[.][A,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0=1, true, null, 0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "null, 1=0, true, null, 0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 0=0, true, null, 0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[!] }")
+@Outcome(
+    id = "null, null, true, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "null, 0=0, true, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, false, null, 0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][A,A], W(vis,vis)[L][*,*], W(ret)[!] }"
+         + "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, false, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "null, 0=0, false, null, 0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[!] }"
+         + "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0=0, false, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 0=1, false, null, 0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 1=0, false, null, 0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "1, null, false, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "1, 0=0, false, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "1, 0=1, false, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "1, 1=0, false, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "1, null, true, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,A], W(vis,lin)[.][A,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "1, 0=0, true, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "1, 0=1, true, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,A], W(vis,lin)[.][A,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "1, 1=0, true, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentSkipListMapPollLastEntryTest212 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult5 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.pollLastEntry());
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.containsKey(0));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult5 result) {
+        try {
+            result.r4 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+        try {
+            result.r5 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r5 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+4 of 894560 executions gave weak({ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][*,A...) outcome: null, 0=1, false, null, 0
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, null, 0, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null, 0, 0=1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null, 0, 0=0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null, 0, 1=0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, 1, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, 1, null, 0=0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, 1, null, 0=1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, 1, null, 1=0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "null, null, null, null, 0=1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "1, null, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "1, null, null, null, 0=0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "1, null, null, null, 1=0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "1, null, null, null, 0=1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@State
+public class ConcurrentSkipListMapPollLastEntryTest455 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult5 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.remove(0));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult5 result) {
+        try {
+            result.r4 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+        try {
+            result.r5 = ResultAdapter.get(obj.pollLastEntry());
+        } catch (Exception e) {
+            result.r5 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+1 of 1266450 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A...) outcome: null, null, 1, null, 0=0
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, null, null, 0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0=1, null, null, 0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 1=0, null, null, 0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 0=0, null, null, 0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "null, 0=0, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "1, null, null, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "1, 0=0, null, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "1, 0=1, null, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "1, 1=0, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentSkipListMapPollLastEntryTest952 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult5 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.pollLastEntry());
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult5 result) {
+        try {
+            result.r3 = ResultAdapter.get(obj.remove(1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+        try {
+            result.r5 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r5 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+2 of 1183910 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A...) outcome: null, 0=1, null, null, 0
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, null, 0, true",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "1=0, null, null, 0, true",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "0=0, null, null, 0, true",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null, 0, false",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,A], W(vis,vis)[L][*,*], W(ret)[!] }")
+@Outcome(
+    id = "null, null, null, null, true",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,A], W(vis,vis)[L][*,*], W(ret)[!] }")
+@Outcome(
+    id = "null, null, null, null, false",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "0=0, null, null, 0, false",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[!] }")
+@Outcome(
+    id = "0=0, null, null, null, true",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[!] }")
+@Outcome(
+    id = "0=0, null, null, null, false",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentSkipListMapPollLastEntryTest1050 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult5 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.pollLastEntry());
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult5 result) {
+        try {
+            result.r2 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.get(0));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+        try {
+            result.r5 = ResultAdapter.get(obj.containsKey(0));
+        } catch (Exception e) {
+            result.r5 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+13 of 1456690 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*...) outcome: 0=0, null, null, 0, false
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, false, null, null, true",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,A], W(vis,lin)[.][A,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, false, null, 0=0, true",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, false, null, 1=0, true",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, false, null, null, false",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, false, null, 0=0, false",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, false, null, 1=0, false",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, true, null, null, true",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,A], W(vis,lin)[.][A,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][A,A], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, true, null, 0=0, true",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, true, null, 1=0, true",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, true, null, null, false",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][A,*], W(vis,po)[.][A,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,A], W(vis,lin)[.][A,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, true, null, 0=0, false",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, true, null, 1=0, false",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentSkipListMapPollLastEntryTest1057 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult5 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.containsKey(0));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult5 result) {
+        try {
+            result.r3 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.pollLastEntry());
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+        try {
+            result.r5 = ResultAdapter.get(obj.containsKey(1));
+        } catch (Exception e) {
+            result.r5 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+127 of 1234130 executions gave weak({ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A...) outcome: null, true, null, 0=0, true
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, null, 1, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,A], W(vis,lin)[.][A,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][A,A], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0=1, null, 1, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 1=0, null, 1, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[!] }")
+@Outcome(
+    id = "null, null, null, null, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "null, 0=1, null, null, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "null, null, 0, null, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,A], W(vis,lin)[.][A,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][A,A], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0=1, 0, null, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 1=0, 0, null, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 1=0, null, null, 1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, 1, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "null, 0=1, null, 1, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, 0, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "null, 0=1, 0, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "1, null, null, 1, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "1, 0=1, null, 1, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "1, 1=0, null, 1, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[!] }")
+@Outcome(
+    id = "1, null, null, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "1, null, 0, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,A], W(vis,lin)[.][A,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "1, 0=1, 0, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "1, 1=0, 0, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "1, 0=1, null, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "1, 1=0, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentSkipListMapPollLastEntryTest1168 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult5 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.pollLastEntry());
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult5 result) {
+        try {
+            result.r4 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+        try {
+            result.r5 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r5 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+24 of 838800 executions gave weak({ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A...) outcome: null, 0=1, 0, null, 1
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, 0, 1, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, 0, 1, 1=1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, 0, 1, 0=0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, 0, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "null, null, 0, null, 1=1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, 0, null, 0=0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "null, null, null, 1, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "null, null, null, 1, 0=0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentSkipListMapPollLastEntryTest1381 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult5 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.get(0));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.get(1));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult5 result) {
+        try {
+            result.r5 = ResultAdapter.get(obj.pollLastEntry());
+        } catch (Exception e) {
+            result.r5 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+283 of 1893940 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A...) outcome: null, null, 0, 1, 0=0
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, true, 0, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[!] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, true, 0, 1=0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, true, 0, 0=0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, false, 0, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[!] }")
+@Outcome(
+    id = "null, null, false, 0, 0=0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, true, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, true, null, 1=0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, true, null, 0=0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, false, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "null, null, false, null, 0=0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentSkipListMapPollLastEntryTest1726 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult5 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.containsKey(0));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult5 result) {
+        try {
+            result.r4 = ResultAdapter.get(obj.get(0));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+        try {
+            result.r5 = ResultAdapter.get(obj.pollLastEntry());
+        } catch (Exception e) {
+            result.r5 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+2 of 1360620 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A...) outcome: null, null, true, 0, 0=0
+20 of 1360620 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A...) outcome: null, null, true, null, 0=0
+---
+---
+running experiment: ConcurrentSkipListMap - Weak atomicity in containsValue method
+---
+---
+running experiment: ConcurrentSkipListMap - Weak atomicity in entrySet method
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, 1, null, \\[\\]",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 1, null, \\[1=0\\]",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 1, null, \\[0=0\\]",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 1, null, \\[0=0, 1=0\\]",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 1, null, \\[0=1\\]",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 1, null, \\[0=1, 1=0\\]",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@State
+public class ConcurrentSkipListMapEntrySetTest546 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r4 = ResultAdapter.get(obj.entrySet());
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+4 of 1434350 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A...) outcome: null, 1, null, [0=1, 1=0]
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "\\[\\], null, 0, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "\\[1=0\\], null, 0, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "\\[0=1\\], null, 0, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "\\[0=1, 1=0\\], null, 0, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "\\[0=0\\], null, 0, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "\\[0=0, 1=0\\], null, 0, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@State
+public class ConcurrentSkipListMapEntrySetTest1668 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.entrySet());
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r2 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+87 of 1772170 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A...) outcome: [0=0, 1=0], null, 0, null
+---
+---
+running experiment: ConcurrentSkipListMap - Weak atomicity in size method
+---
+---
+running experiment: ConcurrentSkipListMap - Weak atomicity in tailMap method
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, 0, null, true, \\{\\}",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[!] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0, null, true, \\{1=1\\}",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0, null, true, \\{0=1\\}",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[!] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0, null, true, \\{0=1, 1=1\\}",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 0, null, true, \\{0=0\\}",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[!] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0, null, true, \\{0=0, 1=1\\}",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0, null, false, \\{\\}",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 0, null, false, \\{1=1\\}",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0, null, false, \\{0=1\\}",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 0, null, false, \\{0=1, 1=1\\}",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 0, null, false, \\{0=0\\}",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 0, null, false, \\{0=0, 1=1\\}",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@State
+public class ConcurrentSkipListMapTailMapTest1084 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult5 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult5 result) {
+        try {
+            result.r4 = ResultAdapter.get(obj.containsKey(1));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+        try {
+            result.r5 = ResultAdapter.get(obj.tailMap(0));
+        } catch (Exception e) {
+            result.r5 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+15 of 1466920 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A...) outcome: null, 0, null, false, {0=0, 1=1}
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, false, null, 0, \\{\\}",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, false, null, 0, \\{0=1\\}",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, false, null, 0, \\{1=1\\}",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, false, null, 0, \\{0=1, 1=1\\}",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, false, null, 0, \\{0=0\\}",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, false, null, 0, \\{0=0, 1=1\\}",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "1, false, null, null, \\{\\}",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "1, false, null, null, \\{1=1\\}",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "1, false, null, null, \\{0=0\\}",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "1, false, null, null, \\{0=0, 1=1\\}",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "1, false, null, null, \\{0=1\\}",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "1, false, null, null, \\{0=1, 1=1\\}",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@State
+public class ConcurrentSkipListMapTailMapTest1591 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult5 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.containsKey(1));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult5 result) {
+        try {
+            result.r4 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+        try {
+            result.r5 = ResultAdapter.get(obj.tailMap(0));
+        } catch (Exception e) {
+            result.r5 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+25 of 1339910 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A...) outcome: 1, false, null, null, {0=1, 1=1}
+---
+---
+running experiment: ConcurrentSkipListMap - Weak atomicity in toString method
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, 0, \\{\\}",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, 0, \\{1=1\\}",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, 0, \\{0=1\\}",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, 0, \\{0=1, 1=1\\}",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, 0, \\{1=0\\}",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, 0, \\{0=1, 1=0\\}",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentSkipListMapToStringTest1226 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r4 = ResultAdapter.get(obj.toString());
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+93 of 1267590 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A...) outcome: null, null, 0, {1=1}
+---
+---
+running experiment: ConcurrentSkipListMap - Weak atomicity in values method
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, 0, null, \\[\\]",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 0, null, \\[0\\]",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 0, null, \\[1\\]",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 0, null, \\[1, 0\\]",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 0, null, \\[0, 0\\]",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@State
+public class ConcurrentSkipListMapValuesTest1011 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r4 = ResultAdapter.get(obj.values());
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+55 of 2235770 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A...) outcome: null, 0, null, [0, 0]
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, \\[\\], null, 0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, \\[1\\], null, 0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, \\[0\\], null, 0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, \\[0, 1\\], null, 0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, \\[0, 0\\], null, 0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "1, \\[\\], null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "1, \\[0\\], null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "1, \\[1\\], null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "1, \\[0, 0\\], null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "1, \\[0, 1\\], null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@State
+public class ConcurrentSkipListMapValuesTest1550 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.values());
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r3 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+14 of 2080660 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A...) outcome: null, [1], null, 0
+---
+---
+running experiment: ConcurrentSkipListMap - Weak atomicity in clear+pollLastEntry method
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, 0, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,A], W(vis,lin)[.][A,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[!] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0, 0=1, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,A], W(vis,lin)[.][A,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[!] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0, 1=0, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, 0=1, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, 1=0, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[!] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@State
+public class ConcurrentSkipListMapClearAndPollLastEntryTest38 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.get(1));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.pollLastEntry());
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r4 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+26 of 2261040 executions gave weak({ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A...) outcome: null, 0, 1=0, null
+82 of 2261040 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A...) outcome: null, null, 1=0, null
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, 1, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, 1, 1=0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, 1, 1=1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, 1, 0=1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 0, null, 1=1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[!] }")
+@Outcome(
+    id = "null, 0, null, 1=0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0, null, 0=1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, 1=1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, 1=0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][*,A], W(lin,po)[.][A,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null, 0=1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentSkipListMapClearAndPollLastEntryTest98 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r3 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.pollLastEntry());
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+37 of 1529570 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*]...) outcome: null, 0, null, 1=1
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, 0, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 0, null, 1=1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0, null, 0=0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, 1=1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][*,A], W(lin,po)[.][A,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null, 0=0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentSkipListMapClearAndPollLastEntryTest138 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.get(0));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r3 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.pollLastEntry());
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+32 of 2138840 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*]...) outcome: null, null, null, 1=1
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, null, 0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 0=0, null, 0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0=0, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@State
+public class ConcurrentSkipListMapClearAndPollLastEntryTest193 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.pollLastEntry());
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.remove(1));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+628 of 1194840 executions gave weak({ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A...) outcome: null, null, null, null
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 0=1, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 1=0, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][*,A], W(lin,po)[.][A,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, 1, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 0=1, 1, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "null, 1=0, 1, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][*,A], W(lin,po)[.][A,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@State
+public class ConcurrentSkipListMapClearAndPollLastEntryTest423 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.pollLastEntry());
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.remove(0));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r4 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+21 of 1582840 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*...) outcome: null, 1=0, null, null
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, 1=1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null, 0=0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentSkipListMapClearAndPollLastEntryTest1103 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r2 = ResultAdapter.get(obj.remove(1));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.pollLastEntry());
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+5 of 1507990 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*]...) outcome: null, null, null, 1=1
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, null, 0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "0=1, null, null, 0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[!] }")
+@Outcome(
+    id = "1=0, null, null, 0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "0=1, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "1=0, null, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][*,A], W(lin,po)[.][A,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 1, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "0=1, 1, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "1=0, 1, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentSkipListMapClearAndPollLastEntryTest1287 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+        try {
+            result.r1 = ResultAdapter.get(obj.pollLastEntry());
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r3 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+62 of 1638710 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*...) outcome: 1=0, null, null, null
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, 0, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 0, null, 1=1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0, null, 0=0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, 1=1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][*,A], W(lin,po)[.][A,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null, 0=0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentSkipListMapClearAndPollLastEntryTest1371 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.remove(0));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r3 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.pollLastEntry());
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+29 of 1123760 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*]...) outcome: null, null, null, 1=1
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, 1, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, 1, 0=0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, 1, 0=1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, 1, 1=1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null, 0=0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, 0=1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null, 1=1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[!] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@State
+public class ConcurrentSkipListMapClearAndPollLastEntryTest1306 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r2 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.pollLastEntry());
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+1573 of 1054060 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A...) outcome: null, null, null, 1=1
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, true, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, true, 1=1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, true, 0=1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, false, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "null, null, false, 1=1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, false, 0=1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentSkipListMapClearAndPollLastEntryTest1512 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.containsKey(0));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r4 = ResultAdapter.get(obj.pollLastEntry());
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+449 of 1199320 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A...) outcome: null, null, true, 0=1
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, false, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, false, null, 1=1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, false, null, 0=1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, true, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, true, null, 1=1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, true, null, 0=1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@State
+public class ConcurrentSkipListMapClearAndPollLastEntryTest1772 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.containsKey(1));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r3 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.pollLastEntry());
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+49 of 1627150 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*]...) outcome: null, true, null, 1=1
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, null, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, 0=0, 1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, 0=1, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, 1=1, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, 0=0, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, 0=1, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, 1=1, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "null, 0, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0, 0=1, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 0, 0=0, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0, 1=1, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@State
+public class ConcurrentSkipListMapClearAndPollLastEntryTest1967 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.pollLastEntry());
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r4 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+162 of 824590 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,po)[.][A,*]...) outcome: null, null, 1=1, null
+---
+---
+running experiment: ConcurrentSkipListMap - Weak atomicity in pollFirstEntry+pollLastEntry method
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, null, null, true",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,A], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, 0=1, null, true",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 1=0, null, null, true",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 1=0, 0=1, null, true",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0=1, null, null, true",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0=1, 0=1, null, true",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null, null, false",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, 0=1, null, false",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 1=0, null, null, false",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 1=0, 0=1, null, false",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 0=1, null, null, false",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 0=1, 0=1, null, false",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@State
+public class ConcurrentSkipListMapPollFirstEntryAndPollLastEntryTest117 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult5 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.pollLastEntry());
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult5 result) {
+        try {
+            result.r3 = ResultAdapter.get(obj.pollFirstEntry());
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+        try {
+            result.r5 = ResultAdapter.get(obj.containsKey(0));
+        } catch (Exception e) {
+            result.r5 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+50 of 1099720 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A...) outcome: null, 0=1, null, null, true
+---
+Violation/weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, null, 0, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null, 0, 0=0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null, 0, 1=0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "0=0, null, null, 0, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[!] }")
+@Outcome(
+    id = "0=0, null, null, 0, 0=0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[!] }")
+@Outcome(
+    id = "0=0, null, null, 0, 1=0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[!] }")
+@Outcome(
+    id = "null, null, null, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "null, null, null, null, 0=0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, null, 1=0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "null, null, 0, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,A], W(vis,vis)[L][*,*], W(ret)[A] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,A], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, 0, null, 0=0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, 0, null, 1=0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "0=0, null, 0, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "0=0, null, 0, null, 0=0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "0=0, null, 0, null, 1=0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "0=0, null, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "0=0, null, null, null, 0=0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[A] }")
+@Outcome(
+    id = "0=0, null, null, null, 1=0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentSkipListMapPollFirstEntryAndPollLastEntryTest1369 {
+    ConcurrentSkipListMap obj = new ConcurrentSkipListMap();
+    
+    @Actor
+    public void actor1(StringResult5 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.pollFirstEntry());
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult5 result) {
+        try {
+            result.r4 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+        try {
+            result.r5 = ResultAdapter.get(obj.pollLastEntry());
+        } catch (Exception e) {
+            result.r5 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+15 of 868880 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][*,A...) outcome: null, null, 0, null, 0=0
+---
+---
+running experiment: ConcurrentSkipListMap - Weak atomicity in size+toString method
+---

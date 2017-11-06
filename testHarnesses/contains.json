@@ -1,0 +1,30 @@
+{ "class": "java.util.concurrent.ConcurrentHashMap",
+  "parameters": [],
+  "sequences": [
+    { "index": 1,
+      "invocations": [
+        { "method": { "name": "put", "parameters": [
+            { "type" : "java.lang.Object" },
+            { "type" : "java.lang.Object" } ] },
+          "arguments": [ 0, 0 ],
+          "atomic": true },
+        { "method": { "name": "remove", "parameters": [
+            { "type" : "java.lang.Object" }] },
+          "arguments": [ 1 ],
+          "atomic": true }
+          ] },
+    { "index": 2,
+      "invocations": [
+        { "method": { "name": "put", "parameters": [
+            { "type" : "java.lang.Object" },
+            { "type" : "java.lang.Object" } ] },
+          "arguments": [ 1, 0 ],
+          "atomic": true },
+        { "method": { "name": "contains", "parameters": [
+            { "type" : "java.lang.Object" } ] },
+          "arguments": [ 0 ],
+          "atomic": false }
+          ] }
+    ],
+  "order": [] 
+}

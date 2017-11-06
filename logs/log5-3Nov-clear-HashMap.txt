@@ -1,0 +1,2092 @@
+violat version 0.5.0
+---
+class: java.util.concurrent.ConcurrentHashMap
+---
+Violation or weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentHashMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, 1, 1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, 1, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[!] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentHashMapClearTest269381 {
+    ConcurrentHashMap obj = new ConcurrentHashMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r2 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.remove(0));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.remove(1));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+82 of 1649330 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*...) outcome: null, null, null, 1
+---
+Violation or weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentHashMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, 0, 0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, 0, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, 0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "1, null, 0, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "1, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentHashMapClearTest127703 {
+    ConcurrentHashMap obj = new ConcurrentHashMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+        try {
+            result.r1 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r2 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+6 of 1311660 executions gave weak({ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A...) outcome: null, null, null, null
+---
+Violation or weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentHashMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, 1, null, 0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 1, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 1, 0, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, 0, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null, 0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentHashMapClearTest196650 {
+    ConcurrentHashMap obj = new ConcurrentHashMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+1 of 2327190 executions gave weak({ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A...) outcome: null, null, null, null
+---
+Violation or weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentHashMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, 0, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, 0, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 0, null, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, 1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "0, 0, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "0, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "0, null, 0, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][!,!], W(vis,po)[.][!,!], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@State
+public class ConcurrentHashMapClearTest285464 {
+    ConcurrentHashMap obj = new ConcurrentHashMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r3 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+11 of 1948030 executions gave weak({ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A...) outcome: null, 0, null, 1
+---
+Violation or weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentHashMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, false, null, 0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, false, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, true, null, 0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, true, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentHashMapClearTest89715 {
+    ConcurrentHashMap obj = new ConcurrentHashMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.containsKey(0));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r3 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.get(1));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+3681 of 2274210 executions gave weak({ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A...) outcome: null, true, null, 0
+---
+Violation or weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentHashMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, 1, null, 1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 1, 0, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 1, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, 0, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[!] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[!] }")
+@State
+public class ConcurrentHashMapClearTest74238 {
+    ConcurrentHashMap obj = new ConcurrentHashMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r4 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+    }
+}
+
+---
+2 of 1536570 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*...) outcome: null, null, 0, null
+---
+Violation or weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentHashMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, 1, 0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, 1, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, 0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[!] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "0, null, 1, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "0, null, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[!] }")
+@State
+public class ConcurrentHashMapClearTest137078 {
+    ConcurrentHashMap obj = new ConcurrentHashMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r2 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+6 of 2372880 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*...) outcome: null, null, null, 0
+---
+Violation or weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentHashMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, 1, true",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, 1, false",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, true",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[!] }")
+@Outcome(
+    id = "null, null, null, false",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentHashMapClearTest30059 {
+    ConcurrentHashMap obj = new ConcurrentHashMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.containsKey(1));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+    }
+}
+
+---
+33 of 3510370 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*...) outcome: null, null, null, true
+---
+Violation or weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentHashMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, 1, false, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 1, true, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, true, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[!] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, false, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentHashMapClearTest205190 {
+    ConcurrentHashMap obj = new ConcurrentHashMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.containsKey(1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r4 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+    }
+}
+
+---
+1378 of 2723180 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*...) outcome: null, null, true, null
+---
+Violation or weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentHashMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, null, 0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 1, null, 0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 1, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentHashMapClearTest180243 {
+    ConcurrentHashMap obj = new ConcurrentHashMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.remove(0));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r3 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.get(1));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+10597 of 2992550 executions gave weak({ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A...) outcome: null, 1, null, 0
+---
+Violation or weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentHashMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, 1, 0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, 1, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, 0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0, 1, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 0, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "0, null, null, 0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "0, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "0, 0, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentHashMapClearTest91506 {
+    ConcurrentHashMap obj = new ConcurrentHashMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r3 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+55 of 954780 executions gave weak({ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A...) outcome: null, null, null, null
+---
+Violation or weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentHashMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, 0, 1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, 0, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[!] }")
+@Outcome(
+    id = "null, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "0, null, 0, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "0, null, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }")
+@State
+public class ConcurrentHashMapClearTest65364 {
+    ConcurrentHashMap obj = new ConcurrentHashMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.remove(1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+2 of 884930 executions gave weak({ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A...) outcome: null, null, null, 1
+---
+Violation or weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentHashMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, null, 1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 1, null, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 1, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentHashMapClearTest48499 {
+    ConcurrentHashMap obj = new ConcurrentHashMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.remove(0));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r3 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.get(1));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+4440 of 1580920 executions gave weak({ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A...) outcome: null, 1, null, 1
+---
+Violation or weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentHashMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, null, 1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 0, null, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "1, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "1, 0, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@State
+public class ConcurrentHashMapClearTest92531 {
+    ConcurrentHashMap obj = new ConcurrentHashMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.remove(0));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r3 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+11 of 1474760 executions gave weak({ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A...) outcome: null, 0, null, 1
+---
+Violation or weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentHashMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, 0, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, 0, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 0, null, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 0, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, 1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentHashMapClearTest241364 {
+    ConcurrentHashMap obj = new ConcurrentHashMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r3 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.get(0));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+6 of 2358310 executions gave weak({ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A...) outcome: null, 0, null, 1
+---
+Violation or weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentHashMap;
+
+@JCStressTest
+@Outcome(
+    id = "false, null, null, 1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "false, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "false, 0, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "true, null, null, 1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "true, null, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[!] }")
+@Outcome(
+    id = "true, 0, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentHashMapClearTest34786 {
+    ConcurrentHashMap obj = new ConcurrentHashMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+        try {
+            result.r1 = ResultAdapter.get(obj.containsKey(0));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r3 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+2 of 2623890 executions gave weak({ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A...) outcome: true, null, null, null
+---
+Violation or weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentHashMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, 0, 1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, 0, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[!] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "1, null, 0, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "1, null, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[!] }")
+@State
+public class ConcurrentHashMapClearTest268883 {
+    ConcurrentHashMap obj = new ConcurrentHashMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r2 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+14 of 2525210 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*...) outcome: null, null, null, 1
+---
+Violation or weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentHashMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, 1, 1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, 1, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[!] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "1, null, 1, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "1, null, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[!] }")
+@State
+public class ConcurrentHashMapClearTest268899 {
+    ConcurrentHashMap obj = new ConcurrentHashMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r2 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+9 of 2235810 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*...) outcome: null, null, null, 1
+---
+Violation or weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentHashMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, null, 1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 1, null, 1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 1, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[!] }")
+@Outcome(
+    id = "0, 1, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "0, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentHashMapClearTest171974 {
+    ConcurrentHashMap obj = new ConcurrentHashMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+        try {
+            result.r1 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.remove(0));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r3 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+1 of 2715320 executions gave weak({ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A...) outcome: null, 1, null, null
+---
+Violation or weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentHashMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, 1, null, 1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 1, 1, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 1, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, 1, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[!] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[!] }")
+@State
+public class ConcurrentHashMapClearTest75359 {
+    ConcurrentHashMap obj = new ConcurrentHashMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.remove(0));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r4 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+    }
+}
+
+---
+152 of 1443340 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*...) outcome: null, null, 1, null
+---
+Violation or weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentHashMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, false, null, 0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, false, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, true, null, 0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, true, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "0, true, null, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "0, false, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentHashMapClearTest151580 {
+    ConcurrentHashMap obj = new ConcurrentHashMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.containsKey(1));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r3 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+5280 of 2034560 executions gave weak({ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A...) outcome: null, true, null, 0
+---
+Violation or weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentHashMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, true, 1",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, true, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, false, 1",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[!] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, false, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentHashMapClearTest267909 {
+    ConcurrentHashMap obj = new ConcurrentHashMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r2 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.containsKey(0));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.get(1));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+603 of 2776210 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*...) outcome: null, null, false, 1
+---
+Violation or weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentHashMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, 1, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 1, 1, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, 1, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[!] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentHashMapClearTest204951 {
+    ConcurrentHashMap obj = new ConcurrentHashMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.get(0));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.remove(1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r4 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+    }
+}
+
+---
+63 of 2184190 executions gave weak({ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*...) outcome: null, null, 1, null
+---
+Violation or weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentHashMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, true, 0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, true, null",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[!] }")
+@Outcome(
+    id = "null, null, false, 0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, false, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 0, true, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 0, false, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentHashMapClearTest144450 {
+    ConcurrentHashMap obj = new ConcurrentHashMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.containsKey(0));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+5 of 2378850 executions gave weak({ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A...) outcome: null, null, true, null
+---
+Violation or weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentHashMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, 0, 0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][A,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,A], W(vis,po)[.][*,A], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, null, 0, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, 1, null, 0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, 1, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, 0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentHashMapClearTest285254 {
+    ConcurrentHashMap obj = new ConcurrentHashMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r3 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.get(0));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+2 of 1515550 executions gave weak({ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A...) outcome: null, 1, null, 0
+---
+Violation or weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentHashMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, false, null, 0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, false, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, true, null, 0",
+    expect = Expect.ACCEPTABLE_INTERESTING,
+    desc = "{ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A], W(vis,vis)[L][*,*], W(ret)[*] }"
+         + "{ W(lin,po)[.][*,*], W(vis,po)[.][*,*], W(vis,lin)[.][A,*], W(vis,vis)[L][*,*], W(ret)[*] }")
+@Outcome(
+    id = "null, true, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentHashMapClearTest239532 {
+    ConcurrentHashMap obj = new ConcurrentHashMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.containsKey(1));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r3 = ResultAdapter.get(obj.put(1,0));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+        try {
+            result.r4 = ResultAdapter.get(obj.remove(0));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+    }
+}
+
+---
+6103 of 1497810 executions gave weak({ W(lin,po)[.][A,*], W(vis,po)[.][A,*], W(vis,lin)[.][*,A...) outcome: null, true, null, 0
+---
+Violation or weakness discovered in the following harness.
+---
+package xxxx.util.concurrent;
+import org.openjdk.jcstress.annotations.*;
+import org.openjdk.jcstress.infra.results.*;
+import java.util.Arrays;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.concurrent.ConcurrentHashMap;
+
+@JCStressTest
+@Outcome(
+    id = "null, null, 1, 0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, null, 0",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "1, null, 1, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "1, null, null, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@Outcome(
+    id = "null, null, 1, null",
+    expect = Expect.ACCEPTABLE,
+    desc = "atomic")
+@State
+public class ConcurrentHashMapClearTest74221 {
+    ConcurrentHashMap obj = new ConcurrentHashMap();
+    
+    @Actor
+    public void actor1(StringResult4 result) {
+        try {
+            result.r1 = ResultAdapter.get(obj.put(0,0));
+        } catch (Exception e) {
+            result.r1 = ResultAdapter.get(e);
+        }
+        try {
+            result.r2 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r2 = ResultAdapter.get(e);
+        }
+        try {
+            result.r3 = ResultAdapter.get(obj.put(1,1));
+        } catch (Exception e) {
+            result.r3 = ResultAdapter.get(e);
+        }
+    }
+    
+    @Actor
+    public void actor2(StringResult4 result) {
+        try {
+            result.r4 = ResultAdapter.get(obj.put(0,1));
+        } catch (Exception e) {
+            result.r4 = ResultAdapter.get(e);
+        }
+        try {
+            obj.clear();
+        } catch (Exception e) {
+            
+        }
+    }
+}
+
+---
+17 of 1260320 executions gave violating outcome: null, null, null, null
+---
+Found 26 weakness(es) and 1 violation(s).
