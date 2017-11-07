@@ -35,6 +35,17 @@ Release a new version to npm:
     $ npm version [major|minor|patch]
     $ npm publish
 
+# Experiments
+
+Run all of the included experiments:
+
+    $ npm run experiments
+
+Or the subset of them that match any of the given expressions:
+
+    $ npm run experiments 'Map' 'Set'
+
+
 [Node.js]: https://nodejs.org
 [concurrent collections]: https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/package-summary.html
 [Java SE Development Kit 8]: http://www.oracle.com/technetwork/java/javase
