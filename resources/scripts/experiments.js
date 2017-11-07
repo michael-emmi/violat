@@ -9,11 +9,19 @@ function printTime(hrtime) {
   return `${(0.0 + hrtime[0] + hrtime[1] / 1e9).toFixed(3)}s`;
 }
 
-async function run() {
+async function run(...patterns) {
   console.log(`Running ${experiments.name}`);
   console.log(`---`);
 
+  let pattern = new RegExp(patterns.join('|'));
+
   for (let experiment of experiments.list) {
+    if (!experiment.name.match(pattern)) {
+      console.log(`skipping experiment: ${experiment.name}`);
+      console.log(`---`);
+      continue;
+    }
+
     console.log(`running experiment: ${experiment.name}`);
     console.log(`---`);
     let args = experiment.parameters;
@@ -53,7 +61,7 @@ async function run() {
 
 (async () => {
   try {
-    await run();
+    await run(...process.argv.slice(2));
   } catch (e) {
     console.log(`caught exception`);
     console.log(e.stack);
