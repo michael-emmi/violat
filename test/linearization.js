@@ -23,7 +23,7 @@ const W0 = {weakRelaxLinearization: false};
 const W1 = {weakRelaxLinearization: true};
 
 function lins(po, w) {
-  return new Set(linearization(po, w).map(l => l.sequence));
+  return new Set([...linearization(po, w)].map(l => l.sequence));
 }
 
 describe('linearization', function() {
