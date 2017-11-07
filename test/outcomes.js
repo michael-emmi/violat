@@ -9,6 +9,7 @@ function schema(klass, ...seqs) {
   return new Schema({
     class: klass,
     parameters: [],
+    arguments: [],
     sequences: seqs.map((invs,idx) => ({
       index: idx,
       invocations: invs.map(([m,ps,args,at,v]) => ({

@@ -1,6 +1,6 @@
 {
   "class": "java.util.concurrent.ArrayBlockingQueue",
-  "parameters": ["int"],
+  "parameters": [{"type": "int"}],
   "default_parameters": [20],
   "harnessParameters": {
         "invocations": 3

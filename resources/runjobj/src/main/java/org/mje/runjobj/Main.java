@@ -93,13 +93,28 @@ public class Main {
         throws ClassNotFoundException {
             switch (type.getValueType()) {
                 case STRING:
-                    return Class.forName(((JsonString) type).getString());
+                    return getClass(((JsonString) type).getString());
                 case ARRAY:
-                    return Class.forName("java.util.Collection");
+                    return getClass("java.util.Collection");
                 case OBJECT:
-                    return Class.forName("java.util.Map");
+                    return getClass("java.util.Map");
                 default:
                     throw new RuntimeException("Unexpected parameter type: "+ type);
+            }
+        }
+
+        static Class<?> getClass(String typeName)
+        throws ClassNotFoundException {
+            switch (typeName) {
+                case "byte": return byte.class;
+                case "short": return short.class;
+                case "int": return int.class;
+                case "long": return long.class;
+                case "float": return float.class;
+                case "double": return double.class;
+                case "boolean": return boolean.class;
+                case "char": return char.class;
+                default: return Class.forName(typeName);
             }
         }
 
