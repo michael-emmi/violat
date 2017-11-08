@@ -2,6 +2,7 @@ const debug = require('debug')('experiments');
 const fs = require('fs');
 const config = require('../../lib/config.js');
 const checker = require('../../lib/index.js');
+const meta = require('../../package.json');
 
 const experiments = require('./experiment-list.js');
 
@@ -11,6 +12,7 @@ function printTime(hrtime) {
 
 async function run(...patterns) {
   console.log(`Running ${experiments.name}`);
+  console.log(`violat version ${meta.version}`);
   console.log(`---`);
 
   let pattern = new RegExp(patterns.join('|'));
