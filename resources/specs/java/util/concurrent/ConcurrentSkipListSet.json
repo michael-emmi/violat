@@ -182,6 +182,35 @@
       "harnessParameters": {
         "invocations": 3
       }
+    },
+    {
+      "name": "subSet",
+      "parameters": [
+        {"type": "java.lang.Object"},
+        {"type": "java.lang.Object"}
+      ],
+      "void": false,
+      "readonly": true,
+      "trusted": false,
+      "harnessParameters": {
+        "sequences": 2,
+        "invocations": 4,
+        "values": 4
+      }
+    },
+    {
+      "name": "headSet",
+      "parameters": [
+        {"type": "java.lang.Object"}
+      ],
+      "void": false,
+      "readonly": true,
+      "trusted": false,
+      "harnessParameters": {
+        "invocations": 5,
+        "sequences": 2,
+        "values": 3
+      }
     }
   ]
 }
