@@ -90,12 +90,6 @@
       }
     },
     {
-      "name": "hashCode",
-      "parameters": [],
-      "void": false,
-      "readonly": true
-    },
-    {
       "name": "containsAll",
       "parameters": [
         {"type": ["java.lang.Object"]}

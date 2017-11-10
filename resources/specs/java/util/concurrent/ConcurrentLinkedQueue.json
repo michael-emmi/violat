@@ -13,7 +13,9 @@
     },
     {
       "name": "offer",
-      "parameters": ["int"],
+      "parameters": [
+        {"type": "java.lang.Object"}
+      ],
       "void": false,
       "readonly": false,
       "trusted": true
@@ -27,13 +29,18 @@
     },
     {
       "name": "addAll",
-      "parameters": [["int"]],
+      "parameters": [
+        {"type": ["java.lang.Object"]}
+      ],
       "void": false,
-      "readonly": false
+      "readonly": false,
+      "trusted": false
     },
     {
       "name": "removeAll",
-      "parameters": [["int"]],
+      "parameters": [
+        {"type": ["java.lang.Object"]}
+      ],
       "void": false,
       "readonly": false,
       "trusted": false,
@@ -43,14 +50,18 @@
     },
     {
       "name": "containsAll",
-      "parameters": [["int"]],
+      "parameters": [
+        {"type": ["java.lang.Object"]}
+      ],
       "void": false,
       "readonly": true,
       "trusted": false
     },
     {
       "name": "retainAll",
-      "parameters": [["int"]],
+      "parameters": [
+        {"type": ["java.lang.Object"]}
+      ],
       "void": false,
       "readonly": false,
       "trusted": false,
@@ -67,21 +78,28 @@
     },
     {
       "name": "contains",
-      "parameters": ["int"],
+      "parameters": [
+        {"type": "java.lang.Object"}
+      ],
       "void": false,
-      "readonly": true
+      "readonly": true,
+      "trusted": false
     },    
     {
       "name": "isEmpty",
       "parameters": [],
       "void": false,
-      "readonly": true
+      "readonly": true,
+      "trusted": false
     },
     {
       "name": "remove",
-      "parameters": ["int"],
+      "parameters": [
+        {"type": "java.lang.Object"}
+      ],
       "void": false,
-      "readonly": false
+      "readonly": false,
+      "trusted": false
     },
     {
       "name": "size",
@@ -96,12 +114,6 @@
       "void": false,
       "readonly": true,
       "trusted": false
-    },
-    {
-      "name": "hashCode",
-      "parameters": [],
-      "void": false,
-      "readonly": true
     },
     {
       "name": "toString",

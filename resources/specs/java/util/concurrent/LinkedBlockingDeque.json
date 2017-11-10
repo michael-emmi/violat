@@ -7,7 +7,7 @@
     {
       "name": "offer",
       "parameters": [
-        "int"
+        {"type": "java.lang.Object"}
       ],
       "void": false,
       "readonly": false,
@@ -32,45 +32,53 @@
     {
       "name": "offerLast",
       "parameters": [
-        "int"
+        {"type": "java.lang.Object"}
       ],
       "void": false,
-      "readonly": false
+      "readonly": false,
+      "trusted": false
     },
     {
       "name": "pollFirst",
       "parameters": [],
       "void": false,
-      "readonly": false
+      "readonly": false,
+      "trusted": false
     },
     {
       "name": "pollLast",
       "parameters": [],
       "void": false,
-      "readonly": false
+      "readonly": false,
+      "trusted": false
     },
     {
       "name": "getFirst",
       "parameters": [],
       "void": false,
-      "readonly": true
+      "readonly": true,
+      "trusted": false
     },
     {
       "name": "getLast",
       "parameters": [],
       "void": false,
-      "readonly": true
+      "readonly": true,
+      "trusted": false
     },
     {
       "name": "offerFirst",
-      "parameters": ["int"],
+      "parameters": [
+        {"type": "java.lang.Object"}
+      ],
       "void": false,
-      "readonly": false
+      "readonly": false,
+      "trusted": false
     },
     {
       "name": "addAll",
       "parameters": [
-        ["int"]
+        {"type": ["java.lang.Object"]}
       ],
       "void": false,
       "readonly": false,
@@ -84,73 +92,78 @@
       "name": "clear",
       "parameters": [],
       "void": true,
-      "readonly": false
+      "readonly": false,
+      "trusted": false
     },
     {
       "name": "contains",
       "parameters": [
-        "int"
+        {"type": "java.lang.Object"}
       ],
       "void": false,
-      "readonly": true
+      "readonly": true,
+      "trusted": false
     },
     {
       "name": "isEmpty",
       "parameters": [],
       "void": false,
-      "readonly": true
+      "readonly": true,
+      "trusted": false
     },
     {
       "name": "remove",
       "parameters": [
-        "int"
+        {"type": "java.lang.Object"}
       ],
       "void": false,
-      "readonly": false
+      "readonly": false,
+      "trusted": false
     },
     {
       "name": "removeFirstOccurrence",
       "parameters": [
-        "int"
+        {"type": "java.lang.Object"}
       ],
       "void": false,
-      "readonly": false
+      "readonly": false,
+      "trusted": false
     },
     {
       "name": "removeLastOccurrence",
       "parameters": [
-        "int"
+        {"type": "java.lang.Object"}
       ],
       "void": false,
-      "readonly": false
+      "readonly": false,
+      "trusted": false
     },
     {
       "name": "size",
       "parameters": [],
       "void": false,
-      "readonly": true
+      "readonly": true,
+      "trusted": false
     },
     {
       "name": "toArray",
       "parameters": [],
       "void": false,
-      "readonly": false
+      "readonly": false,
+      "trusted": false
     },
     {
       "name": "toString",
       "parameters": [],
       "void": false,
-      "readonly": false
-    },
-    {
-      "name": "hashCode",
-      "parameters": [],
-      "void": false,
-      "readonly": true
+      "readonly": false,
+      "trusted": false
     },
     {
       "name": "removeAll",
-      "parameters": [["int"]],
+      "parameters": [
+        {"type": ["java.lang.Object"]}
+      ],
       "void": false,
       "readonly": false,
       "trusted": false,
@@ -161,7 +174,9 @@
     },
     {
       "name": "containsAll",
-      "parameters": [["int"]],
+      "parameters": [
+        {"type": ["java.lang.Object"]}
+      ],
       "void": false,
       "readonly": true,
       "trusted": false,
@@ -175,7 +190,9 @@
     },
     {
       "name": "retainAll",
-      "parameters": [["int"]],
+      "parameters": [
+        {"type": ["java.lang.Object"]}
+      ],
       "void": false,
       "readonly": false,
       "trusted": false,

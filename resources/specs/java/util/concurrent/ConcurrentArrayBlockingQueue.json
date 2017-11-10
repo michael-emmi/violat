@@ -15,7 +15,9 @@
     },
     {
       "name": "offer",
-      "parameters": ["int"],
+      "parameters": [
+        {"type": "java.lang.Object"}
+      ],
       "void": false,
       "readonly": false,
       "trusted": true
@@ -31,31 +33,41 @@
       "name": "clear",
       "parameters": [],
       "void": true,
-      "readonly": false
+      "readonly": false,
+      "trusted": false
     },
     {
       "name": "contains",
-      "parameters": ["int"],
+      "parameters": [
+        {"type": "java.lang.Object"}
+      ],
       "void": false,
-      "readonly": true
+      "readonly": true,
+      "trusted": false
     },
     {
       "name": "addAll",
-      "parameters": [["int"]],
+      "parameters": [
+        {"type": ["java.lang.Object"]}
+      ],
       "void": false,
       "readonly": false,
       "trusted": false
     },
     {
       "name": "removeAll",
-      "parameters": [["int"]],
+      "parameters": [
+        {"type": ["java.lang.Object"]}
+      ],
       "void": false,
       "readonly": false,
       "trusted": false
     },
     {
       "name": "containsAll",
-      "parameters": [["int"]],
+      "parameters": [
+        {"type": ["java.lang.Object"]}
+      ],
       "void": false,
       "readonly": true,
       "trusted": false,
@@ -65,7 +77,9 @@
     },
     {
       "name": "retainAll",
-      "parameters": [["int"]],
+      "parameters": [
+        {"type": ["java.lang.Object"]}
+      ],
       "void": false,
       "readonly": false,
       "trusted": false
@@ -74,46 +88,48 @@
       "name": "isEmpty",
       "parameters": [],
       "void": false,
-      "readonly": true
+      "readonly": true,
+      "trusted": false
     },
     {
       "name": "remove",
-      "parameters": ["int"],
+      "parameters": [
+        {"type": "java.lang.Object"}
+      ],
       "void": false,
-      "readonly": false
+      "readonly": false,
+      "trusted": false
     },
     {
       "name": "size",
       "parameters": [],
       "void": false,
-      "readonly": true
+      "readonly": true,
+      "trusted": false
     },
     {
       "name": "remainingCapacity",
       "parameters": [],
       "void": false,
-      "readonly": true
+      "readonly": true,
+      "trusted": false
     },
     {
       "name": "isEmpty",
       "parameters": [],
       "void": false,
-      "readonly": true
+      "readonly": true,
+      "trusted": false
     },
     {
       "name": "toArray",
       "parameters": [],
       "void": false,
-      "readonly": true
+      "readonly": true,
+      "trusted": false
     },
     {
       "name": "toString",
-      "parameters": [],
-      "void": false,
-      "readonly": true
-    },
-    {
-      "name": "hashCode",
       "parameters": [],
       "void": false,
       "readonly": true

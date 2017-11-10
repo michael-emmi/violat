@@ -150,12 +150,6 @@
         "primitive": "put",
         "combine": "ignore"
       }
-    },
-    {
-      "name": "hashCode",
-      "parameters": [],
-      "void": false,
-      "readonly": true
     }
   ]
 }

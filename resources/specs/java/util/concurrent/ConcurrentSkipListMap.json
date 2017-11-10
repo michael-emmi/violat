@@ -74,12 +74,6 @@
       "trusted": false
     },
     {
-      "name": "hashCode",
-      "parameters": [],
-      "void": false,
-      "readonly": true
-    },
-    {
       "name": "ceilingKey",
       "parameters": [{"type": "java.lang.Object"}],
       "void": false,
@@ -139,7 +133,8 @@
       "name": "headMap",
       "parameters": [{"type": "java.lang.Object"}],
       "void": false,
-      "readonly": true
+      "readonly": true,
+      "trusted": false
     },
     {
       "name": "tailMap",

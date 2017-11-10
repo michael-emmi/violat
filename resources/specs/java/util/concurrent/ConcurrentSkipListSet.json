@@ -7,7 +7,7 @@
     {
       "name": "add",
       "parameters": [
-        { "type": "java.lang.Object" }
+        {"type": "java.lang.Object"}
       ],
       "void": false,
       "readonly": false,
@@ -16,7 +16,7 @@
     {
       "name": "contains",
       "parameters": [
-        { "type": "java.lang.Object" }
+        {"type": "java.lang.Object"}
       ],
       "void": false,
       "readonly": true,
@@ -25,7 +25,7 @@
     {
       "name": "remove",
       "parameters": [
-        { "type": "java.lang.Object" }
+        {"type": "java.lang.Object"}
       ],
       "void": false,
       "readonly": false,
@@ -34,7 +34,7 @@
     {
       "name": "ceiling",
       "parameters": [
-        { "type": "java.lang.Object" }
+        {"type": "java.lang.Object"}
       ],
       "void": false,
       "readonly": true,
@@ -57,7 +57,7 @@
     {
       "name": "floor",
       "parameters": [
-        { "type": "java.lang.Object" }
+        {"type": "java.lang.Object"}
       ],
       "void": false,
       "readonly": true,
@@ -66,7 +66,7 @@
     {
       "name": "higher",
       "parameters": [
-        { "type": "java.lang.Object" }
+        {"type": "java.lang.Object"}
       ],
       "void": false,
       "readonly": true,
@@ -89,7 +89,7 @@
     {
       "name": "lower",
       "parameters": [
-        { "type": "java.lang.Object" }
+        {"type": "java.lang.Object"}
       ],
       "void": false,
       "readonly": true,
@@ -112,7 +112,7 @@
     {
       "name": "removeAll",
       "parameters": [
-        { "type": ["java.lang.Object"] }
+        {"type": ["java.lang.Object"]}
       ],
       "void": false,
       "readonly": false,
@@ -128,7 +128,7 @@
     {
       "name": "tailSet",
       "parameters": [
-        { "type": "java.lang.Object" }
+        {"type": "java.lang.Object"}
       ],
       "void": false,
       "readonly": true,
@@ -158,15 +158,9 @@
       }
     },
     {
-      "name": "hashCode",
-      "parameters": [],
-      "void": false,
-      "readonly": true
-    },
-    {
       "name": "containsAll",
       "parameters": [
-        { "type": ["java.lang.Object"] }
+        {"type": ["java.lang.Object"]}
       ],
       "void": false,
       "readonly": true,
@@ -175,7 +169,7 @@
     {
       "name": "retainAll",
       "parameters": [
-        { "type": ["java.lang.Object"] }
+        {"type": ["java.lang.Object"]}
       ],
       "void": false,
       "readonly": false,
@@ -187,7 +181,7 @@
     {
       "name": "addAll",
       "parameters": [
-        { "type": ["java.lang.Object"] }
+        {"type": ["java.lang.Object"]}
       ],
       "void": false,
       "readonly": false,

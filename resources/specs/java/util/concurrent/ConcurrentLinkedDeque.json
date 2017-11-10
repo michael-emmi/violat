@@ -33,19 +33,22 @@
         {"type": "java.lang.Object"}
       ],
       "void": false,
-      "readonly": false
+      "readonly": false,
+      "trusted": false
     },
     {
       "name": "pollFirst",
       "parameters": [],
       "void": false,
-      "readonly": false
+      "readonly": false,
+      "trusted": false
     },
     {
       "name": "peekFirst",
       "parameters": [],
       "void": false,
-      "readonly": true
+      "readonly": true,
+      "trusted": false
     },
     {
       "name": "offerFirst",
@@ -102,10 +105,11 @@
     {
       "name": "addAll",
       "parameters": [
-        {"type": "java.lang.Object"}
+        {"type": ["java.lang.Object"]}
       ],
       "void": false,
-      "readonly": false
+      "readonly": false,
+      "trusted": false
     },
     {
       "name": "clear",
@@ -120,13 +124,15 @@
         {"type": "java.lang.Object"}
       ],
       "void": false,
-      "readonly": true
+      "readonly": true,
+      "trusted": false
     },
     {
       "name": "isEmpty",
       "parameters": [],
       "void": false,
-      "readonly": true
+      "readonly": true,
+      "trusted": false
     },
     {
       "name": "remove",
@@ -134,7 +140,8 @@
         {"type": "java.lang.Object"}
       ],
       "void": false,
-      "readonly": false
+      "readonly": false,
+      "trusted": false
     },
     {
       "name": "removeFirstOccurrence",
@@ -142,7 +149,8 @@
         {"type": "java.lang.Object"}
       ],
       "void": false,
-      "readonly": false
+      "readonly": false,
+      "trusted": false
     },
     {
       "name": "removeLastOccurrence",
@@ -173,12 +181,6 @@
       "void": false,
       "readonly": false,
       "trusted": false
-    },
-    {
-      "name": "hashCode",
-      "parameters": [],
-      "void": false,
-      "readonly": true
     },
     {
       "name": "removeAll",

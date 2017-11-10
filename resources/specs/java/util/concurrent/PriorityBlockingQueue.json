@@ -7,7 +7,7 @@
     {
       "name": "offer",
       "parameters": [
-        "int"
+        {"type": "java.lang.Object"}
       ],
       "void": false,
       "readonly": false,
@@ -36,7 +36,7 @@
     {
       "name": "contains",
       "parameters": [
-        "int"
+        {"type": "java.lang.Object"}
       ],
       "void": false,
       "readonly": true
@@ -50,7 +50,7 @@
     {
       "name": "remove",
       "parameters": [
-        "int"
+        {"type": "java.lang.Object"}
       ],
       "void": false,
       "readonly": false
@@ -74,14 +74,10 @@
       "readonly": true
     },
     {
-      "name": "hashCode",
-      "parameters": [],
-      "void": false,
-      "readonly": true
-    },
-    {
       "name": "containsAll",
-      "parameters": [["int"]],
+      "parameters": [
+        {"type": ["java.lang.Object"]}
+      ],
       "void": false,
       "readonly": true,
       "trusted": false,
@@ -91,7 +87,9 @@
     },
     {
       "name": "retainAll",
-      "parameters": [["int"]],
+      "parameters": [
+        {"type": ["java.lang.Object"]}
+      ],
       "void": false,
       "readonly": false,
       "trusted": false
@@ -99,7 +97,7 @@
     {
       "name": "removeAll",
       "parameters": [
-        ["int"]
+        {"type": ["java.lang.Object"]}
       ],
       "void": false,
       "readonly": false,
@@ -108,7 +106,7 @@
     {
       "name": "addAll",
       "parameters": [
-        ["int"]
+        {"type": ["java.lang.Object"]}
       ],
       "void": false,
       "readonly": false,
