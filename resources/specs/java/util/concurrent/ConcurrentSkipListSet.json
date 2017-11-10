@@ -7,7 +7,7 @@
     {
       "name": "add",
       "parameters": [
-        "int"
+        { "type": "java.lang.Object" }
       ],
       "void": false,
       "readonly": false,
@@ -16,7 +16,7 @@
     {
       "name": "contains",
       "parameters": [
-        "int"
+        { "type": "java.lang.Object" }
       ],
       "void": false,
       "readonly": true,
@@ -25,7 +25,7 @@
     {
       "name": "remove",
       "parameters": [
-        "int"
+        { "type": "java.lang.Object" }
       ],
       "void": false,
       "readonly": false,
@@ -34,10 +34,11 @@
     {
       "name": "ceiling",
       "parameters": [
-        "int"
+        { "type": "java.lang.Object" }
       ],
       "void": false,
-      "readonly": true
+      "readonly": true,
+      "trusted": false
     },
     {
       "name": "clear",
@@ -50,43 +51,49 @@
       "name": "first",
       "parameters": [],
       "void": false,
-      "readonly": true
+      "readonly": true,
+      "trusted": false
     },
     {
       "name": "floor",
       "parameters": [
-        "int"
+        { "type": "java.lang.Object" }
       ],
       "void": false,
-      "readonly": true
+      "readonly": true,
+      "trusted": false
     },
     {
       "name": "higher",
       "parameters": [
-        "int"
+        { "type": "java.lang.Object" }
       ],
       "void": false,
-      "readonly": true
+      "readonly": true,
+      "trusted": false
     },
     {
       "name": "isEmpty",
       "parameters": [],
       "void": false,
-      "readonly": true
+      "readonly": true,
+      "trusted": false
     },
     {
       "name": "last",
       "parameters": [],
       "void": false,
-      "readonly": true
+      "readonly": true,
+      "trusted": false
     },
     {
       "name": "lower",
       "parameters": [
-        "int"
+        { "type": "java.lang.Object" }
       ],
       "void": false,
-      "readonly": true
+      "readonly": true,
+      "trusted": false
     },
     {
       "name": "pollFirst",
@@ -105,7 +112,7 @@
     {
       "name": "removeAll",
       "parameters": [
-        ["int"]
+        { "type": ["java.lang.Object"] }
       ],
       "void": false,
       "readonly": false,
@@ -121,7 +128,7 @@
     {
       "name": "tailSet",
       "parameters": [
-        "int"
+        { "type": "java.lang.Object" }
       ],
       "void": false,
       "readonly": true,
@@ -158,14 +165,18 @@
     },
     {
       "name": "containsAll",
-      "parameters": [["int"]],
+      "parameters": [
+        { "type": ["java.lang.Object"] }
+      ],
       "void": false,
       "readonly": true,
       "trusted": false
     },
     {
       "name": "retainAll",
-      "parameters": [["int"]],
+      "parameters": [
+        { "type": ["java.lang.Object"] }
+      ],
       "void": false,
       "readonly": false,
       "trusted": false,
@@ -175,7 +186,9 @@
     },
     {
       "name": "addAll",
-      "parameters": [["int"]],
+      "parameters": [
+        { "type": ["java.lang.Object"] }
+      ],
       "void": false,
       "readonly": false,
       "trusted": false,
