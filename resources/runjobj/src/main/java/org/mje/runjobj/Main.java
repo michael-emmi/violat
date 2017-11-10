@@ -150,7 +150,11 @@ public class Main {
         Object invoke(Object target)
         throws IllegalAccessException, InvocationTargetException {
             assert executable instanceof Method : "expected method invocation";
-            return ((Method) executable).invoke(target, arguments);
+            try {
+                return ((Method) executable).invoke(target, arguments);
+            } catch (InvocationTargetException e) {
+                return e.getCause();
+            }
         }
 
         public String toString() {
