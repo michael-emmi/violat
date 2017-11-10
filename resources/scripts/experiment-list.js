@@ -8,10 +8,7 @@ function spec(name) {
 module.exports = {
   name: "Experiments V1.0",
   list: [
-<<<<<<< HEAD
-    { name: "Atomicity bug in addFirst method",
-=======
- 
+
 // *****   HashMap ********
 
     { name: "ConcurrentHashMap - Weak behaviors in clear method (6,random,5000)",
@@ -213,17 +210,10 @@ module.exports = {
       }
     },
     { name: "ConcurrentSkipListMap - Weak atomicity in containsValue method (6,random,10000)",
->>>>>>> 0698162... auxiliary files
       parameters: {
         spec: spec("java/util/concurrent/ConcurrentLinkedDeque.json"),
         methods: ["addFirst"],
         enum: "random",
-<<<<<<< HEAD
-        cutoff: "100"
-      }
-    },
-    { name: "Weak behaviors in addFirst method",
-=======
         weak: true,
         weakRelaxLinearization: true,
         weakRelaxVisibility: true,
@@ -297,15 +287,11 @@ module.exports = {
       }
     },
     { name: "ConcurrentSkipListMap - Weak atomicity in values method (6,random,10000)",
->>>>>>> 0698162... auxiliary files
       parameters: {
         spec: spec("java/util/concurrent/ConcurrentLinkedDeque.json"),
         methods: ["addFirst"],
         enum: "random",
         weak: true,
-<<<<<<< HEAD
-        cutoff: "100"
-=======
         weakRelaxLinearization: true,
         weakRelaxVisibility: true,
         weakRelaxReturns: true,
@@ -314,7 +300,7 @@ module.exports = {
     },
 
 // *****   SkipListSet ********
-    
+
     { name: "ConcurrentSkipListSet - Weak atomicity in clear method (6,random,5000)",
       parameters: {
         spec: spec("java/util/concurrent/ConcurrentSkipListSet.json"),
@@ -634,7 +620,6 @@ module.exports = {
         weakRelaxVisibility: true,
         weakRelaxReturns: true,
         cutoff: "5000"
->>>>>>> 0698162... auxiliary files
       }
     },
     { name: "LinkedBlockingQueue - Weak atomicity in toString method (6,random,5000)",
