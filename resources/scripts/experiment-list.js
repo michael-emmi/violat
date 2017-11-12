@@ -167,6 +167,84 @@ module.exports = {
         cutoff: "10000"
       }
     },
+    { name: "ConcurrentHashMap - Weak behaviors in contains+contains method (6,random,10000)",
+      parameters: {
+        spec: spec("java/util/concurrent/ConcurrentHashMap.json"),
+        methods: ["contains","contains"],
+        enum: "random",
+        invocations: 6,
+        weak: true,
+        weakRelaxLinearization: true,
+        weakRelaxVisibility: true,
+        weakRelaxReturns: true,
+        cutoff: "10000"
+      }
+    },
+    { name: "ConcurrentHashMap - Weak behaviors in contains+elements method (6,random,10000)",
+      parameters: {
+        spec: spec("java/util/concurrent/ConcurrentHashMap.json"),
+        methods: ["contains","elements"],
+        enum: "random",
+        invocations: 6,
+        weak: true,
+        weakRelaxLinearization: true,
+        weakRelaxVisibility: true,
+        weakRelaxReturns: true,
+        cutoff: "10000"
+      }
+    },
+    { name: "ConcurrentHashMap - Weak behaviors in contains+isEmpty method (6,random,10000)",
+      parameters: {
+        spec: spec("java/util/concurrent/ConcurrentHashMap.json"),
+        methods: ["contains","isEmpty"],
+        enum: "random",
+        invocations: 6,
+        weak: true,
+        weakRelaxLinearization: true,
+        weakRelaxVisibility: true,
+        weakRelaxReturns: true,
+        cutoff: "10000"
+      }
+    },
+    { name: "ConcurrentHashMap - Weak behaviors in isEmpty+elements method (6,random,10000)",
+      parameters: {
+        spec: spec("java/util/concurrent/ConcurrentHashMap.json"),
+        methods: ["isEmpty","elements"],
+        enum: "random",
+        invocations: 6,
+        weak: true,
+        weakRelaxLinearization: true,
+        weakRelaxVisibility: true,
+        weakRelaxReturns: true,
+        cutoff: "10000"
+      }
+    },
+    { name: "ConcurrentHashMap - Weak behaviors in elements+elements method (6,random,10000)",
+      parameters: {
+        spec: spec("java/util/concurrent/ConcurrentHashMap.json"),
+        methods: ["elements","elements"],
+        enum: "random",
+        invocations: 6,
+        weak: true,
+        weakRelaxLinearization: true,
+        weakRelaxVisibility: true,
+        weakRelaxReturns: true,
+        cutoff: "10000"
+      }
+    },
+    { name: "ConcurrentHashMap - Weak behaviors in isEmpty+isEmpty method (6,random,5000)",
+      parameters: {
+        spec: spec("java/util/concurrent/ConcurrentHashMap.json"),
+        methods: ["isEmpty","isEmpty"],
+        enum: "random",
+        invocations: 6,
+        weak: true,
+        weakRelaxLinearization: true,
+        weakRelaxVisibility: true,
+        weakRelaxReturns: true,
+        cutoff: "5000"
+      }
+    },
 
 // *****   SkipListMap ********
 
@@ -291,6 +369,97 @@ module.exports = {
       parameters: {
         spec: spec("java/util/concurrent/ConcurrentSkipListMap.json"),
         methods: ["values"],
+        invocations: 6,
+        enum: "random",
+        weak: true,
+        weakRelaxLinearization: true,
+        weakRelaxVisibility: true,
+        weakRelaxReturns: true,
+        cutoff: "10000"
+      }
+    },
+    { name: "ConcurrentSkipListMap - Weak atomicity in isEmpty method (6,random,5000)",
+      parameters: {
+        spec: spec("java/util/concurrent/ConcurrentSkipListMap.json"),
+        methods: ["isEmpty"],
+        invocations: 6,
+        enum: "random",
+        weak: true,
+        weakRelaxLinearization: true,
+        weakRelaxVisibility: true,
+        weakRelaxReturns: true,
+        cutoff: "5000"
+      }
+    },
+    { name: "ConcurrentSkipListMap - Weak atomicity in containsValue+isEmpty method (6,random,10000)",
+      parameters: {
+        spec: spec("java/util/concurrent/ConcurrentSkipListMap.json"),
+        methods: ["containsValue","isEmpty"],
+        invocations: 6,
+        enum: "random",
+        weak: true,
+        weakRelaxLinearization: true,
+        weakRelaxVisibility: true,
+        weakRelaxReturns: true,
+        cutoff: "10000"
+      }
+    },
+    { name: "ConcurrentSkipListMap - Weak atomicity in containsValue+containsValue method (6,random,10000)",
+      parameters: {
+        spec: spec("java/util/concurrent/ConcurrentSkipListMap.json"),
+        methods: ["containsValue","containsValue"],
+        invocations: 6,
+        enum: "random",
+        weak: true,
+        weakRelaxLinearization: true,
+        weakRelaxVisibility: true,
+        weakRelaxReturns: true,
+        cutoff: "10000"
+      }
+    },
+    { name: "ConcurrentSkipListMap - Weak atomicity in containsValue+toString method (6,random,10000)",
+      parameters: {
+        spec: spec("java/util/concurrent/ConcurrentSkipListMap.json"),
+        methods: ["containsValue","toString"],
+        invocations: 6,
+        enum: "random",
+        weak: true,
+        weakRelaxLinearization: true,
+        weakRelaxVisibility: true,
+        weakRelaxReturns: true,
+        cutoff: "10000"
+      }
+    },
+    { name: "ConcurrentSkipListMap - Weak atomicity in isEmpty+isEmpty method (6,random,10000)",
+      parameters: {
+        spec: spec("java/util/concurrent/ConcurrentSkipListMap.json"),
+        methods: ["isEmpty","isEmpty"],
+        invocations: 6,
+        enum: "random",
+        weak: true,
+        weakRelaxLinearization: true,
+        weakRelaxVisibility: true,
+        weakRelaxReturns: true,
+        cutoff: "10000"
+      }
+    },
+    { name: "ConcurrentSkipListMap - Weak atomicity in toString+toString method (6,random,10000)",
+      parameters: {
+        spec: spec("java/util/concurrent/ConcurrentSkipListMap.json"),
+        methods: ["toString","toString"],
+        invocations: 6,
+        enum: "random",
+        weak: true,
+        weakRelaxLinearization: true,
+        weakRelaxVisibility: true,
+        weakRelaxReturns: true,
+        cutoff: "10000"
+      }
+    },
+    { name: "ConcurrentSkipListMap - Weak atomicity in isEmpty+toString method (6,random,10000)",
+      parameters: {
+        spec: spec("java/util/concurrent/ConcurrentSkipListMap.json"),
+        methods: ["isEmpty","toString"],
         invocations: 6,
         enum: "random",
         weak: true,
@@ -475,6 +644,32 @@ module.exports = {
         cutoff: "5000"
       }
     },
+    { name: "ConcurrentLinkedQueue - Weak atomicity in toArray+toString method (6,random,10000)",
+      parameters: {
+        spec: spec("java/util/concurrent/ConcurrentLinkedQueue.json"),
+        methods: ["toArray","toString"],
+        invocations: 6,
+        enum: "random",
+        weak: true,
+        weakRelaxLinearization: true,
+        weakRelaxVisibility: true,
+        weakRelaxReturns: true,
+        cutoff: "10000"
+      }
+    },
+    { name: "ConcurrentLinkedQueue - Weak atomicity in toArray+size method (6,random,10000)",
+      parameters: {
+        spec: spec("java/util/concurrent/ConcurrentLinkedQueue.json"),
+        methods: ["toArray","size"],
+        invocations: 6,
+        enum: "random",
+        weak: true,
+        weakRelaxLinearization: true,
+        weakRelaxVisibility: true,
+        weakRelaxReturns: true,
+        cutoff: "10000"
+      }
+    },
 
 // *****   LinkedTransferQueue ********
 
@@ -528,6 +723,33 @@ module.exports = {
         weakRelaxVisibility: true,
         weakRelaxReturns: true,
         cutoff: "5000"
+      }
+    },
+    { name: "LinkedTransferQueue - Weak atomicity in toArray+toString method (6,random,10000)",
+      parameters: {
+        spec: spec("java/util/concurrent/LinkedTransferQueue.json"),
+        methods: ["toArray","toString"],
+        invocations: 6,
+        enum: "random",
+        weak: true,
+        weakRelaxLinearization: true,
+        weakRelaxVisibility: true,
+        weakRelaxReturns: true,
+        cutoff: "10000"
+      }
+    },
+
+    { name: "LinkedTransferQueue - Weak atomicity in toArray+size method (6,random,10000)",
+      parameters: {
+        spec: spec("java/util/concurrent/LinkedTransferQueue.json"),
+        methods: ["toArray","size"],
+        invocations: 6,
+        enum: "random",
+        weak: true,
+        weakRelaxLinearization: true,
+        weakRelaxVisibility: true,
+        weakRelaxReturns: true,
+        cutoff: "10000"
       }
     },
 
@@ -585,7 +807,7 @@ module.exports = {
         cutoff: "5000"
       }
     },
-    { name: "LinkedBlockingQueue - Weak atomicity in remainingCapacity method (6,random,5000)",
+    { name: "LinkedBlockingQueue - Weak atomicity in remainingCapacity method (6,random,15000)",
       parameters: {
         spec: spec("java/util/concurrent/LinkedBlockingQueue.json"),
         methods: ["remainingCapacity"],
@@ -595,7 +817,7 @@ module.exports = {
         weakRelaxLinearization: true,
         weakRelaxVisibility: true,
         weakRelaxReturns: true,
-        cutoff: "5000"
+        cutoff: "15000"
       }
     },
     { name: "LinkedBlockingQueue - Weak atomicity in remove method (6,random,5000)",
@@ -637,7 +859,7 @@ module.exports = {
         cutoff: "5000"
       }
     },
-    { name: "LinkedBlockingQueue - Weak atomicity in toString method (6,random,5000)",
+    { name: "LinkedBlockingQueue - Weak atomicity in toString method (6,random,15000)",
       parameters: {
         spec: spec("java/util/concurrent/LinkedBlockingQueue.json"),
         methods: ["toString"],
@@ -647,7 +869,7 @@ module.exports = {
         weakRelaxLinearization: true,
         weakRelaxVisibility: true,
         weakRelaxReturns: true,
-        cutoff: "5000"
+        cutoff: "15000"
       }
     },
 
