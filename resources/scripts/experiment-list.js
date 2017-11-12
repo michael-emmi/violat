@@ -316,7 +316,7 @@ module.exports = {
         cutoff: "5000"
       }
     },
-    { name: "ConcurrentSkipListSet - Weak atomicity in headSet method (6,random,10000)",
+    { name: "ConcurrentSkipListSet - Weak atomicity in headSet method (6,random,20000)",
       parameters: {
         spec: spec("java/util/concurrent/ConcurrentSkipListSet.json"),
         methods: ["headSet"],
@@ -326,7 +326,7 @@ module.exports = {
         weakRelaxLinearization: true,
         weakRelaxVisibility: true,
         weakRelaxReturns: true,
-        cutoff: "10000"
+        cutoff: "20000"
       }
     },
     { name: "ConcurrentSkipListSet - Weak atomicity in pollFirst method (6,random,5000)",
@@ -368,7 +368,7 @@ module.exports = {
         cutoff: "5000"
       }
     },
-    { name: "ConcurrentSkipListSet - Weak atomicity in subSet method (6,random,10000)",
+    { name: "ConcurrentSkipListSet - Weak atomicity in subSet method (6,random,20000)",
       parameters: {
         spec: spec("java/util/concurrent/ConcurrentSkipListSet.json"),
         methods: ["subSet"],
@@ -378,10 +378,10 @@ module.exports = {
         weakRelaxLinearization: true,
         weakRelaxVisibility: true,
         weakRelaxReturns: true,
-        cutoff: "10000"
+        cutoff: "20000"
       }
     },
-    { name: "ConcurrentSkipListSet - Weak atomicity in tailSet method (6,random,10000)",
+    { name: "ConcurrentSkipListSet - Weak atomicity in tailSet method (6,random,20000)",
       parameters: {
         spec: spec("java/util/concurrent/ConcurrentSkipListSet.json"),
         methods: ["tailSet"],
@@ -391,7 +391,7 @@ module.exports = {
         weakRelaxLinearization: true,
         weakRelaxVisibility: true,
         weakRelaxReturns: true,
-        cutoff: "10000"
+        cutoff: "20000"
       }
     },
     { name: "ConcurrentSkipListSet - Weak atomicity in toArray method (6,random,10000)",
@@ -407,7 +407,7 @@ module.exports = {
         cutoff: "10000"
       }
     },
-    { name: "ConcurrentSkipListSet - Weak atomicity in toString method (6,random,10000)",
+    { name: "ConcurrentSkipListSet - Weak atomicity in toString method (6,random,20000)",
       parameters: {
         spec: spec("java/util/concurrent/ConcurrentSkipListSet.json"),
         methods: ["toString"],
@@ -417,7 +417,7 @@ module.exports = {
         weakRelaxLinearization: true,
         weakRelaxVisibility: true,
         weakRelaxReturns: true,
-        cutoff: "10000"
+        cutoff: "20000"
       }
     },
 
@@ -533,6 +533,19 @@ module.exports = {
 
 // *****   LinkedBlockingQueue ********
 
+    { name: "LinkedBlockingQueue - Weak atomicity in peek method (6,random,5000)",
+      parameters: {
+        spec: spec("java/util/concurrent/LinkedBlockingQueue.json"),
+        methods: ["peek"],
+        invocations: 6,
+        enum: "random",
+        weak: true,
+        weakRelaxLinearization: true,
+        weakRelaxVisibility: true,
+        weakRelaxReturns: true,
+        cutoff: "5000"
+      }
+    },
     { name: "LinkedBlockingQueue - Weak atomicity in clear method (6,random,5000)",
       parameters: {
         spec: spec("java/util/concurrent/LinkedBlockingQueue.json"),
@@ -666,7 +679,7 @@ module.exports = {
         cutoff: "5000"
       }
     },
-    { name: "ConcurrentLinkedDeque - Weak atomicity in getLast method (6,random,5000)",
+    { name: "ConcurrentLinkedDeque - Weak atomicity in getLast method (6,random,15000)",
       parameters: {
         spec: spec("java/util/concurrent/ConcurrentLinkedDeque.json"),
         methods: ["getLast"],
@@ -676,7 +689,7 @@ module.exports = {
         weakRelaxLinearization: true,
         weakRelaxVisibility: true,
         weakRelaxReturns: true,
-        cutoff: "5000"
+        cutoff: "15000"
       }
     },
     { name: "ConcurrentLinkedDeque - Weak atomicity in offerFirst method (6,random,5000)",
@@ -705,7 +718,7 @@ module.exports = {
         cutoff: "5000"
       }
     },
-    { name: "ConcurrentLinkedDeque - Weak atomicity in pollLast method (6,random,5000)",
+    { name: "ConcurrentLinkedDeque - Weak atomicity in pollLast method (6,random,15000)",
       parameters: {
         spec: spec("java/util/concurrent/ConcurrentLinkedDeque.json"),
         methods: ["pollLast"],
@@ -715,10 +728,10 @@ module.exports = {
         weakRelaxLinearization: true,
         weakRelaxVisibility: true,
         weakRelaxReturns: true,
-        cutoff: "5000"
+        cutoff: "15000"
       }
     },
-    { name: "ConcurrentLinkedDeque - Weak atomicity in removeLastOccurrence method (6,random,5000)",
+    { name: "ConcurrentLinkedDeque - Weak atomicity in removeLastOccurrence method (6,random,15000)",
       parameters: {
         spec: spec("java/util/concurrent/ConcurrentLinkedDeque.json"),
         methods: ["removeLastOccurrence"],
@@ -728,10 +741,10 @@ module.exports = {
         weakRelaxLinearization: true,
         weakRelaxVisibility: true,
         weakRelaxReturns: true,
-        cutoff: "5000"
+        cutoff: "15000"
       }
     },
-    { name: "ConcurrentLinkedDeque - Weak atomicity in removeFirstOccurrence method (6,random,5000)",
+    { name: "ConcurrentLinkedDeque - Weak atomicity in removeFirstOccurrence method (6,random,15000)",
       parameters: {
         spec: spec("java/util/concurrent/ConcurrentLinkedDeque.json"),
         methods: ["removeFirstOccurrence"],
@@ -741,7 +754,7 @@ module.exports = {
         weakRelaxLinearization: true,
         weakRelaxVisibility: true,
         weakRelaxReturns: true,
-        cutoff: "5000"
+        cutoff: "15000"
       }
     },
     { name: "ConcurrentLinkedDeque - Weak atomicity in removeLast method (6,random,5000)",
