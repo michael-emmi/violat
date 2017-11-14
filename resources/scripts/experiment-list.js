@@ -537,30 +537,32 @@ module.exports = {
         cutoff: "5000"
       }
     },
-    { name: "ConcurrentSkipListSet - Weak atomicity in subSet method (6,random,20000)",
+    { name: "ConcurrentSkipListSet - Weak atomicity in subSet method (6,random,15000)",
       parameters: {
         spec: spec("java/util/concurrent/ConcurrentSkipListSet.json"),
         methods: ["subSet"],
         invocations: 6,
+        values: 4,
         enum: "random",
         weak: true,
         weakRelaxLinearization: true,
         weakRelaxVisibility: true,
         weakRelaxReturns: true,
-        cutoff: "20000"
+        cutoff: "15000"
       }
     },
-    { name: "ConcurrentSkipListSet - Weak atomicity in tailSet method (6,random,20000)",
+    { name: "ConcurrentSkipListSet - Weak atomicity in tailSet method (6,random,15000)",
       parameters: {
         spec: spec("java/util/concurrent/ConcurrentSkipListSet.json"),
         methods: ["tailSet"],
         invocations: 6,
+        values: 3,
         enum: "random",
         weak: true,
         weakRelaxLinearization: true,
         weakRelaxVisibility: true,
         weakRelaxReturns: true,
-        cutoff: "20000"
+        cutoff: "15000"
       }
     },
     { name: "ConcurrentSkipListSet - Weak atomicity in toArray method (6,random,10000)",
