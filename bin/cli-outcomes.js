@@ -20,6 +20,8 @@ let cli = meow(`
     $ ${name} <harness-schema.json>
 
   Options
+    --schema STRING              Construct schema from STRING and JSON spec.
+    --[no-]test                 Just predict outcomes; no testing.
     --weak                      Admit weakly-atomic outcomes.
     --weak-relax-linearization  Linearizations need not include program order.
     --weak-relax-visibility     Visibility need not include program order.
@@ -39,10 +41,14 @@ let cli = meow(`
 
 (async () => {
 
-  if (!(cli.input.length == 1 && cli.input[0]))
+  if (cli.input.length !== 1)
     cli.showHelp();
 
-  let schema = Schema.fromJson(fs.readFileSync(cli.input[0]));
+  let json = fs.readFileSync(cli.input[0]);
+  let schema = cli.flags.schema
+    ? Schema.fromString(cli.flags.schema, json)
+    : Schema.fromJson(json);
+
   if (!schema.id)
     schema.id = 0;
   let args = Object.assign({}, cli.flags);
@@ -57,6 +63,9 @@ let cli = meow(`
     console.log(`${outcome}`);
     console.log(`---`);
   }
+
+  if (!cli.flags.test)
+    return;
 
   let testResults = await test(annotated, 'Blah');
   let total = testResults[0].total;
