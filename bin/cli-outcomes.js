@@ -13,7 +13,7 @@ let name = Object.keys(meta.bin)
 
 const { Schema } = require(path.join(__dirname, '../lib', 'schema.js'));
 const annotate = require(path.join(__dirname, '../lib', 'outcomes.js'));
-const test = require(path.join(__dirname, '../lib', 'jcstress.js'));
+const Tester = require(path.join(__dirname, '../lib', 'jcstress.js'));
 
 let cli = meow(`
   Usage
@@ -67,7 +67,8 @@ let cli = meow(`
   if (!cli.flags.test)
     return;
 
-  let testResults = await test(annotated, 'Blah');
+  let tester = new Tester(annotated, 'Blah');
+  let testResults = await tester.run();
   let total = testResults[0].total;
   let outcomes = testResults[0].outcomes.filter(o => o.count > 0);
 
