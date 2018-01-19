@@ -5,7 +5,8 @@
   "main": "index.js",
   "bin": {
     "violat": "./bin/cli.js",
-    "violat-outcomes": "./bin/cli-outcomes.js"
+    "violat-outcomes": "./bin/cli-outcomes.js",
+    "violat-histories": "./bin/cli-histories.js"
   },
   "preferGlobal": true,
   "dependencies": {
