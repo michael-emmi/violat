@@ -2,6 +2,7 @@
 "use strict";
 
 let fs = require('fs');
+let mkdirp = require('mkdirp');
 let path = require('path');
 let meow = require('meow');
 var config = require(path.join(__dirname, '../lib', 'config.js'));
@@ -14,6 +15,8 @@ let name = Object.keys(meta.bin)
 const { Schema } = require(path.join(__dirname, '../lib', 'schema.js'));
 const annotate = require(path.join(__dirname, '../lib', 'outcomes.js'));
 const { JCStressHistoryGenerator } = require(path.join(__dirname, '../lib', 'jcstress.js'));
+
+const uuidv1 = require('uuid/v1');
 
 let cli = meow(`
   Usage
@@ -54,6 +57,13 @@ let cli = meow(`
   console.log(`---`);
 
   for (let history of histories) {
+    let hpath = path.join(config.historiesPath, ...history.schema.class.split('.'), `${uuidv1()}.json`);
+    mkdirp(path.dirname(hpath), (err) => {
+      if (err) throw err;
+      fs.writeFile(hpath, JSON.stringify(history), (err) => {
+        if (err) throw err;
+      });
+    });
     console.log(`${history}`);
     console.log(`---`);
   }
