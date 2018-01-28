@@ -6,7 +6,8 @@
   "bin": {
     "violat": "./bin/cli.js",
     "violat-outcomes": "./bin/cli-outcomes.js",
-    "violat-histories": "./bin/cli-histories.js"
+    "violat-histories": "./bin/cli-histories.js",
+    "violat-history-checker": "./bin/cli-history-checker.js"
   },
   "preferGlobal": true,
   "dependencies": {
