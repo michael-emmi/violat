@@ -13,9 +13,11 @@
   "dependencies": {
     "debug": "^2.6.4",
     "event-stream": "^3.3.4",
+    "fs-extra": "^5.0.0",
     "inquirer": "^3.0.6",
     "meow": "^3.7.0",
     "mkdirp": "^0.5.1",
+    "mustache": "^2.3.0",
     "ncp": "^2.0.0",
     "seedrandom": "^2.4.2",
     "split": "^1.0.1",

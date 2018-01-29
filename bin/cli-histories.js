@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 "use strict";
 
-let fs = require('fs');
+let fs = require('fs-extra');
+let ncp = require('ncp');
 let mkdirp = require('mkdirp');
 let path = require('path');
 let meow = require('meow');
+let Mustache = require('mustache');
 var config = require(path.join(__dirname, '../lib', 'config.js'));
 let defaults = config.defaultParameters;
 
@@ -39,6 +41,30 @@ let cli = meow(`
   default: {}
 });
 
+async function setup() {
+  const VP = path.join(config.resourcesPath, 'visualization');
+  const HP = config.historiesPath;
+  await fs.ensureDir(HP);
+  for (let f of ['history.css', 'history.js'])
+    await fs.copy(path.join(VP, f), path.join(HP, f));
+  let template = (await fs.readFile(path.join(VP, 'history.html.mustache'))).toString();
+  return { template };
+}
+
+async function output(history, template) {
+  let id = uuidv1();
+  let dir = path.join(config.historiesPath, ...history.schema.class.split('.'));
+  let trace = path.join(dir, `${id}.json`);
+  let instance = path.join(dir, `${id}.html`);
+
+  await fs.ensureDir(path.dirname(trace));
+  fs.writeFile(trace, JSON.stringify(history));
+  fs.writeFile(instance, Mustache.render(template, {
+    trace: path.relative(dir, trace),
+    path: path.relative(dir, config.historiesPath)
+  }));
+}
+
 (async () => {
 
   if (cli.input.length !== 1)
@@ -58,6 +84,8 @@ let cli = meow(`
   let schemas = [];
   let total = 0;
 
+  let { template } = await setup();
+
   for (let schema of enumeration.generator(args)) {
     schemas.push(schema);
     if (schemas.length < 100 && !(args.cutoff <= ++total))
@@ -70,13 +98,7 @@ let cli = meow(`
       console.log(`---`);
 
       for (let history of result.histories) {
-        let hpath = path.join(config.historiesPath, ...history.schema.class.split('.'), `${uuidv1()}.json`);
-        mkdirp(path.dirname(hpath), (err) => {
-          if (err) throw err;
-          fs.writeFile(hpath, JSON.stringify(history), (err) => {
-            if (err) throw err;
-          });
-        });
+        output(history, template);
         console.log(`${history}`);
         console.log(`---`);
       }
