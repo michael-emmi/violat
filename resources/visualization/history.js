@@ -52,6 +52,10 @@ function visualize(file) {
       .text(op => operationLabel(op))
       .attr('dy', 20);
 
+    let id = ops.append("text")
+      .text(op => `${op.invocation.id}`)
+      .attr('dy', -10);
+
     let left = ops.append("circle");
     let right = ops.append("circle")
         .attr("cx", op => position(op).x2 - position(op).x1);
