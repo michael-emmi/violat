@@ -102,7 +102,7 @@ async function output(args) {
 
     let tester = new JCStressHistoryGenerator(schemas, 'History');
 
-    for (let result of await tester.run()) {
+    tester.onResult(result => {
       console.log(`observed ${result.histories.length} histories in ${result.total} executions`);
       console.log(`---`);
 
@@ -113,7 +113,9 @@ async function output(args) {
         console.log(`${history}`);
         console.log(`---`);
       }
-    }
+    });
+
+    await tester.run();
 
     if (args.cutoff <= total)
       break;
