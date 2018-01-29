@@ -22,29 +22,39 @@ const runjobj = path.resolve(workPath, 'build/libs/runjobj.jar');
 
 let cli = meow(`
   Usage
-    $ ${name} <history-file.json>
+    $ ${name} [options] <history-file.json>
 
   Options
-    --XXX
+    --weak      Check weak consistency.
+    --jit       Apply Lowe’s just-in-time linearizability.
+    --min       Explore only minimal visibilities.
 
   Examples
-    $ ${name} some_history.json
+    $ ${name} --weak some_history.json
 `, {
-  boolean: [],
+  boolean: [
+    'weak',
+    'jit',
+    'min'
+  ],
   default: {}
 });
 
 (async () => {
 
-  if (cli.input.length !== 1)
+  if (cli.input.length < 1)
     cli.showHelp();
 
   await utils.buildJar(runjobjPath, workPath, 'runjobj');
   let executor = new Server(runjobj);
-  let checker = new ConsistencyChecker(executor);
-  let result = await checker.check(cli.input[0]);
-  console.log(`${result ? '' : 'in'}consistent`);
-  executor.close();
+  let checker = new ConsistencyChecker({ executor, ...cli.flags });
 
-  process.exitCode = result ? 0 : 1;
+  for (let input of cli.input) {
+    let result = await checker.check(input);
+    console.log(`${result ? '' : 'in'}consistent`);
+    if (!result)
+      process.exitCode++;
+  }
+
+  executor.close();
 })();
