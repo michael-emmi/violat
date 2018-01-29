@@ -42,24 +42,32 @@ let cli = meow(`
 });
 
 async function setup() {
-  const VP = path.join(config.resourcesPath, 'visualization');
-  const HP = config.historiesPath;
-  await fs.ensureDir(HP);
-  for (let f of ['history.css', 'history.js'])
-    await fs.copy(path.join(VP, f), path.join(HP, f));
-  let template = (await fs.readFile(path.join(VP, 'history.html.mustache'))).toString();
+  await fs.ensureDir(config.historiesPath);
+  await Promise.all(['js','css'].map(ext => {
+    let filename = `history.${ext}`;
+    return fs.copy(
+      path.join(config.resourcesPath, 'visualization', filename),
+      path.join(config.historiesPath, filename));
+  }));
+  let data = await fs.readFile(path.join(config.resourcesPath, 'visualization', 'history.html.mustache'));
+  let template = data.toString();
   return { template };
 }
 
-async function output(history, template) {
+async function output(args) {
   let id = uuidv1();
-  let dir = path.join(config.historiesPath, ...history.schema.class.split('.'));
-  let trace = path.join(dir, `${id}.json`);
-  let instance = path.join(dir, `${id}.html`);
+  let dir = path.join(
+    config.historiesPath,
+    ...args.history.schema.class.split('.'),
+    `run-${args.runId}`,
+    `test-${args.testId}`);
+
+  let trace = path.join(dir, `trace-${id}.json`);
+  let instance = path.join(dir, `trace-${id}.html`);
 
   await fs.ensureDir(path.dirname(trace));
-  fs.writeFile(trace, JSON.stringify(history));
-  fs.writeFile(instance, Mustache.render(template, {
+  fs.writeFile(trace, JSON.stringify(args.history));
+  fs.writeFile(instance, Mustache.render(args.template, {
     trace: path.relative(dir, trace),
     path: path.relative(dir, config.historiesPath)
   }));
@@ -83,6 +91,7 @@ async function output(history, template) {
 
   let schemas = [];
   let total = 0;
+  let runId = uuidv1();
 
   let { template } = await setup();
 
@@ -97,8 +106,10 @@ async function output(history, template) {
       console.log(`observed ${result.histories.length} histories in ${result.total} executions`);
       console.log(`---`);
 
+      let testId = uuidv1();
+
       for (let history of result.histories) {
-        output(history, template);
+        output({ history, template, runId, testId });
         console.log(`${history}`);
         console.log(`---`);
       }
