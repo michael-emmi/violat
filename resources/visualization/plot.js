@@ -21,7 +21,7 @@ async function visualize(files) {
 
   let scale = {
     x: d3.scaleLinear().range([0, width]),
-    y: d3.scaleLinear().range([height, 0])
+    y: d3.scaleLog().range([height, 0])
   };
 
   let axes = {
@@ -127,7 +127,7 @@ async function visualize(files) {
       .enter().append("circle")
         .attr("class", "point")
         .attr("r", stat => +stat.schema.sequences.length)
-        .attr("cx", stat => position(stat).x)
+        .attr("cx", stat => position(stat).x + (stat.jit ? 2 : -2))
         .attr("cy", stat => position(stat).y)
         .style("fill", color);
 
