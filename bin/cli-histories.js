@@ -2,8 +2,6 @@
 "use strict";
 
 let fs = require('fs-extra');
-let ncp = require('ncp');
-let mkdirp = require('mkdirp');
 let path = require('path');
 let meow = require('meow');
 let Mustache = require('mustache');

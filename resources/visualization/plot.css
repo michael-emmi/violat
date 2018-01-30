@@ -1,0 +1,15 @@
+body {
+  font-family: sans-serif;
+  font-size: 9pt;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.point {
+  stroke: #000;
+}
