@@ -58,24 +58,29 @@ let cli = meow(`
   for (let input of cli.input) {
     let html = path.join(path.dirname(input), `${path.basename(input, '.json')}.html`);
     let url = `http://localhost:8080/${path.relative(config.outputPath, html)}`;
+
     console.log(`---`);
     console.log(url);
+
     let t0 = performance.now();
     let result = await checker.check(input);
+
     let time = performance.now() - t0;
     let schema = JSON.parse(await fs.readFile(input)).schema;
-    let threads = schema.sequences.length;
-    let operations = schema.sequences.reduce((sum,seq) => sum + seq.invocations.length, 0);
-    console.log(`result: ${result ? '' : 'in'}consistent`);
-    console.log(`time: ${time}ms`);
+    let frequency = schema.frequency;
+
     stats.push({
       input,
       url,
-      threads,
-      operations,
+      schema,
+      frequency,
       result,
       time
     });
+
+    console.log(`result: ${result ? '' : 'in'}consistent`);
+    console.log(`time: ${time}ms`);
+
     if (!result)
       process.exitCode++;
   }
