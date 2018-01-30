@@ -1,6 +1,6 @@
 const fs = require('fs');
 const assert = require('assert');
-const generator = require('../lib/enumeration');
+const generator = require('../lib/enumeration/index');
 const strategies = ['complete', 'shuffle', 'random'];
 const specs = [
   require('../resources/specs/java/util/concurrent/ConcurrentHashMap.json'),
