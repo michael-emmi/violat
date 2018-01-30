@@ -105,6 +105,9 @@ async function visualize(files) {
     let data = await promise;
     console.log(data);
     data.stats.forEach(s => {
+      s.jit = data.jit;
+      s.weak = data.weak;
+      s.min = data.min;
       s.operations = s.schema.sequences.reduce((sum,seq) => sum + seq.invocations.length, 0);
     })
     stats.push(...data.stats);
