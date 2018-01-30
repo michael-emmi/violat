@@ -3,6 +3,12 @@ text {
   font-size: 10px;
 }
 
+.program text {
+  font-family: monospace;
+  font-size: 12px;
+  white-space: pre;
+}
+
 .operations line {
   stroke: #999;
   stroke-width: 2;

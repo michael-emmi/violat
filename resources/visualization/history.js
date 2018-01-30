@@ -11,6 +11,16 @@ function operationLabel(op) {
   return `${op.invocation.method.name}(${op.invocation.arguments.join(',')})${op.value ? `: ${op.value}` : ''}`;
 }
 
+function programLabel(schema) {
+  return [`program { `,
+    ...schema.sequences.map(seq => {
+      return '&nbsp;&nbsp;thread { ' + seq.invocations.map(inv => {
+        return `${inv.method.name}(${inv.arguments.join(",")})`;
+      }).join("; ") + ' }';
+    }),
+    '}'];
+}
+
 function visualize(file) {
   var svg = d3.select("svg"),
       width = +svg.attr("width"),
@@ -36,6 +46,19 @@ function visualize(file) {
       if (event.value !== undefined)
         operations[id].value = event.value;
     }
+
+    let program = svg.append("g")
+        .attr("class", "program")
+        .attr("transform", `translate(100, ${trace.schema.sequences.length * 50 + 100})`)
+        .append("text");
+
+    program.append("tspan")
+      .selectAll("tspan")
+      .data(programLabel(trace.schema))
+      .enter().append("tspan")
+        .attr("x", 0)
+        .attr("dy", "1.4em")
+        .html(seq => seq);
 
     let ops = svg.append("g")
         .attr("class", "operations")
