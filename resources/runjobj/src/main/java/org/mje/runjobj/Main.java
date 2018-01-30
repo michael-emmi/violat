@@ -58,11 +58,15 @@ public class Main {
 
         static List<Invocation> parse(String json)
         throws ClassNotFoundException, NoSuchMethodException {
+            List<Invocation> invocations = new LinkedList<>();
 
             JsonObject sequence =
                 Json.createReader(new StringReader(json)).readObject();
+
+            if (!sequence.containsKey("class") || !sequence.containsKey("invocations"))
+                return invocations;
+
             Class<?> klass = Class.forName(sequence.getString("class"));
-            List<Invocation> invocations = new LinkedList<>();
 
             invocations.add(new Invocation(klass,
                 getParameterTypes(sequence.getJsonObject("constructor")),

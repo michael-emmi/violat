@@ -15,7 +15,7 @@ let name = Object.keys(meta.bin)
 const { Schema } = require(path.join(__dirname, '../lib', 'schema.js'));
 const annotate = require(path.join(__dirname, '../lib', 'outcomes.js'));
 const { JCStressHistoryGenerator } = require(path.join(__dirname, '../lib', 'jcstress.js'));
-const enumeration = require(path.join(__dirname, '../lib', 'random-enumeration.js'));
+const { RandomProgramGenerator } = require(path.join(__dirname, '../lib/enumeration/random.js'));
 
 const uuidv1 = require('uuid/v1');
 
@@ -25,18 +25,19 @@ let cli = meow(`
 
   Options
     --schema STRING
-    --methods <method-name(s)>
-    --values N
-    --sequences N
+    --programs N
+    --threads N
     --invocations N
-    --cutoff N
+    --values N
 
   Examples
+    $ ${name} ConcurrentHashMap.json
     $ ${name} --schema "{ clear(); put(0,1) } || { containsKey(1); remove(0) }" ConcurrentHashMap.json
-    $ ${name} --methods clear ConcurrentHashMap.json
 `, {
   boolean: [],
-  default: {}
+  default: {
+    programs: 1000,
+  }
 });
 
 async function setup() {
@@ -76,26 +77,22 @@ async function output(args) {
   if (cli.input.length !== 1)
     cli.showHelp();
 
-  if (!cli.flags.schema && !cli.flags.methods)
-    cli.showHelp();
+  console.log(`${cli.pkg.name} version ${cli.pkg.version}`);
 
   let spec = JSON.parse(fs.readFileSync(cli.input[0]));
-  let args = Object.assign({}, defaults, cli.flags, {
-    spec,
-    methods: cli.flags.methods && cli.flags.methods.split(',')
-  });
-
-  console.log(`${cli.pkg.name} version ${cli.pkg.version}`);
+  let limits = cli.flags;
+  let programGenerator = new RandomProgramGenerator({ spec, limits });
+  let { template } = await setup();
 
   let schemas = [];
   let total = 0;
+  let limit = cli.flags.programs;
   let runId = uuidv1();
 
-  let { template } = await setup();
-
-  for (let schema of enumeration.generator(args)) {
+  for (let schema of programGenerator.getPrograms()) {
     schemas.push(schema);
-    if (schemas.length < 100 && !(args.cutoff <= ++total))
+
+    if (schemas.length < 100 && !(limit <= ++total))
       continue;
 
     let tester = new JCStressHistoryGenerator(schemas, 'History');
@@ -115,7 +112,7 @@ async function output(args) {
 
     await tester.run();
 
-    if (args.cutoff <= total)
+    if (limit <= total)
       break;
 
     schemas = [];

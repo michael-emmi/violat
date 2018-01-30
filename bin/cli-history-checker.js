@@ -51,6 +51,7 @@ let cli = meow(`
 
   await utils.buildJar(runjobjPath, workPath, 'runjobj');
   let executor = new Server(runjobj);
+  await executor.isReady();
   let checker = new ConsistencyChecker({ executor, ...cli.flags });
   let stats = [];
   let log = { ...cli.flags, stats };
