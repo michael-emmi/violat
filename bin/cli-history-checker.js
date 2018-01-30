@@ -50,6 +50,10 @@ let cli = meow(`
   let checker = new ConsistencyChecker({ executor, ...cli.flags });
 
   for (let input of cli.input) {
+    let html = path.join(path.dirname(input), `${path.basename(input, '.json')}.html`);
+    let url = `http://localhost:8080/${path.relative(config.historiesPath, html)}`;
+    console.log(`---`);
+    console.log(url);
     let result = await checker.check(input);
     console.log(`${result ? '' : 'in'}consistent`);
     if (!result)
