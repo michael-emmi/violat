@@ -22,9 +22,14 @@ function programLabel(schema) {
 }
 
 function visualize(file) {
-  var svg = d3.select("svg"),
-      width = +svg.attr("width"),
-      height = +svg.attr("height");
+  let svg = d3.select("body")
+    .append("svg")
+    .attr("width", "100%")
+    .attr("height", "100%")
+    .call(d3.zoom().on("zoom", function () {
+        svg.attr("transform", d3.event.transform)
+    }))
+    .append("g");
 
   var color = d3.scaleOrdinal(d3.schemeCategory20);
 

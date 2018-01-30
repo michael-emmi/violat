@@ -30,6 +30,10 @@ async function visualize(files) {
   };
 
   function coord(stat) {
+    if (!Number.isFinite(stat.time)) {
+      console.log(stat);
+      console.log(stat.time);
+    }
     return {
       x: stat.operations,
       y: stat.time
@@ -101,9 +105,7 @@ async function visualize(files) {
     let data = await promise;
     console.log(data);
     data.stats.forEach(s => {
-      s.weak = data.weak;
-      s.jit = data.jit;
-      s.min = data.min;
+      s.operations = s.schema.sequences.reduce((sum,seq) => sum + seq.invocations.length, 0);
     })
     stats.push(...data.stats);
 
@@ -121,7 +123,7 @@ async function visualize(files) {
     svg.selectAll(".point").data(stats)
       .enter().append("circle")
         .attr("class", "point")
-        .attr("r", 3.5)
+        .attr("r", stat => +stat.schema.sequences.length)
         .attr("cx", stat => position(stat).x)
         .attr("cy", stat => position(stat).y)
         .style("fill", color);
