@@ -207,7 +207,7 @@ public class Main {
 
         static String toString(Object object) {
             if (object instanceof Exception)
-                return String.valueOf(object.getClass().getSimpleName());
+                return String.valueOf(object.getClass().getName());
 
             else if (object instanceof Enumeration)
                 return Collections.list((Enumeration<?>) object).stream()
