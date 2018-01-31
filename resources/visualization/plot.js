@@ -43,6 +43,7 @@ class Plot {
         .attr("transform", `translate(${this.width / 2},0)`)
       .append("text")
         .attr("class", "label")
+        .style("text-anchor", "middle")
         .text(this.getName());
 
     let xAxis = this.svg.append("g")
@@ -294,9 +295,9 @@ class WithVsWithoutJitPlot extends DuelingPlot {
       let name = stat.input;
 
       if (!this.temp[name])
-        this.temp[name] = { radius: 3, color: this._colorResult(stat.result) };
+        this.temp[name] = { radius: 3, color: this._colorResult(stat.result), result: stat.result };
 
-      else if (this.temp[name].color !== this._colorResult(stat.result))
+      else if (stat.result !== undefined && this.temp[name].result !== undefined && this.temp[name].result !== stat.result)
         console.error('inconsistent stat on %s', name);
 
       if (jit)
@@ -324,6 +325,101 @@ class WithVsWithoutJitPlot extends DuelingPlot {
       return 1;
     else
       return 0;
+  }
+}
+
+class LinVsWeakPlot extends DuelingPlot {
+  constructor(parent) {
+    super(parent);
+  }
+
+  getName() {
+    return 'Linearizability vs. Weak Consistency';
+  }
+
+  getScaleX() {
+    return d3.scaleLog();
+  }
+
+  getScaleY() {
+    return d3.scaleLog();
+  }
+
+  getLegendLabel(colorIndex) {
+    switch (colorIndex) {
+      case 0:
+        return "Linearizable";
+      case 1:
+        return "Weakly Consistent";
+      case 2:
+        return "Inconsistent";
+      case 2:
+        return "Unknown";
+      default:
+        return "???";
+    }
+  }
+
+  getAxisLabelX() {
+    return 'Linearizability';
+  }
+
+  getAxisLabelY() {
+    return 'Weak Consistency';
+  }
+
+  processData(data) {
+    if (data.jit)
+      return;
+
+    if (data.min)
+      return;
+
+    let weak = data.weak;
+
+    if (!this.temp)
+      this.temp = {};
+
+    for (let stat of data.stats) {
+      let name = stat.input;
+
+      if (!this.temp[name])
+        this.temp[name] = { radius: 3 };
+
+      if (weak) {
+        this.temp[name].x = +stat.time;
+        this.temp[name].con = stat.result;
+      } else {
+        this.temp[name].y = +stat.time;
+        this.temp[name].lin = stat.result;
+      }
+    }
+
+    this.emitData(this.temp);
+  }
+
+  emitData(temp) {
+    for (let name of Object.keys(temp)) {
+      let entry = temp[name];
+      if (entry.x !== undefined && entry.y !== undefined) {
+        entry.color = this._colorEntry(entry);
+        delete temp[name];
+        // if (!coin(0.01))
+        //   continue;
+        this.data.push(entry);
+      }
+    }
+  }
+
+  _colorEntry(entry) {
+    if (entry.lin)
+      return 0;
+    else if (entry.con)
+      return 1;
+    else if (entry.con === false)
+      return 2;
+    else
+      return 3;
   }
 }
 
@@ -358,6 +454,9 @@ class WithVsWithoutMinPlot extends DuelingPlot {
   }
 
   processData(data) {
+    if (!data.weak)
+      return;
+
     let min = data.min;
 
     if (!this.temp)
@@ -402,6 +501,28 @@ class WithVsWithoutMinPlot extends DuelingPlot {
       return 0;
   }
 }
+
+// class TimeVsOpsBoxPlot extends TimeVsOperationsPlot {
+//   constructor(parent) {
+//     super(parent);
+//   }
+//
+//   processData(data) {
+//     if (!this.boxes)
+//       this.boxData = {};
+//
+//     for (let stat of data.stats) {
+//       let ops = stat.schema.sequences.reduce((sum, seq) => sum + seq.invocations.length, 0);
+//
+//       if (!this.boxData[key])
+//         this.boxData[key] = [];
+//
+//       this.boxData[key].push({
+//
+//       });
+//     }
+//   }
+// }
 
 class LinearizablePlot extends TimeVsOperationsPlot {
   constructor(parent) {
@@ -485,6 +606,7 @@ async function visualize(files) {
   plots.push(new LinearizablePlot(body));
   plots.push(new NonLinearizablePlot(body));
   plots.push(new WithVsWithoutJitPlot(body));
+  plots.push(new LinVsWeakPlot(body));
   plots.push(new WithVsWithoutMinPlot(body));
 
   let allData = await Promise.all(files.map(getData));

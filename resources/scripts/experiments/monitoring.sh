@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-FLAGSS=("" --jit --weak "--weak --min" '--jit --weak --min')
+FLAGSS=('--weak' '--weak --min' '--weak-min-jit' '' '--jit')
 EXCLUDES=(SynchronousQueue PriorityBlockingQueue LinkedBlockingDeque LinkedTransferQueue LinkedBlockingQueue ConcurrentArrayBlockingQueue)
 
 echo ---
@@ -32,6 +32,7 @@ else
   echo ---
 fi
 
+
 if [[ -z $(find ./violat-output/results -name "*.json") ]]
 then
   for run in $(find ./violat-output/histories -name "run-*")
@@ -40,12 +41,14 @@ then
     echo Checking histories from $(basename $run)
     echo ---
 
+    sample=$(find $run -name "*.json" | sort -R | head -n 1000)
+
     for flags in "${FLAGSS[@]}"
     do
       echo ---
       echo Running checker with flags: $flags
       echo ---
-      find $run -name "*.json" | xargs violat-history-checker $flags
+      echo $sample | xargs violat-history-checker $flags
     done
   done
 else

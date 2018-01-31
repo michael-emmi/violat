@@ -71,7 +71,7 @@ let cli = meow(`
     'min'
   ],
   default: {
-    timeLimit: 2000
+    timeLimit: 1000
   }
 });
 
