@@ -65,26 +65,6 @@ class Plot {
         .attr("y", "16")
         .style("text-anchor", "end")
         .text(this.getAxisLabelY());
-
-    // let legend = svg.selectAll(".legend")
-    //     .data(palette.domain())
-    //   .enter().append("g")
-    //     .attr("class", "legend")
-    //     .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
-    //
-    // legend.append("rect")
-    //   .attr("x", width - 18)
-    //   .attr("width", 18)
-    //   .attr("height", 18)
-    //   .style("fill", palette);
-    //
-    // legend.append("text")
-    //   .attr("x", width - 24)
-    //   .attr("y", 9)
-    //   .attr("dy", ".35em")
-    //   .style("text-anchor", "end");
-    //   // .text(d => d % 2 === 0 ? 'base' : 'jit')
-
   }
 
   getName() {
@@ -179,8 +159,13 @@ class Plot {
     return 'Y';
   }
 
-  addData(data) {
-    this.processData(data);
+  getLegendLabel(colorIndex) {
+    return "?";
+  }
+
+  addData(...chunks) {
+    for (let chunk of chunks)
+      this.processData(chunk);
     this.refresh();
   }
 
@@ -204,6 +189,22 @@ class Plot {
         .attr("cx", d => this.getPositionX(d))
         .attr("cy", d => this.getPositionY(d))
         .style("fill", d => this.getFillColor(d));
+
+    let legend = this.svg.selectAll(".legend")
+        .data(this.palette.domain())
+      .enter().append("g")
+        .attr("class", "legend")
+        .attr("transform", (_,i) => `translate(${this.width},${i*20})`);
+
+    legend.append("circle")
+      .attr("r", 8)
+      .style("fill", this.palette);
+
+    legend.append("text")
+      .attr("x", -10)
+      .attr("dy", ".35em")
+      .style("text-anchor", "end")
+      .text(d => this.getLegendLabel(d));
   }
 }
 
@@ -238,6 +239,17 @@ class WithVsWithoutJitPlot extends Plot {
 
   getName() {
     return 'With vs. Without JIT';
+  }
+
+  getLegendLabel(colorIndex) {
+    switch (colorIndex) {
+      case 0:
+        return "Non-Linearizable";
+      case 1:
+        return "Linearizable";
+      default:
+        return "???";
+    }
   }
 
   getExtentFactorX(d) {
@@ -287,7 +299,7 @@ class WithVsWithoutJitPlot extends Plot {
       if (entry.x !== undefined && entry.y !== undefined) {
         delete this.temp[name];
 
-        if (!coin(0.0001))
+        if (!coin(0.01))
           continue;
         this.data.push(entry);
       }
@@ -302,6 +314,17 @@ class LinearizablePlot extends TimeVsOperationsPlot {
 
   getName() {
     return "Linearizable Plot";
+  }
+
+  getLegendLabel(colorIndex) {
+    switch (colorIndex) {
+      case 0:
+        return "base";
+      case 1:
+        return "jit";
+      default:
+        return "???";
+    }
   }
 
   processData(data) {
@@ -330,12 +353,23 @@ class NonLinearizablePlot extends TimeVsOperationsPlot {
     return "Non-Linearizable Plot";
   }
 
+  getLegendLabel(colorIndex) {
+    switch (colorIndex) {
+      case 0:
+        return "base";
+      case 1:
+        return "jit";
+      default:
+        return "???";
+    }
+  }
+
   processData(data) {
     for (let stat of data.stats) {
       if (stat.result)
         continue;
 
-      if (!coin(0.001))
+      if (!coin(0.01))
         continue;
 
       let x = stat.schema.sequences.reduce((sum, seq) => sum + seq.invocations.length, 0);
@@ -354,15 +388,10 @@ async function visualize(files) {
 
   plots.push(new LinearizablePlot(body));
   plots.push(new NonLinearizablePlot(body));
-  // plots.push(new WithVsWithoutJitPlot(body));
+  plots.push(new WithVsWithoutJitPlot(body));
 
-  for (let promise of files.map(getData)) {
-    let data = await promise;
-
-    console.log(`received data`);
-
-    for (let plot of plots) {
-      plot.addData(data);
-    }
-  }
+  let allData = await Promise.all(files.map(getData));
+  console.log(`read all data`);
+  for (let plot of plots)
+    plot.addData(...allData);
 }
