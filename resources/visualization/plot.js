@@ -226,7 +226,7 @@ class TimeVsOperationsPlot extends Plot {
   }
 }
 
-class WithVsWithoutJitPlot extends Plot {
+class DuelingPlot extends Plot {
   constructor(parent) {
     super(parent);
     this.svg.append("line")
@@ -235,6 +235,20 @@ class WithVsWithoutJitPlot extends Plot {
         .attr("y1", this.height)
         .attr("x2", this.width)
         .attr("y2", 0);
+  }
+
+  getExtentFactorX(d) {
+    return this.getCoordinateX(d);
+  }
+
+  getExtentFactorY(d) {
+    return this.getCoordinateX(d);
+  }
+}
+
+class WithVsWithoutJitPlot extends DuelingPlot {
+  constructor(parent) {
+    super(parent);
   }
 
   getName() {
@@ -247,17 +261,11 @@ class WithVsWithoutJitPlot extends Plot {
         return "Non-Linearizable";
       case 1:
         return "Linearizable";
+      case 2:
+        return "Unknown";
       default:
         return "???";
     }
-  }
-
-  getExtentFactorX(d) {
-    return this.getCoordinateX(d);
-  }
-
-  getExtentFactorY(d) {
-    return this.getCoordinateX(d);
   }
 
   getScaleX() {
@@ -286,9 +294,9 @@ class WithVsWithoutJitPlot extends Plot {
       let name = stat.input;
 
       if (!this.temp[name])
-        this.temp[name] = { radius: 3, color: +stat.result };
+        this.temp[name] = { radius: 3, color: this._colorResult(stat.result) };
 
-      else if (this.temp[name].color !== +stat.result)
+      else if (this.temp[name].color !== this._colorResult(stat.result))
         console.error('inconsistent stat on %s', name);
 
       if (jit)
@@ -307,6 +315,91 @@ class WithVsWithoutJitPlot extends Plot {
         this.data.push(entry);
       }
     }
+  }
+
+  _colorResult(result) {
+    if (result === undefined)
+      return 2;
+    else if (result)
+      return 1;
+    else
+      return 0;
+  }
+}
+
+class WithVsWithoutMinPlot extends DuelingPlot {
+  constructor(parent) {
+    super(parent);
+  }
+
+  getName() {
+    return 'With vs. Without Min';
+  }
+
+  getLegendLabel(colorIndex) {
+    switch (colorIndex) {
+      case 0:
+        return "Inconsistent";
+      case 1:
+        return "Consistent";
+      case 2:
+        return "Unknown";
+      default:
+        return "???";
+    }
+  }
+
+  getAxisLabelX() {
+    return 'With Min';
+  }
+
+  getAxisLabelY() {
+    return 'Without Min';
+  }
+
+  processData(data) {
+    let min = data.min;
+
+    if (!this.temp)
+      this.temp = {};
+
+    for (let stat of data.stats) {
+      let name = stat.input;
+
+      if (!this.temp[name])
+        this.temp[name] = { radius: 3, color: this._colorResult(stat.result) };
+
+      else if (this.temp[name].color !== this._colorResult(stat.result))
+        console.error('inconsistent stat on %s', name);
+
+      if (min)
+        this.temp[name].x = +stat.time;
+      else
+        this.temp[name].y = +stat.time;
+    }
+
+    this.emitData(this.temp);
+  }
+
+  emitData(temp) {
+    for (let name of Object.keys(temp)) {
+      let entry = temp[name];
+      if (entry.x !== undefined && entry.y !== undefined) {
+        delete temp[name];
+        if (!coin(0.01))
+          continue;
+        this.data.push(entry);
+      }
+    }
+  }
+
+  _colorResult(result) {
+    if (result === undefined)
+      return 2;
+    else if (result)
+      return 1;
+    else
+      return 0;
   }
 }
 
@@ -392,6 +485,7 @@ async function visualize(files) {
   plots.push(new LinearizablePlot(body));
   plots.push(new NonLinearizablePlot(body));
   plots.push(new WithVsWithoutJitPlot(body));
+  plots.push(new WithVsWithoutMinPlot(body));
 
   let allData = await Promise.all(files.map(getData));
   console.log(`read all data`);

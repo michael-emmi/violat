@@ -46,14 +46,21 @@ async function output(log) {
   });
 }
 
+async function sleep(ms) {
+  return new Promise((resolve, _) => {
+    setTimeout(_ =>  resolve(), ms);
+  });
+}
+
 let cli = meow(`
   Usage
     $ ${name} [options] <history-file.json>
 
   Options
-    --weak      Check weak consistency.
-    --jit       Apply Lowe’s just-in-time linearizability.
-    --min       Explore only minimal visibilities.
+    --weak            Check weak consistency.
+    --jit             Apply Lowe’s just-in-time linearizability.
+    --min             Explore only minimal visibilities.
+    --time-limit N    Per-trace millisecond time limit.
 
   Examples
     $ ${name} --weak some_history.json
@@ -63,7 +70,9 @@ let cli = meow(`
     'jit',
     'min'
   ],
-  default: {}
+  default: {
+    timeLimit: 2000
+  }
 });
 
 (async () => {
@@ -86,7 +95,7 @@ let cli = meow(`
     console.log(url);
 
     let t0 = performance.now();
-    let result = await checker.check(input);
+    let result = await Promise.race([checker.check(input), sleep(cli.flags.timeLimit)]);
 
     let time = performance.now() - t0;
     let schema = JSON.parse(await fs.readFile(input)).schema;
@@ -101,7 +110,7 @@ let cli = meow(`
       time
     });
 
-    console.log(`result: ${result ? '' : 'in'}consistent`);
+    console.log(`result: ${result === undefined ? 'unknown' : result ? 'consistent' : 'inconsistent'}`);
     console.log(`time: ${time}ms`);
 
     if (!result)
