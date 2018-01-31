@@ -78,6 +78,7 @@ async function output(args) {
     cli.showHelp();
 
   console.log(`${cli.pkg.name} version ${cli.pkg.version}`);
+  console.log(`---`);
 
   let spec = JSON.parse(fs.readFileSync(cli.input[0]));
   let limits = cli.flags;
@@ -86,6 +87,7 @@ async function output(args) {
 
   let schemas = [];
   let total = 0;
+  let count = 0;
   let limit = cli.flags.programs;
   let runId = uuidv1();
 
@@ -98,16 +100,14 @@ async function output(args) {
     let tester = new JCStressHistoryGenerator(schemas, 'History');
 
     tester.onResult(result => {
+      console.log(`result ${++count} of ${limit}`);
       console.log(`observed ${result.histories.length} histories in ${result.total} executions`);
       console.log(`---`);
 
       let testId = uuidv1();
 
-      for (let history of result.histories) {
+      for (let history of result.histories)
         output({ history, template, runId, testId });
-        console.log(`${history}`);
-        console.log(`---`);
-      }
     });
 
     await tester.run();
