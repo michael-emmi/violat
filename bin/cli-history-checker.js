@@ -24,6 +24,28 @@ const runjobj = path.resolve(workPath, 'build/libs/runjobj.jar');
 const { performance } = require('perf_hooks');
 const uuidv1 = require('uuid/v1');
 
+async function output(log) {
+  await fs.ensureDir(path.join(config.resultsPath));
+  await Promise.all(['js','css'].map(ext => {
+    let filename = `plot.${ext}`;
+    return fs.copy(
+      path.join(config.resourcesPath, 'visualization', filename),
+      path.join(config.resultsPath, filename));
+  }));
+  let logFile = path.join(config.resultsPath, `history-checker-${uuidv1()}.json`);
+  fs.writeFile(logFile, JSON.stringify(log, null, 2));
+
+  let data = await fs.readFile(path.join(config.resourcesPath, 'visualization', 'plot.html.mustache'));
+  let template = data.toString();
+  let instance = path.join(config.resultsPath, 'plot.html');
+
+  glob(path.join(config.resultsPath, "history-checker-*.json"), {}, (err, files) => {
+    fs.writeFile(instance, Mustache.render(template, {
+      files: files.map(f => path.relative(path.dirname(instance), f))
+    }));
+  });
+}
+
 let cli = meow(`
   Usage
     $ ${name} [options] <history-file.json>
@@ -86,25 +108,7 @@ let cli = meow(`
       process.exitCode++;
   }
 
-  await fs.ensureDir(path.join(config.resultsPath));
-  await Promise.all(['js','css'].map(ext => {
-    let filename = `plot.${ext}`;
-    return fs.copy(
-      path.join(config.resourcesPath, 'visualization', filename),
-      path.join(config.resultsPath, filename));
-  }));
-  let logFile = path.join(config.resultsPath, `history-checker-${uuidv1()}.json`);
-  fs.writeFile(logFile, JSON.stringify(log, null, 2));
-
-  let data = await fs.readFile(path.join(config.resourcesPath, 'visualization', 'plot.html.mustache'));
-  let template = data.toString();
-  let instance = path.join(config.resultsPath, 'plot.html');
-
-  glob(path.join(config.resultsPath, "history-checker-*.json"), {}, (err, files) => {
-    fs.writeFile(instance, Mustache.render(template, {
-      files: files.map(f => path.relative(path.dirname(instance), f))
-    }));
-  });
-
   executor.close();
+  output(log);
+
 })();
