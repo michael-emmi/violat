@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-FLAGSS=("" --jit --weak --min "--jit --min")
+FLAGSS=("" --jit --weak "--weak --min" '--jit --weak --min')
 EXCLUDES=(SynchronousQueue PriorityBlockingQueue LinkedBlockingDeque LinkedTransferQueue LinkedBlockingQueue ConcurrentArrayBlockingQueue)
 
 echo ---
