@@ -332,7 +332,7 @@ class LinearizablePlot extends TimeVsOperationsPlot {
       if (!stat.result)
         continue;
 
-      if (!coin(0.001))
+      if (!coin(0.01))
         continue;
 
       let x = stat.schema.sequences.reduce((sum, seq) => sum + seq.invocations.length, 0);
@@ -369,7 +369,7 @@ class NonLinearizablePlot extends TimeVsOperationsPlot {
       if (stat.result)
         continue;
 
-      if (!coin(0.01))
+      if (!coin(0.1))
         continue;
 
       let x = stat.schema.sequences.reduce((sum, seq) => sum + seq.invocations.length, 0);
