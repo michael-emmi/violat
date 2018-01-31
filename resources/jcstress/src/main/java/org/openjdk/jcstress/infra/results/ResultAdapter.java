@@ -7,7 +7,7 @@ public class ResultAdapter {
 
     public static String get(Object a) {
         if (a instanceof Exception)
-            return String.valueOf(a.getClass().getSimpleName());
+            return String.valueOf(a.getClass().getName());
 
         else if (a instanceof Enumeration)
             return Collections.list((Enumeration<?>) a).stream()

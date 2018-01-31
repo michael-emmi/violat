@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-FLAGSS=('--weak' '--weak --min' '--weak-min-jit' '' '--jit')
-EXCLUDES=(SynchronousQueue PriorityBlockingQueue LinkedBlockingDeque LinkedTransferQueue LinkedBlockingQueue ConcurrentArrayBlockingQueue)
+FLAGSS=('' '--jit' '--weak' '--weak --min' '--weak --min --jit')
+EXCLUDES=(SynchronousQueue PriorityBlockingQueue LinkedBlockingDeque LinkedTransferQueue LinkedBlockingQueue ConcurrentArrayBlockingQueue ConcurrentLinkedQueue ConcurrentLinkedDeque ConcurrentHashMap ConcurrentSkipListSet)
 
 echo ---
 echo Generating experimental data

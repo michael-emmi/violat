@@ -128,7 +128,7 @@
       "parameters": [],
       "void": false,
       "readonly": true
-    },    
+    },
     {
       "name": "headMap",
       "parameters": [{"type": "java.lang.Object"}],
@@ -145,12 +145,6 @@
       "harnessParameters": {
         "invocations": 5
       }
-    },
-    {
-      "name": "subMap",
-      "parameters": [{"type": "java.lang.Object"},{"type": "java.lang.Object"}],
-      "void": false,
-      "readonly": true
     },
     {
       "name": "putAll",

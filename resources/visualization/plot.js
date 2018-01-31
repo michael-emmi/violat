@@ -311,8 +311,8 @@ class WithVsWithoutJitPlot extends DuelingPlot {
       if (entry.x !== undefined && entry.y !== undefined) {
         delete this.temp[name];
 
-        if (!coin(0.01))
-          continue;
+        // if (!coin(0.01))
+        //   continue;
         this.data.push(entry);
       }
     }
@@ -386,7 +386,7 @@ class LinVsWeakPlot extends DuelingPlot {
       if (!this.temp[name])
         this.temp[name] = { radius: 3 };
 
-      if (weak) {
+      if (!weak) {
         this.temp[name].x = +stat.time;
         this.temp[name].con = stat.result;
       } else {
@@ -430,6 +430,14 @@ class WithVsWithoutMinPlot extends DuelingPlot {
 
   getName() {
     return 'With vs. Without Min';
+  }
+
+  getScaleX() {
+    return d3.scaleLog();
+  }
+
+  getScaleY() {
+    return d3.scaleLog();
   }
 
   getLegendLabel(colorIndex) {
@@ -485,8 +493,98 @@ class WithVsWithoutMinPlot extends DuelingPlot {
       let entry = temp[name];
       if (entry.x !== undefined && entry.y !== undefined) {
         delete temp[name];
-        if (!coin(0.01))
-          continue;
+        // if (!coin(0.01))
+        //   continue;
+        this.data.push(entry);
+      }
+    }
+  }
+
+  _colorResult(result) {
+    if (result === undefined)
+      return 2;
+    else if (result)
+      return 1;
+    else
+      return 0;
+  }
+}
+
+class MinWithVsWithoutJitPlot extends DuelingPlot {
+  constructor(parent) {
+    super(parent);
+  }
+
+  getName() {
+    return 'Min With vs. Without JIT';
+  }
+
+  getScaleX() {
+    return d3.scaleLog();
+  }
+
+  getScaleY() {
+    return d3.scaleLog();
+  }
+
+  getLegendLabel(colorIndex) {
+    switch (colorIndex) {
+      case 0:
+        return "Inconsistent";
+      case 1:
+        return "Consistent";
+      case 2:
+        return "Unknown";
+      default:
+        return "???";
+    }
+  }
+
+  getAxisLabelX() {
+    return 'With Min';
+  }
+
+  getAxisLabelY() {
+    return 'Without Min';
+  }
+
+  processData(data) {
+    if (!data.weak)
+      return;
+
+    if (!data.min)
+      return;
+
+    let jit = data.jit;
+
+    if (!this.temp)
+      this.temp = {};
+
+    for (let stat of data.stats) {
+      let name = stat.input;
+
+      if (!this.temp[name])
+        this.temp[name] = { radius: 3, color: this._colorResult(stat.result) };
+
+      else if (this.temp[name].color !== this._colorResult(stat.result))
+        console.error('inconsistent stat on %s', name);
+
+      if (jit)
+        this.temp[name].x = +stat.time;
+      else
+        this.temp[name].y = +stat.time;
+    }
+
+    this.emitData(this.temp);
+  }
+
+  emitData(temp) {
+    for (let name of Object.keys(temp)) {
+      let entry = temp[name];
+      if (entry.x !== undefined && entry.y !== undefined) {
+        delete temp[name];
+        // if (!coin(0.01))
+        //   continue;
         this.data.push(entry);
       }
     }
@@ -608,6 +706,7 @@ async function visualize(files) {
   plots.push(new WithVsWithoutJitPlot(body));
   plots.push(new LinVsWeakPlot(body));
   plots.push(new WithVsWithoutMinPlot(body));
+  plots.push(new MinWithVsWithoutJitPlot(body));
 
   let allData = await Promise.all(files.map(getData));
   console.log(`read all data`);
