@@ -1,4 +1,4 @@
-const config = require('../../lib/config.js');
+const config = require('../../../lib/config.js');
 const path = require('path');
 
 function spec(name) {
@@ -8,7 +8,7 @@ function spec(name) {
 module.exports = {
   name: "Experiments V1.0",
   list: [
- 
+
 // *****   HashMap ********
 
     { name: "ConcurrentHashMap - Weak behaviors in clear method (6,random,5000)",
@@ -471,7 +471,7 @@ module.exports = {
     },
 
 // *****   SkipListSet ********
-    
+
     { name: "ConcurrentSkipListSet - Weak atomicity in clear method (6,random,5000)",
       parameters: {
         spec: spec("java/util/concurrent/ConcurrentSkipListSet.json"),

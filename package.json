@@ -31,7 +31,8 @@
   },
   "scripts": {
     "test": "mocha",
-    "experiments": "node resources/scripts/experiments.js"
+    "consistency-experiments": "node resources/scripts/experiments/consistency.js",
+    "monitoring-experiments": "bash ./resources/scripts/experiments/monitoring.sh"
   },
   "repository": {
     "type": "git",

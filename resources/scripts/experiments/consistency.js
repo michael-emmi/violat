@@ -1,8 +1,8 @@
 const debug = require('debug')('experiments');
 const fs = require('fs');
-const config = require('../../lib/config.js');
-const checker = require('../../lib/index.js');
-const meta = require('../../package.json');
+const config = require('../../../lib/config.js');
+const checker = require('../../../lib/index.js');
+const meta = require('../../../package.json');
 
 const experiments = require('./experiment-list.js');
 
