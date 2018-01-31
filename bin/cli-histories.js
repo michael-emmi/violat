@@ -36,7 +36,7 @@ let cli = meow(`
 `, {
   boolean: [],
   default: {
-    programs: 200,
+    programs: 25,
   }
 });
 
