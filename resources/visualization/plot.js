@@ -288,6 +288,9 @@ class WithVsWithoutJitPlot extends Plot {
       if (!this.temp[name])
         this.temp[name] = { radius: 3, color: +stat.result };
 
+      else if (this.temp[name].color !== +stat.result)
+        console.error('inconsistent stat on %s', name);
+
       if (jit)
         this.temp[name].x = +stat.time;
       else
