@@ -63,7 +63,7 @@ class Plot {
     yAxis.append("text")
         .attr("class", "label")
         .attr("transform", "rotate(-90)")
-        .attr("y", "16")
+        .attr("y", "12")
         .style("text-anchor", "end")
         .text(this.getAxisLabelY());
   }
@@ -136,20 +136,20 @@ class Plot {
     return d3.scaleLinear();
   }
 
-  getExtentFactorX(d) {
-    return this.getCoordinateX(d);
+  getDomainX() {
+    return d3.extent(this.data, d => this.getCoordinateX(d));
   }
 
-  getExtentFactorY(d) {
-    return this.getCoordinateY(d);
+  getDomainY() {
+    return d3.extent(this.data, d => this.getCoordinateY(d));
   }
 
   getAxisX() {
-    return d3.axisBottom(this.scale.x);
+    return d3.axisBottom(this.scale.x).ticks(4);
   }
 
   getAxisY() {
-    return d3.axisLeft(this.scale.y);
+    return d3.axisLeft(this.scale.y).ticks(4);
   }
 
   getAxisLabelX() {
@@ -175,8 +175,8 @@ class Plot {
   }
 
   refresh() {
-    this.scale.x.domain(d3.extent(this.data, d => this.getExtentFactorX(d)));
-    this.scale.y.domain(d3.extent(this.data, d => this.getExtentFactorY(d)));
+    this.scale.x.domain(this.getDomainX());
+    this.scale.y.domain(this.getDomainY());
     this.axis.x = this.getAxisX();
     this.axis.y = this.getAxisY();
 
@@ -195,10 +195,10 @@ class Plot {
         .data(this.palette.domain())
       .enter().append("g")
         .attr("class", "legend")
-        .attr("transform", (_,i) => `translate(${this.width},${i*20})`);
+        .attr("transform", (_,i) => `translate(${this.width},${i*20+this.height/2})`);
 
     legend.append("circle")
-      .attr("r", 8)
+      .attr("r", 6)
       .style("fill", this.palette);
 
     legend.append("text")
@@ -238,13 +238,20 @@ class DuelingPlot extends Plot {
         .attr("y2", 0);
   }
 
-  getExtentFactorX(d) {
-    return this.getCoordinateX(d);
+  getDomain() {
+    let [x0,x1] = d3.extent(this.data, d => this.getCoordinateX(d));
+    let [y0,y1] = d3.extent(this.data, d => this.getCoordinateY(d));
+    return [Math.min(x0,y0), Math.max(x1,y1)];
   }
 
-  getExtentFactorY(d) {
-    return this.getCoordinateX(d);
+  getDomainX() {
+    return this.getDomain();
   }
+
+  getDomainY() {
+    return this.getDomain();
+  }
+
 }
 
 class WithVsWithoutJitPlot extends DuelingPlot {
@@ -252,16 +259,16 @@ class WithVsWithoutJitPlot extends DuelingPlot {
     super(parent);
   }
 
-  getName() {
-    return 'With vs. Without JIT';
-  }
+  // getName() {
+  //   return 'With vs. Without JIT';
+  // }
 
   getLegendLabel(colorIndex) {
     switch (colorIndex) {
       case 0:
-        return "Non-Linearizable";
-      case 1:
         return "Linearizable";
+      case 1:
+        return "Non-Linearizable";
       case 2:
         return "Unknown";
       default:
@@ -278,14 +285,17 @@ class WithVsWithoutJitPlot extends DuelingPlot {
   }
 
   getAxisLabelX() {
-    return 'With JIT';
+    return 'Just-in-Time Linearizability';
   }
 
   getAxisLabelY() {
-    return 'Without JIT';
+    return 'Linearizability';
   }
 
   processData(data) {
+    if (data.weak)
+      return;
+
     let jit = data.jit;
 
     if (!this.temp)
@@ -295,15 +305,15 @@ class WithVsWithoutJitPlot extends DuelingPlot {
       let name = stat.input;
 
       if (!this.temp[name])
-        this.temp[name] = { radius: 3, color: this._colorResult(stat.result), result: stat.result };
+        this.temp[name] = { radius: 3 };
 
-      else if (stat.result !== undefined && this.temp[name].result !== undefined && this.temp[name].result !== stat.result)
-        console.error('inconsistent stat on %s', name);
-
-      if (jit)
+      if (jit) {
         this.temp[name].x = +stat.time;
-      else
+        this.temp[name].jit = stat.result;
+      } else {
         this.temp[name].y = +stat.time;
+        this.temp[name].lin = stat.result;
+      }
     }
 
     for (let name of Object.keys(this.temp)) {
@@ -313,18 +323,19 @@ class WithVsWithoutJitPlot extends DuelingPlot {
 
         // if (!coin(0.01))
         //   continue;
+        entry.color = this._colorEntry(entry);
         this.data.push(entry);
       }
     }
   }
 
-  _colorResult(result) {
-    if (result === undefined)
-      return 2;
-    else if (result)
+  _colorEntry(entry) {
+    if (entry.lin || entry.jit)
+      return 0;
+    else if (entry.lin === false || entry.jit === false)
       return 1;
     else
-      return 0;
+      return 2;
   }
 }
 
@@ -333,9 +344,9 @@ class LinVsWeakPlot extends DuelingPlot {
     super(parent);
   }
 
-  getName() {
-    return 'Linearizability vs. Weak Consistency';
-  }
+  // getName() {
+  //   return 'Linearizability vs. Weak Consistency';
+  // }
 
   getScaleX() {
     return d3.scaleLog();
@@ -353,7 +364,7 @@ class LinVsWeakPlot extends DuelingPlot {
         return "Weakly Consistent";
       case 2:
         return "Inconsistent";
-      case 2:
+      case 3:
         return "Unknown";
       default:
         return "???";
@@ -388,10 +399,10 @@ class LinVsWeakPlot extends DuelingPlot {
 
       if (!weak) {
         this.temp[name].x = +stat.time;
-        this.temp[name].con = stat.result;
+        this.temp[name].lin = stat.result;
       } else {
         this.temp[name].y = +stat.time;
-        this.temp[name].lin = stat.result;
+        this.temp[name].con = stat.result;
       }
     }
 
@@ -428,9 +439,9 @@ class WithVsWithoutMinPlot extends DuelingPlot {
     super(parent);
   }
 
-  getName() {
-    return 'With vs. Without Min';
-  }
+  // getName() {
+  //   return 'With vs. Without Min';
+  // }
 
   getScaleX() {
     return d3.scaleLog();
@@ -443,9 +454,9 @@ class WithVsWithoutMinPlot extends DuelingPlot {
   getLegendLabel(colorIndex) {
     switch (colorIndex) {
       case 0:
-        return "Inconsistent";
-      case 1:
         return "Consistent";
+      case 1:
+        return "Inconsistent";
       case 2:
         return "Unknown";
       default:
@@ -454,11 +465,11 @@ class WithVsWithoutMinPlot extends DuelingPlot {
   }
 
   getAxisLabelX() {
-    return 'With Min';
+    return 'Min-Visibility Weak Consistency';
   }
 
   getAxisLabelY() {
-    return 'Without Min';
+    return 'Weak Consistency';
   }
 
   processData(data) {
@@ -474,15 +485,15 @@ class WithVsWithoutMinPlot extends DuelingPlot {
       let name = stat.input;
 
       if (!this.temp[name])
-        this.temp[name] = { radius: 3, color: this._colorResult(stat.result) };
+        this.temp[name] = { radius: 3 };
 
-      else if (this.temp[name].color !== this._colorResult(stat.result))
-        console.error('inconsistent stat on %s', name);
-
-      if (min)
+      if (min) {
         this.temp[name].x = +stat.time;
-      else
+        this.temp[name].minRes = stat.result;
+      } else {
         this.temp[name].y = +stat.time;
+        this.temp[name].woResult = stat.result;
+      }
     }
 
     this.emitData(this.temp);
@@ -493,31 +504,33 @@ class WithVsWithoutMinPlot extends DuelingPlot {
       let entry = temp[name];
       if (entry.x !== undefined && entry.y !== undefined) {
         delete temp[name];
-        // if (!coin(0.01))
-        //   continue;
+        entry.color = this._colorEntry(entry);
         this.data.push(entry);
       }
     }
   }
 
-  _colorResult(result) {
-    if (result === undefined)
-      return 2;
-    else if (result)
+  _colorEntry(entry) {
+    if (entry.minRes || entry.woRes)
+      return 0;
+    else if (entry.minRes === false)
+      return 1;
+    else if (entry.woRes === false)
       return 1;
     else
-      return 0;
+      return 2;
   }
+
 }
 
-class MinWithVsWithoutJitPlot extends DuelingPlot {
+class LinVsMinWeakPlot extends DuelingPlot {
   constructor(parent) {
     super(parent);
   }
 
-  getName() {
-    return 'Min With vs. Without JIT';
-  }
+  // getName() {
+  //   return 'Linearizability vs. Weak Consistency';
+  // }
 
   getScaleX() {
     return d3.scaleLog();
@@ -530,10 +543,12 @@ class MinWithVsWithoutJitPlot extends DuelingPlot {
   getLegendLabel(colorIndex) {
     switch (colorIndex) {
       case 0:
-        return "Inconsistent";
+        return "Linearizable";
       case 1:
-        return "Consistent";
+        return "Weakly Consistent";
       case 2:
+        return "Inconsistent";
+      case 3:
         return "Unknown";
       default:
         return "???";
@@ -541,21 +556,21 @@ class MinWithVsWithoutJitPlot extends DuelingPlot {
   }
 
   getAxisLabelX() {
-    return 'With Min';
+    return 'Linearizability';
   }
 
   getAxisLabelY() {
-    return 'Without Min';
+    return 'Min-Visibility Weak Consistency';
   }
 
   processData(data) {
-    if (!data.weak)
+    if (data.jit)
       return;
 
-    if (!data.min)
+    if (data.weak && !data.min)
       return;
 
-    let jit = data.jit;
+    let weak = data.weak;
 
     if (!this.temp)
       this.temp = {};
@@ -564,15 +579,15 @@ class MinWithVsWithoutJitPlot extends DuelingPlot {
       let name = stat.input;
 
       if (!this.temp[name])
-        this.temp[name] = { radius: 3, color: this._colorResult(stat.result) };
+        this.temp[name] = { radius: 3 };
 
-      else if (this.temp[name].color !== this._colorResult(stat.result))
-        console.error('inconsistent stat on %s', name);
-
-      if (jit)
+      if (!weak) {
         this.temp[name].x = +stat.time;
-      else
+        this.temp[name].lin = stat.result;
+      } else {
         this.temp[name].y = +stat.time;
+        this.temp[name].con = stat.result;
+      }
     }
 
     this.emitData(this.temp);
@@ -582,6 +597,7 @@ class MinWithVsWithoutJitPlot extends DuelingPlot {
     for (let name of Object.keys(temp)) {
       let entry = temp[name];
       if (entry.x !== undefined && entry.y !== undefined) {
+        entry.color = this._colorEntry(entry);
         delete temp[name];
         // if (!coin(0.01))
         //   continue;
@@ -590,15 +606,18 @@ class MinWithVsWithoutJitPlot extends DuelingPlot {
     }
   }
 
-  _colorResult(result) {
-    if (result === undefined)
-      return 2;
-    else if (result)
-      return 1;
-    else
+  _colorEntry(entry) {
+    if (entry.lin)
       return 0;
+    else if (entry.con)
+      return 1;
+    else if (entry.con === false)
+      return 2;
+    else
+      return 3;
   }
 }
+
 
 // class TimeVsOpsBoxPlot extends TimeVsOperationsPlot {
 //   constructor(parent) {
@@ -701,12 +720,12 @@ async function visualize(files) {
   let body = d3.select("body");
   let plots = [];
 
-  plots.push(new LinearizablePlot(body));
-  plots.push(new NonLinearizablePlot(body));
+  // plots.push(new LinearizablePlot(body));
+  // plots.push(new NonLinearizablePlot(body));
   plots.push(new WithVsWithoutJitPlot(body));
   plots.push(new LinVsWeakPlot(body));
   plots.push(new WithVsWithoutMinPlot(body));
-  plots.push(new MinWithVsWithoutJitPlot(body));
+  plots.push(new LinVsMinWeakPlot(body));
 
   let allData = await Promise.all(files.map(getData));
   console.log(`read all data`);
