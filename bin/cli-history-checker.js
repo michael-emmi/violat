@@ -14,12 +14,8 @@ let name = Object.keys(meta.bin)
   .find(key => meta.bin[key].match(path.basename(__filename)));
 
 const utils = require("../lib/utils.js");
-const Server = require('../lib/server.js');
+const { Executor } = require('../lib/java/executor.js');
 const { ConsistencyChecker } = require('../lib/search/checker.js');
-
-const runjobjPath = path.resolve(config.resourcesPath, 'runjobj');
-const workPath = path.resolve(config.outputPath, 'runjobj');
-const runjobj = path.resolve(workPath, 'build/libs/runjobj.jar');
 
 const { performance } = require('perf_hooks');
 const uuidv1 = require('uuid/v1');
@@ -80,8 +76,7 @@ let cli = meow(`
   if (cli.input.length < 1)
     cli.showHelp();
 
-  await utils.buildJar(runjobjPath, workPath, 'runjobj');
-  let executor = new Server(runjobj);
+  let executor = new Executor();
   await executor.isReady();
   let checker = new ConsistencyChecker({ executor, ...cli.flags });
   let stats = [];
