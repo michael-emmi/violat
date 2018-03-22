@@ -61,7 +61,8 @@
       "trusted": false,
       "harnessParameters": {
         "invocations": 5
-      }
+      },
+      "visibility": "monotonic"
     },
     {
       "name": "contains",
@@ -73,28 +74,32 @@
       "trusted": false,
       "harnessParameters": {
         "invocations": 4
-      }
+      },
+      "visibility": "monotonic"
     },
     {
       "name": "entrySet",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "visibility": "monotonic"
     },
     {
       "name": "isEmpty",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "visibility": "weak"
     },
     {
       "name": "keySet",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "visibility": "monotonic"
     },
     {
       "name": "size",
@@ -115,41 +120,32 @@
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "visibility": "monotonic"
     },
     {
       "name": "values",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "visibility": "monotonic"
     },
     {
       "name": "elements",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "visibility": "monotonic"
     },
     {
       "name": "keys",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
-    },
-    {
-      "name": "putAll",
-      "parameters": [
-        {"type": {"java.lang.Object": "java.lang.Object"}}
-      ],
-      "void": true,
-      "readonly": false,
       "trusted": false,
-      "bulk": {
-        "primitive": "put",
-        "combine": "ignore"
-      }
+      "visibility": "monotonic"
     }
   ]
 }

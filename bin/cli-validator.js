@@ -13,8 +13,9 @@ let name = Object.keys(meta.bin)
 
 const lib = path.join(__dirname, '../lib');
 
-const { Collectors } = require(path.join(lib, 'search/collection.js'));
-const { RandomTestingBasedValidator } = require(path.join(lib, 'alg/validation.js'));
+const { Schema } = require('../lib/schema.js');
+const { Collectors } = require('../lib/search/collection.js');
+const { SingleProgramValidator, RandomTestingBasedValidator } = require('../lib/alg/validation.js');
 
 const uuidv1 = require('uuid/v1');
 
@@ -54,8 +55,11 @@ async function main() {
     let spec = JSON.parse(fs.readFileSync(cli.input[0]));
     let limits = cli.flags;
 
-    let collector = Collectors.get('atomic');
-    let validator = new RandomTestingBasedValidator(collector, limits);
+    let collector = Collectors.get('spec');
+    let validator = cli.flags.schema
+      ? new SingleProgramValidator(collector,
+          Schema.fromString(cli.flags.schema, spec))
+      : new RandomTestingBasedValidator(collector, limits);
     let count = 0;
 
     for await (let violation of validator.getViolations(spec)) {

@@ -46,7 +46,7 @@ let cli = meow(`
 
   let json = fs.readFileSync(cli.input[0]);
   let schema = cli.flags.schema
-    ? Schema.fromString(cli.flags.schema, json)
+    ? Schema.fromString(cli.flags.schema, JSON.parse(json))
     : Schema.fromJson(json);
 
   if (!schema.id)
