@@ -14,7 +14,9 @@ let name = Object.keys(meta.bin)
 const lib = path.join(__dirname, '../lib');
 
 const { Schema } = require('../lib/schema.js');
-const { Collectors } = require('../lib/search/collection.js');
+const { RunJavaObjectServer } = require('../lib/java/runjobj.js');
+const { VisibilitySemantics } = require('../lib/core/visibility.js');
+const { AtomicExecutionGenerator, RelaxedExecutionGenerator } = require('../lib/core/execution.js');
 const { SingleProgramValidator, RandomTestingBasedValidator } = require('../lib/alg/validation.js');
 
 const uuidv1 = require('uuid/v1');
@@ -55,11 +57,18 @@ async function main() {
     let spec = JSON.parse(fs.readFileSync(cli.input[0]));
     let limits = cli.flags;
 
-    let collector = Collectors.get('spec');
+    let server = new RunJavaObjectServer({
+      sourcePath: path.resolve(config.resourcesPath, 'runjobj'),
+      workPath: path.resolve(config.outputPath, 'runjobj')
+    });
+
+    let generator = new RelaxedExecutionGenerator(new VisibilitySemantics());
+
     let validator = cli.flags.schema
-      ? new SingleProgramValidator(collector,
-          Schema.fromString(cli.flags.schema, spec))
-      : new RandomTestingBasedValidator(collector, limits);
+      ? new SingleProgramValidator({ server, generator,
+        program: Schema.fromString(cli.flags.schema, spec)})
+      : new RandomTestingBasedValidator({ server, generator, limits });
+
     let count = 0;
 
     for await (let violation of validator.getViolations(spec)) {
@@ -72,7 +81,7 @@ async function main() {
     }
 
     console.log(`Found ${count} violations.`);
-    collector.close();
+    server.close();
 
   } catch (e) {
     console.error(`Unhandled promise rejection:`);
