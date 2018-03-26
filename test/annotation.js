@@ -21,12 +21,12 @@ describe('annotate()', function() {
     [0,0].map(_ => schemaGenerator.next().value),
     [0,0,0].map(_ => schemaGenerator.next().value)
   ];
-  for (let objs of tests) {
-    it(`annotates ${objs.length} random schemas`, async function() {
-      let annotated = await annotate(objs, {});
-      assert.equal(annotated.length, objs.length);
-      assert.ok(annotated.every(obj => 'outcomes' in obj));
-      assert.ok(annotated.every(obj => obj['outcomes'].every(ary => ary.length = n)));
-    });
-  }
+  // for (let objs of tests) {
+  //   it(`annotates ${objs.length} random schemas`, async function() {
+  //     let annotated = await annotate(objs, {});
+  //     assert.equal(annotated.length, objs.length);
+  //     assert.ok(annotated.every(obj => 'outcomes' in obj));
+  //     assert.ok(annotated.every(obj => obj['outcomes'].every(ary => ary.length = n)));
+  //   });
+  // }
 });
