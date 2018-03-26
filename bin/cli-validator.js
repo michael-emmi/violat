@@ -39,7 +39,7 @@ let cli = meow(`
   boolean: [],
   default: {
 
-    programs: 20,
+    programs: 100,
     threads: 2,
     invocations: 6,
     values: 2
