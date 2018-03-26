@@ -12,6 +12,7 @@
   },
   "preferGlobal": true,
   "dependencies": {
+    "chance": "^1.0.13",
     "debug": "^2.6.4",
     "event-stream": "^3.3.4",
     "fs-extra": "^5.0.0",
