@@ -74,8 +74,19 @@ async function main() {
     for await (let violation of validator.getViolations(spec)) {
       console.log(`violation discovered`);
       console.log(`schema: ${violation.schema}`);
+      let good = [];
+      let bad = [];
       for (let outcome of violation.outcomes)
-        console.log(outcome.toString());
+        (outcome.consistency ? good : bad).push(outcome);
+
+      console.log(`consistent outcomes:`);
+      for (let outcome of good) {
+        console.log(`* %s`, outcome);
+      }
+      console.log(`inconsistent outcomes:`);
+      for (let outcome of bad) {
+        console.log(`* %s`, outcome);
+      }
       console.log(`---`);
       count++;
     }
