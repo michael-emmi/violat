@@ -1,6 +1,8 @@
 #!/usr/bin/env node --harmony_async_iteration
 "use strict";
 
+require('console.table');
+
 let fs = require('fs-extra');
 let path = require('path');
 let meow = require('meow');
@@ -73,21 +75,15 @@ async function main() {
 
     for await (let violation of validator.getViolations(spec)) {
       console.log(`violation discovered`);
-      console.log(`schema: ${violation.schema}`);
-      let good = [];
-      let bad = [];
-      for (let outcome of violation.outcomes)
-        (outcome.consistency ? good : bad).push(outcome);
-
-      console.log(`consistent outcomes:`);
-      for (let outcome of good) {
-        console.log(`* %s`, outcome);
-      }
-      console.log(`inconsistent outcomes:`);
-      for (let outcome of bad) {
-        console.log(`* %s`, outcome);
-      }
       console.log(`---`);
+      console.log(`${violation.schema}`);
+      console.log(`---`);
+      console.table(violation.outcomes.map(outcome => {
+        let result = Object.values(outcome.results).join(", ") + ' ';
+        let consistent = outcome.consistency ? '√' : 'X';
+        let frequency = outcome.count;
+        return { result, 'OK': consistent, frequency };
+      }));
       count++;
     }
 
