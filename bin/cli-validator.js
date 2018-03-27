@@ -78,12 +78,13 @@ async function main() {
       console.log(`---`);
       console.log(`${violation.schema}`);
       console.log(`---`);
-      console.table(violation.outcomes.map(outcome => {
-        let result = Object.values(outcome.results).join(", ") + ' ';
-        let consistent = outcome.consistency ? '√' : 'X';
-        let frequency = outcome.count;
-        return { result, 'OK': consistent, frequency };
+      console.table(violation.outcomes.map(o => {
+        let outcome = Object.values(o.results).join(", ");
+        let consistent = o.consistency ? '√' : 'X';
+        let frequency = Number(o.count).toLocaleString();
+        return { outcome, 'OK': consistent, frequency };
       }));
+      console.log(`---`);
       count++;
     }
 
