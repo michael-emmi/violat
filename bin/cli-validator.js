@@ -79,7 +79,7 @@ async function main() {
       console.log(`${violation.schema}`);
       console.log(`---`);
       console.table(violation.outcomes.map(o => {
-        let outcome = Object.values(o.results).join(", ");
+        let outcome = o.valueString();
         let consistent = o.consistency ? '√' : 'X';
         let frequency = Number(o.count).toLocaleString();
         return { outcome, 'OK': consistent, frequency };
