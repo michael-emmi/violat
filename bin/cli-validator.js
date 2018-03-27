@@ -65,7 +65,7 @@ async function main() {
     let generator = new RelaxedExecutionGenerator(new VisibilitySemantics());
 
     let validator = cli.flags.schema
-      ? new SingleProgramValidator({ server, generator,
+      ? new SingleProgramValidator({ server, generator, limits,
         program: Schema.fromString(cli.flags.schema, spec)})
       : new RandomTestingBasedValidator({ server, generator, limits });
 
