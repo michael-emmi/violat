@@ -56,7 +56,7 @@ async function main() {
     console.log(`${cli.pkg.name} version ${cli.pkg.version}`);
     console.log(`---`);
 
-    let spec = JSON.parse(fs.readFileSync(cli.input[0]));
+    let inputSpec = JSON.parse(fs.readFileSync(cli.input[0]));
     let limits = cli.flags;
 
     let server = new RunJavaObjectServer({
@@ -64,7 +64,9 @@ async function main() {
       workPath: path.resolve(config.outputPath, 'runjobj')
     });
 
-    let generator = new RelaxedExecutionGenerator(new VisibilitySemantics());
+    let semantics = new VisibilitySemantics();
+    let generator = new RelaxedExecutionGenerator(semantics);
+    let spec = semantics.pruneSpecification(inputSpec);
 
     let validator = cli.flags.schema
       ? new SingleProgramValidator({ server, generator, limits,

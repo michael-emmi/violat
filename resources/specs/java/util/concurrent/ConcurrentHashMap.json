@@ -11,7 +11,8 @@
       ],
       "void": false,
       "readonly": true,
-      "trusted": true
+      "trusted": true,
+      "visibility": "complete"
     },
     {
       "name": "get",
@@ -20,7 +21,8 @@
       ],
       "void": false,
       "readonly": true,
-      "trusted": true
+      "trusted": true,
+      "visibility": "complete"
     },
     {
       "name": "put",
@@ -30,7 +32,8 @@
       ],
       "void": false,
       "readonly": false,
-      "trusted": true
+      "trusted": true,
+      "visibility": "complete"
     },
     {
       "name": "remove",
@@ -39,7 +42,8 @@
       ],
       "void": false,
       "readonly": false,
-      "trusted": true
+      "trusted": true,
+      "visibility": "complete"
     },
     {
       "name": "clear",
