@@ -40,11 +40,9 @@ let cli = meow(`
 `, {
   boolean: [],
   default: {
-
     programs: 100,
-    threads: 2,
-    invocations: 6,
-    values: 2
+    maxThreads: 2,
+    maxInvocations: 6
   }
 });
 
