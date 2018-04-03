@@ -19,7 +19,7 @@ const { Schema } = require('../lib/schema.js');
 const { RunJavaObjectServer } = require('../lib/java/runjobj.js');
 const { VisibilitySemantics } = require('../lib/core/visibility.js');
 const { AtomicExecutionGenerator, RelaxedExecutionGenerator } = require('../lib/core/execution.js');
-const { SingleProgramValidator, RandomTestingBasedValidator } = require('../lib/alg/validation.js');
+const { SingleProgramValidator, RandomTestValidator } = require('../lib/alg/validation.js');
 
 const uuidv1 = require('uuid/v1');
 
@@ -68,7 +68,7 @@ async function main() {
     let validator = cli.flags.schema
       ? new SingleProgramValidator({ server, generator, limits,
         program: Schema.fromString(cli.flags.schema, spec)})
-      : new RandomTestingBasedValidator({ server, generator, limits });
+      : new RandomTestValidator({ server, generator, limits });
 
     let count = 0;
 
