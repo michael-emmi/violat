@@ -29,10 +29,9 @@ let cli = meow(`
 
   Options
     --schema STRING
-    --programs N
-    --threads N
-    --invocations N
-    --values N
+    --max-programs N
+    --max-threads N
+    --max-invocations N
 
   Examples
     $ ${name} ConcurrentHashMap.json
@@ -40,7 +39,7 @@ let cli = meow(`
 `, {
   boolean: [],
   default: {
-    programs: 100,
+    maxPrograms: 100,
     maxThreads: 2,
     maxInvocations: 6
   }
