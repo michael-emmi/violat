@@ -4,6 +4,7 @@ const debug = Debug('testing');
 
 import { OutcomePredictor } from '../search/prediction';
 import { JCStressTester } from '../java/jcstress';
+import { Violation } from './violation';
 
 export class StaticOutcomesTester {
   predictor: OutcomePredictor;
@@ -33,7 +34,7 @@ export class StaticOutcomesTester {
       debug(`got result: %o`, result);
 
       if (!result.status)
-        yield result;
+        yield new Violation(result);
     }
   }
 }

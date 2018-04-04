@@ -96,15 +96,9 @@ async function main() {
         console.log(`---`);
 
       } else {
-        let { schema, outcomes } = violation;
-        console.log(`${schema}`);
+        console.log(`${violation.schema}`);
         console.log(`---`);
-        console.table(outcomes.map(o => {
-          let outcome = o.valueString();
-          let consistent = o.consistency ? '√' : 'X';
-          let frequency = Number(o.count).toLocaleString();
-          return { outcome, 'OK': consistent, frequency };
-        }));
+        console.table(violation.getTable());
         console.log(`---`);
       }
       count++;

@@ -3,7 +3,11 @@ const assert = require('assert');
 
 const { Consistency } = require('../lib/consistency');
 
-class Outcome {
+export class Outcome {
+  consistency: Consistency;
+  results: {};
+  count: number;
+
   constructor(that) {
     Object.assign(this, that);
   }
@@ -80,7 +84,7 @@ class Outcome {
   static maximals(outcomes) {
     debug(`computing maximals of ${outcomes.length} outcomes`);
     let groups = Outcome.partition(outcomes);
-    let merged = Object.values(groups).map(outcomes => {
+    let merged = Object.values(groups).map((outcomes: Outcome[]) => {
       let results = outcomes[0].results;
       let maxs = Consistency.join(...outcomes.map(o => o.consistency));
       return new Outcome({
@@ -93,7 +97,7 @@ class Outcome {
   }
 
   getResults() {
-    return results;
+    return this.results;
   }
 }
 

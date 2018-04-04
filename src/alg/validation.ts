@@ -93,10 +93,13 @@ export class SpecStrengthValidator {
       for (let { newSpec, attribute } of this.strengthener.getStrengthenings({ spec, method })) {
         debug(`trying %s: %s`, method.name, attribute);
 
-        let valid = ! await this.validator.getFirstViolation(newSpec);
-        debug(`validity: %s`, valid);
+        let violation = await this.validator.getFirstViolation(newSpec);
 
-        if (valid) {
+        if (violation) {
+          debug(`found violation to stronger spec:\n%s`, violation);
+
+        } else {
+          debug(`found stronger spec; reporting maximality violation`);
           yield { method, attribute };
         }
       }
