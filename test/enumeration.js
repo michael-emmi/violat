@@ -17,11 +17,13 @@ describe('generate()', function() {
           methods: ['clear'],
           values: 2,
           sequences: 2,
+          invocations: 3,
           minThreads: 2,
           maxThreads: 2,
           minInvocations: 3,
           maxInvocations: 3,
-          invocations: 3
+          minValues: 2,
+          maxValues: 2
         });
 
         const tests = [
