@@ -19,7 +19,8 @@ const { Schema } = require('../lib/schema.js');
 const { RunJavaObjectServer } = require('../lib/java/runjobj.js');
 const { VisibilitySemantics } = require('../lib/core/visibility.js');
 const { AtomicExecutionGenerator, RelaxedExecutionGenerator } = require('../lib/core/execution.js');
-const { SingleProgramValidator, RandomTestValidator } = require('../lib/alg/validation.js');
+const { SingleProgramValidator, RandomTestValidator, SpecStrengthValidator } = require('../lib/alg/validation.js');
+const { VisibilitySpecStrengthener } = require('../lib/spec/visibility.js');
 
 const uuidv1 = require('uuid/v1');
 
@@ -29,6 +30,7 @@ let cli = meow(`
 
   Options
     --schema STRING
+    --maximality
     --max-programs N
     --max-threads N
     --max-invocations N
@@ -54,7 +56,7 @@ async function main() {
     console.log(`---`);
 
     let inputSpec = JSON.parse(fs.readFileSync(cli.input[0]));
-    let limits = cli.flags;
+    let { maximality, schema, ...limits } = cli.flags;
 
     let server = new RunJavaObjectServer({
       sourcePath: path.resolve(config.resourcesPath, 'runjobj'),
@@ -65,25 +67,46 @@ async function main() {
     let generator = new RelaxedExecutionGenerator(semantics);
     let spec = semantics.pruneSpecification(inputSpec);
 
-    let validator = cli.flags.schema
-      ? new SingleProgramValidator({ server, generator, limits,
-        program: Schema.fromString(cli.flags.schema, spec)})
-      : new RandomTestValidator({ server, generator, limits });
+    let validator;
+
+    if (schema)
+      validator = new SingleProgramValidator({
+        server, generator, limits,
+        program: Schema.fromString(schema, spec)
+      });
+
+    else if (maximality)
+      validator = new SpecStrengthValidator({
+        server, generator, limits,
+        strengthener: new VisibilitySpecStrengthener()
+      });
+
+    else
+      validator = new RandomTestValidator({ server, generator, limits });
 
     let count = 0;
 
     for await (let violation of validator.getViolations(spec)) {
       console.log(`violation discovered`);
       console.log(`---`);
-      console.log(`${violation.schema}`);
-      console.log(`---`);
-      console.table(violation.outcomes.map(o => {
-        let outcome = o.valueString();
-        let consistent = o.consistency ? '√' : 'X';
-        let frequency = Number(o.count).toLocaleString();
-        return { outcome, 'OK': consistent, frequency };
-      }));
-      console.log(`---`);
+
+      if (maximality) {
+        let { method, attribute } = violation;
+        console.log(`observed ${attribute} consistency for method: %s`, method.name);
+        console.log(`---`);
+
+      } else {
+        let { schema, outcomes } = violation;
+        console.log(`${schema}`);
+        console.log(`---`);
+        console.table(outcomes.map(o => {
+          let outcome = o.valueString();
+          let consistent = o.consistency ? '√' : 'X';
+          let frequency = Number(o.count).toLocaleString();
+          return { outcome, 'OK': consistent, frequency };
+        }));
+        console.log(`---`);
+      }
       count++;
     }
 
