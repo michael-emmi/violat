@@ -6,7 +6,7 @@ const detail = Debug('history-encoding:detail');
 import { Schema } from '../schema';
 import { Event, Trace, History } from '../history';
 
-class HistoryEncoding {
+export class HistoryEncoding {
   schema: Schema;
 
   constructor(schema) {
@@ -93,5 +93,3 @@ class HistoryEncoding {
     return sequences;
   }
 }
-
-module.exports = HistoryEncoding;

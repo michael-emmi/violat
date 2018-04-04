@@ -12,16 +12,15 @@ var mkdirp = require('mkdirp');
 var es = require('event-stream');
 var ncp = require('ncp');
 
-var config = require("../config.js");
-const translate = require('./translation.js');
-const { JCStressOutputReader } = require('./jcstress/reader.js');
-const { JCStressCodeGenerator, JCStressHistoryRecordingCodeGenerator } = require('./translation.js');
-const Outcome = require('../outcome.js');
-const PartialOrder = require('../partial-order.js');
-const HistoryEncoding = require('./history-encoding.js');
-const { getOutputLines } = require('../utils/proc.js');
-const { targetsOutdated } = require('../utils/deps.js');
-const { findFiles } = require('../utils/find.js');
+import { config } from "../config";
+import { JCStressOutputReader } from './jcstress/reader';
+import { JCStressCodeGenerator, JCStressHistoryRecordingCodeGenerator } from './translation';
+import { Outcome } from '../outcome';
+import { PartialOrder } from '../partial-order';
+import { HistoryEncoding } from './history-encoding';
+import { getOutputLines } from '../utils/proc';
+import { targetsOutdated } from '../utils/deps';
+import { findFiles } from '../utils/find';
 
 import { Schema } from '../schema';
 

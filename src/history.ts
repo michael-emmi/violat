@@ -24,6 +24,7 @@ export class Event {
 }
 
 export class Trace {
+  frequency: { count: any; total: any; };
   schema: Schema;
   events: Event[];
 
@@ -53,6 +54,7 @@ export class Trace {
 export class History {
   schema: Schema;
   order: {};
+  frequency: any;
 
   constructor(schema, order) {
     this.schema = schema;

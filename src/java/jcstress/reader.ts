@@ -2,7 +2,7 @@ import * as assert from 'assert';
 import * as Debug from 'debug';
 const debug = Debug('jcstress:reader');
 
-class JCStressOutputReader {
+export class JCStressOutputReader {
   generator: AsyncIterable<string>;
 
   constructor(generator) {
@@ -63,7 +63,3 @@ class JCStressOutputReader {
     return (line.match(pattern) || []).slice(1).map(s => s.trim());
   }
 }
-
-module.exports = {
-  JCStressOutputReader
-};

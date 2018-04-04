@@ -2,8 +2,7 @@ import * as assert from 'assert';
 import * as Debug from 'debug';
 const debug = Debug('schema');
 
-const PartialOrder = require('./partial-order.js');
-
+import { PartialOrder } from './partial-order';
 import { Method, Parameter } from './spec/spec';
 
 class Argument {

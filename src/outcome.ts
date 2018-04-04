@@ -100,5 +100,3 @@ export class Outcome {
     return this.results;
   }
 }
-
-module.exports = Outcome;

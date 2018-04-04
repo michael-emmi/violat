@@ -6,7 +6,7 @@ require('console.table');
 let fs = require('fs-extra');
 let path = require('path');
 let meow = require('meow');
-var config = require(path.join(__dirname, '../lib', 'config.js'));
+const { config } = require(path.join(__dirname, '../lib', 'config.js'));
 let defaults = config.defaultParameters;
 
 let meta = require('../package.json');

@@ -7,7 +7,7 @@ import { outcomes } from './outcomes';
 import { decorate } from './decorate';
 import { JCStressTester } from './java/jcstress.js';
 import { output } from './output';
-const config = require('./config.js');
+import { config } from './config';
 
 function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);

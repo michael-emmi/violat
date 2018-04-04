@@ -246,7 +246,7 @@ class JavaCodeGenerator extends SchemaIR {
   }
 }
 
-class JCStressCodeGenerator extends JavaCodeGenerator {
+export class JCStressCodeGenerator extends JavaCodeGenerator {
   constructor(schema, id) {
     super(schema, id);
   }
@@ -348,7 +348,7 @@ class JCStressCodeGenerator extends JavaCodeGenerator {
   }
 }
 
-class JCStressHistoryRecordingCodeGenerator extends JCStressCodeGenerator {
+export class JCStressHistoryRecordingCodeGenerator extends JCStressCodeGenerator {
   encoding: any;
 
   constructor(schema, id, encoding) {
@@ -419,8 +419,3 @@ class JCStressHistoryRecordingCodeGenerator extends JCStressCodeGenerator {
     ];
   }
 }
-
-module.exports = {
-  JCStressCodeGenerator,
-  JCStressHistoryRecordingCodeGenerator
-};
