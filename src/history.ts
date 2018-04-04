@@ -1,9 +1,15 @@
-const assert = require('assert');
-const debug = require('debug')('history-encoding');
+import * as assert from 'assert';
+import * as Debug from 'debug';
+const debug = Debug('history-encoding');
 
-const { Invocation, Schema } = require('./schema.js');
+import { Invocation, Schema } from './schema';
 
-class Event {
+export class Event {
+  kind: string;
+  sid: number;
+  invocation: Invocation;
+  value: any;
+
   constructor(that) {
     Object.assign(this, that);
   }
@@ -17,7 +23,10 @@ class Event {
   }
 }
 
-class Trace {
+export class Trace {
+  schema: Schema;
+  events: Event[];
+
   constructor(args) {
     this.schema = args.schema;
     this.events = [...args.events];
@@ -41,7 +50,10 @@ class Trace {
   }
 }
 
-class History {
+export class History {
+  schema: Schema;
+  order: {};
+
   constructor(schema, order) {
     this.schema = schema;
     this.order = order;
@@ -51,9 +63,3 @@ class History {
     return this.order.toString();
   }
 }
-
-module.exports = {
-  Event,
-  Trace,
-  History
-};

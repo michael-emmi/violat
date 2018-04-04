@@ -1,10 +1,13 @@
-const debug = require('debug')('enum:basic');
-const { Schema } = require('../schema.js');
+import * as assert from 'assert';
+import * as Debug from 'debug';
+const debug = Debug('enum:basic');
+
+import { Schema } from '../schema';
 
 function compose(g1, g2) {
   return function*(x) {
-    for (y of g1(x))
-      for (z of g2(y))
+    for (let y of g1(x))
+      for (let z of g2(y))
         yield z;
   }
 }
@@ -16,7 +19,7 @@ function select(path) {
 
   function m(prefix, x, selectors, selection) {
     var rest = selectors.slice(1,selectors.length);
-    for (i of Object.keys(x).filter(match(selectors[0]))) {
+    for (let i of Object.keys(x).filter(match(selectors[0]))) {
       var curr = prefix === '' ? i : (prefix + '.' + i)
       if (rest.length > 0)
         m(curr, x[i], rest, selection);
@@ -25,7 +28,7 @@ function select(path) {
     }
   }
   return x => {
-    selection = []
+    let selection = []
     m('', x, path.split("."), selection);
     return selection;
   };
@@ -38,7 +41,7 @@ function map(path, f) {
   function m(x, selectors) {
     var rest = selectors.slice(1,selectors.length);
     var y = {}
-    for (i of Object.keys(x).filter(match(selectors[0])))
+    for (let i of Object.keys(x).filter(match(selectors[0])))
       y[i] = selectors.length > 1 ? m(x[i],rest) : f(x[i])
     var z = Object.assign({}, x, y);
     return Array.isArray(x) ? Object.values(z) : z;
@@ -75,7 +78,7 @@ function sequence(index) {
   };
 }
 
-function invocation(spec) {
+function invocation(spec?) {
   return spec
     ? { method: spec, arguments: spec.parameters, atomic: !!spec.trusted }
     : { method: null, arguments: null, atomic: null }
@@ -136,7 +139,7 @@ function placeInvocations(numInvocations) {
       .map(placeOneInvocation)
       .reduce(compose, placeOneInvocationPerSequence());
 
-    for (s of generator(schema))
+    for (let s of generator(schema))
       yield s;
   }
 }
@@ -178,10 +181,10 @@ function placeOneOfEachMethod(methods) {
 function combine(slots, choices) {
   var result = [[]];
   for (var slot of slots) {
-    partial = result;
+    let partial = result;
     result = [];
     for (var part of partial) {
-      for (choice of choices(slot)) {
+      for (let choice of choices(slot)) {
         result.push([... part, [slot, choice]])
       }
     }
@@ -226,7 +229,7 @@ function valuesOf(type, numValues) {
   let values = Array.from('x'.repeat(numValues)).map((_,i) => i);
 
   if (isIntAssignable(type))
-    ;
+    undefined;
 
   else if (Array.isArray(type) && type.length == 1 && isIntAssignable(type[0]))
     values = crossProduct(values, values);
@@ -248,9 +251,9 @@ function valuesOf(type, numValues) {
 
 function placeArgumentValues(numValues) {
   return function*(schema) {
-    var arguments = select('sequences.*.invocations.*.arguments.*')(schema);
+    var args = select('sequences.*.invocations.*.arguments.*')(schema);
 
-    for (var assignment of combine(arguments, x => valuesOf(x.item.type, numValues)))
+    for (var assignment of combine(args, x => valuesOf(x.item.type, numValues)))
       yield assignment.reduce((acc,ass) => map(ass[0].path, _ => ass[1])(acc), schema)
   }
 }
@@ -288,7 +291,7 @@ function tagWithIdentifier() {
   };
 }
 
-function generator(args) {
+export function generator(args) {
   return [
     seeds(),
     placeSequences(args.sequences),
@@ -305,7 +308,3 @@ function generator(args) {
     tagWithIdentifier(),
   ].reduce(compose);
 }
-
-module.exports = {
-  generator
-};

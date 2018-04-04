@@ -4,7 +4,7 @@ const debug = Debug('schema');
 
 const PartialOrder = require('./partial-order.js');
 
-import { Method } from './spec/spec';
+import { Method, Parameter } from './spec/spec';
 
 class Argument {
   static toString(arg) {
@@ -45,8 +45,14 @@ export interface Sequence {
 
 export class Schema {
   id: number;
+  class: string;
+  parameters: Parameter[];
+  arguments: Argument[];
   sequences: Sequence[];
   order: [number,number][];
+
+  // TODO fix this hackery
+  outcomes: any[];
 
   constructor(that) {
     Object.assign(this, that);

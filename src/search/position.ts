@@ -1,7 +1,17 @@
-const debug = require('debug')('history-position');
-const assert = require('assert');
+import * as assert from 'assert';
+import * as Debug from 'debug';
+const debug = Debug('history-position');
 
-class HistoryPosition {
+import { HistoryReader } from './reader';
+
+export class HistoryPosition {
+  reader: HistoryReader;
+  consumed: Set<any>;
+  archived: Set<any>;
+  pending: Set<any>;
+  values: {};
+  overlapping: {};
+
   constructor(args) {
     debug(`HistoryPosition(%o)`, args);
     this.reader = args.reader.dup();
@@ -181,7 +191,3 @@ class HistoryPosition {
     return new HistoryPosition({reader});
   }
 }
-
-module.exports = {
-  HistoryPosition
-};

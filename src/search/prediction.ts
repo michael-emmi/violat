@@ -5,9 +5,8 @@ const debug = Debug('prediction');
 import { ExecutionGenerator } from '../core/execution';
 import { RunJavaObjectServer } from '../java/runjobj';
 import { CachingExecutor } from '../java/executor';
-
-const Outcome = require('../outcome.js');
-const { Consistency } = require('../consistency.js');
+import { Outcome } from '../outcome';
+import { Consistency } from '../consistency';
 
 export class OutcomePredictor {
   server: RunJavaObjectServer;

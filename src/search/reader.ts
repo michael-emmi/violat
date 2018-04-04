@@ -1,11 +1,17 @@
-const debug = require('debug')('history-reader');
-const assert = require('assert');
+import * as assert from 'assert';
+import * as Debug from 'debug';
+const debug = Debug('history-reader');
 
 const fs = require('fs');
 
-const { Trace } = require('../history.js');
+import { Trace } from '../history';
 
-class HistoryReader {
+export class HistoryReader {
+  history: Trace;
+  length: number;
+  position: number;
+  marked: number;
+
   constructor(args) {
     this.history = args.history;
     this.length = args.length || this.getEvents().length;
@@ -60,7 +66,3 @@ class HistoryReader {
     });
   }
 }
-
-module.exports = {
-  HistoryReader
-};

@@ -4,6 +4,7 @@ const debug = Debug('execution');
 
 import { Schema, Sequence, Invocation } from '../schema';
 import { Visibility, VisibilityGenerator } from './visibility';
+import { Executor } from '../java/executor';
 
 class AtomicExecution {
   schema: Schema;
@@ -14,7 +15,7 @@ class AtomicExecution {
     this.linearization = linearization;
   }
 
-  async execute(executor) {
+  async execute(executor: Executor) {
     return await executor.execute(this.linearization, this.schema);
   }
 }

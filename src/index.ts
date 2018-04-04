@@ -1,15 +1,16 @@
-const debug = require('debug')('main');
-const assert = require('assert');
+import * as assert from 'assert';
+import * as Debug from 'debug';
+const debug = Debug('main');
 
-const generator = require('./enumeration/index');
-const annotate = require('./outcomes.js');
-const decorate = require('./decorate.js');
-const { JCStressTester } = require('./java/jcstress.js');
-const output = require('./output.js');
+import { generator } from './enumeration/index';
+import { outcomes } from './outcomes';
+import { decorate } from './decorate';
+import { JCStressTester } from './java/jcstress.js';
+import { output } from './output';
 const config = require('./config.js');
 
-String.prototype.capitalize = function() {
-  return this.charAt(0).toUpperCase() + this.slice(1);
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 function pullSchemas(generator, n) {
@@ -27,9 +28,9 @@ function pullSchemas(generator, n) {
   return schemas;
 }
 
-async function testMethod(args) {
+export async function testMethod(args) {
   let methods = args.methods.map(name => args.spec.methods.find(m => m.name === name) || name);
-  let testName = methods.map(m => m.name.capitalize()).join("And");
+  let testName = methods.map(m => capitalize(m.name)).join("And");
 
   for (let name of methods.filter(m => typeof(m) === 'string'))
     throw `no entry for method ${name} in spec ${args.spec}`;
@@ -70,7 +71,7 @@ async function testMethod(args) {
 
     explored += batchSize;
 
-    let annotated = await annotate(schemas, args);
+    let annotated = await outcomes(schemas, args);
     debug(`got ${annotated.length} outcome-annotated schemas`);
 
     let tester = new JCStressTester(annotated, { testName, maxViolations: args.limit && args.limit - allviolations.length });
@@ -104,12 +105,9 @@ async function testMethod(args) {
   return allresults;
 }
 
-async function testUntrustedMethods(args) {
+export async function testUntrustedMethods(args) {
   let results = [];
   for (let m of args.spec.methods.filter(m => !m.trusted))
     results.push(...await testMethod(Object.assign({}, args, {methods: [m.name]})));
   return results;
 }
-
-exports.testMethod = testMethod;
-exports.testUntrustedMethods = testUntrustedMethods;

@@ -1,12 +1,16 @@
-const debug = require('debug')('history-checker');
-const assert = require('assert');
+import * as assert from 'assert';
+import * as Debug from 'debug';
+const debug = Debug('history-checker');
 
-const { HistoryReader } = require('./reader.js');
-const { HistoryPosition } = require('./position.js');
-const { TrivialValidator, LinearizationValidator, ConsistencyValidator } = require('./validation.js');
-const { LinearizationExtender, JustInTimeLinearizationExtender, VisibilityExtender, MinimalVisibilityExtender } = require('./extension.js');
+import { HistoryReader } from './reader';
+import { HistoryPosition } from './position';
+
+import { Validator, TrivialValidator, LinearizationValidator, ConsistencyValidator } from './validation';
+import { LinearizationExtender, JustInTimeLinearizationExtender, VisibilityExtender, MinimalVisibilityExtender } from './extension';
 
 class Linearization {
+  sequence: any[];
+
   constructor(sequence) {
     this.sequence = sequence;
   }
@@ -29,10 +33,12 @@ class Linearization {
 }
 
 class Visibility {
+  map: {};
+
   constructor(args) {
     this.map = {};
     for (let [op,ops] of Object.entries(args.map || {}))
-      this.map[op] = new Set(ops);
+      this.map[op] = new Set(ops as Iterable<any>);
   }
 
   static empty() {
@@ -53,12 +59,18 @@ class Visibility {
 
   toString() {
     return Object.entries(this.map)
-      .map(([op,ops]) => `${op}:{${[...ops].join(",")}}`)
+      .map(([op,ops]) => `${op}:{${[...ops as Iterable<any>].join(",")}}`)
       .join(" ");
   }
 }
 
 class SearchBasedConsistency {
+  posRepr: typeof HistoryPosition;
+  linRepr: typeof Linearization;
+  visRepr: typeof Visibility;
+  linExtender: LinearizationExtender;
+  visExtender: VisibilityExtender;
+
   constructor(args) {
     this.posRepr = args.posRepr;
     this.linRepr = args.linRepr;
@@ -112,9 +124,12 @@ class SearchBasedConsistency {
   }
 }
 
-class ConsistencyChecker {
+export class ConsistencyChecker {
+  weak: boolean;
+  searcher: SearchBasedConsistency;
+
   constructor(args) {
-    let linValidator = args.weak ? TrivialValidator : LinearizationValidator;
+    let linValidator: any = args.weak ? TrivialValidator : LinearizationValidator;
     let linExtender = args.jit ? JustInTimeLinearizationExtender : LinearizationExtender;
     let visValidator = ConsistencyValidator;
     let visExtender = args.min ? MinimalVisibilityExtender : VisibilityExtender;
@@ -136,7 +151,3 @@ class ConsistencyChecker {
       : await this.searcher.isLinearizable(reader);
   }
 }
-
-module.exports = {
-  ConsistencyChecker
-};

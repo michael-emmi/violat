@@ -1,9 +1,13 @@
-const assert = require('assert');
-const debug = require('debug')('partialorder');
-const detail = require('debug')('partialorder:detail');
-const trace = require('debug')('partialorder:trace');
+import * as assert from 'assert';
+import * as Debug from 'debug';
+const debug = Debug('partialorder');
+const detail = Debug('partialorder:detail');
+const trace = Debug('partialorder:trace');
 
-class PartialOrder {
+export class PartialOrder<T> {
+  basis: Map<T,Set<T>>;
+  closure: Map<T,Set<T>>;
+
   constructor() {
     this.basis = new Map();
     this.closure = new Map();
@@ -105,5 +109,3 @@ class PartialOrder {
     debug(`generated ${count} linearizations`);
   }
 }
-
-module.exports = PartialOrder;

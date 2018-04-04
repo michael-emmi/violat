@@ -1,9 +1,12 @@
-const debug = require('debug')('enum');
-const randomenum = require('./random-small.js');
+import * as assert from 'assert';
+import * as Debug from 'debug';
+const debug = Debug('enum');
+
+const randomenum = require('./random.js');
 const basicenum = require('./basic.js');
 const shuffle = require('../shuffle.js');
 
-module.exports = function(args) {
+export function generator(args) {
   debug(`using enumerator: ${args.enum}`);
 
   switch (args.enum) {

@@ -4,7 +4,7 @@ const meta = require('../package.json');
 
 const outputPath = `${path.resolve(meta.name)}-output`;
 
-module.exports = {
+export const config = {
   defaultParameters: {
     values: 2,
     sequences: 2,

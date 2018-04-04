@@ -1,7 +1,10 @@
-const debug = require('debug')('violat:utils:deps');
-const fs = require('fs');
+import * as assert from 'assert';
+import * as Debug from 'debug';
+const debug = Debug('violat:utils:deps');
 
-function targetsOutdated(targets, sources) {
+import * as fs from 'fs';
+
+export function targetsOutdated(targets, sources) {
   debug(`checking outdated`);
   debug(`sources: %o`, sources);
   debug(`targets: %o`, targets);
@@ -20,7 +23,3 @@ function targetsOutdated(targets, sources) {
   debug(`sources modified at: ${t0}`);
   return outdated;
 }
-
-module.exports = {
-  targetsOutdated
-};

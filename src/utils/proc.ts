@@ -1,8 +1,9 @@
-const debug = require('debug')('violat:utils:proc');
-const assert = require('assert');
+import * as assert from 'assert';
+import * as Debug from 'debug';
+const debug = Debug('violat:utils:proc');
 
-const cp = require('child_process');
-const es = require('event-stream');
+import * as cp from 'child_process';
+import * as es from 'event-stream';
 
 function transparentPromise() {
   let resolve;
@@ -14,7 +15,7 @@ function transparentPromise() {
   return { promise, resolve, reject };
 }
 
-async function * getOutputLines(command, args, options) {
+export async function * getOutputLines(command, args, options) {
   debug(`spawning ${command} process`);
 
   let proc = cp.spawn(command, args, options);
@@ -70,7 +71,3 @@ async function * getOutputLines(command, args, options) {
     promises.shift();
   }
 }
-
-module.exports = {
-  getOutputLines
-};

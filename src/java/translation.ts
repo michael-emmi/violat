@@ -1,6 +1,16 @@
-const debug = require('debug')('translation');
+import * as assert from 'assert';
+import * as Debug from 'debug';
+const debug = Debug('translation');
+
+import { Schema } from '../schema';
 
 class SchemaIR {
+  schema: Schema;
+  id: number;
+
+  // TODO fix this nonsense hackery
+  resultIndexes: number[];
+
   constructor(schema, id) {
     this.schema = schema;
     this.id = id;
@@ -126,7 +136,7 @@ class JavaCodeGenerator extends SchemaIR {
     return [
       ...this.classAnnotations(),
       `public class ${this.testName()} {`,
-      ...this.memberDecls().map(d => d.replace(/^/mg, '    ')),
+      ...this.memberDecls().map(d => d.toString().replace(/^/mg, '    ')),
       `}`
     ].join('\n');
   }
@@ -339,6 +349,8 @@ class JCStressCodeGenerator extends JavaCodeGenerator {
 }
 
 class JCStressHistoryRecordingCodeGenerator extends JCStressCodeGenerator {
+  encoding: any;
+
   constructor(schema, id, encoding) {
     super(schema, id);
     this.encoding = encoding;

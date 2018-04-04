@@ -1,11 +1,15 @@
-const debug = require('debug')('linearization');
-const detail = require('debug')('linearization:detail');
-const assert = require('assert');
+import * as assert from 'assert';
+import * as Debug from 'debug';
+const debug = Debug('linearization');
+const detail = Debug('linearization:detail');
 
-const PartialOrder = require('./partial-order');
-const { RELATIONS, COMPOSITIONS, Consistency } = require('./consistency');
+import { PartialOrder } from './partial-order';
+import { RELATIONS, COMPOSITIONS, Consistency } from './consistency';
 
 class Linearization {
+  sequence: any[];
+  consistency: Consistency;
+
   constructor({sequence, consistency}) {
     this.sequence = [].concat(sequence);
     this.consistency = consistency;
@@ -53,7 +57,7 @@ class Linearization {
   }
 }
 
-module.exports = function*(program, args) {
+export function * linearizations(program, args) {
   for (let lin of Linearization.enumerate(program, args.weak, args.weakRelaxLinearization))
     yield lin;
 }

@@ -1,11 +1,10 @@
-const debug = require('debug')('violat:utils:find');
-const cp = require('child_process');
+import * as assert from 'assert';
+import * as Debug from 'debug';
+const debug = Debug('violat:utils:find');
 
-function findFiles(path, pattern) {
+import * as cp from 'child_process';
+
+export function findFiles(path, pattern) {
   return cp.execSync(`find ${path} ${pattern}`)
     .toString().split('\n').filter(f => f);
 }
-
-module.exports = {
-  findFiles
-};

@@ -2,6 +2,7 @@ import * as assert from 'assert';
 import * as Debug from 'debug';
 const debug = Debug('executor');
 
+import { Invocation, Schema } from '../schema';
 import { RunJavaObjectServer } from '../java/runjobj';
 
 export class Executor {
@@ -15,17 +16,17 @@ export class Executor {
     return await this.server.isReady();
   }
 
-  async execute(invocations, schema) {
+  async execute(invocations: Invocation[], schema: Schema) {
     debug(`executing invocations: %o`, invocations);
     return await this._getResult(invocations, schema);
   }
 
-  async _getResult(invocations, schema) {
+  async _getResult(invocations: Invocation[], schema: Schema) {
     let query = this._getQuery(invocations, schema);
     return await this._getResultFromQuery(invocations, query);
   }
 
-  _getQuery(invocations, schema) {
+  _getQuery(invocations: Invocation[], schema: Schema) {
     let query = {
       class: schema.class,
       constructor: {
@@ -38,7 +39,7 @@ export class Executor {
     return query;
   }
 
-  async _getResultFromQuery(invocations, query) {
+  async _getResultFromQuery(invocations: Invocation[], query: {}) {
     await this.isReady();
     let response = await this.server.query(query);
     debug(`response: %o`, response);

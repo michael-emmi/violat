@@ -1,30 +1,31 @@
-const debug = require('debug')('consistency');
-const trace = require('debug')('consistency:trace');
-const assert = require('assert');
+import * as assert from 'assert';
+import * as Debug from 'debug';
+const debug = Debug('consistency');
+const trace = Debug('consistency:trace');
 
-const RELATIONS = {
+export const RELATIONS = {
   programorder: 'po',
   linearization: 'lin',
   visibility: 'vis'
 };
 
-const PROPERTIES = {
+export const PROPERTIES = {
   consistentreturns: 'ret'
 }
 
-const EXPRESSIONS = {
+export const EXPRESSIONS = {
   wildcard: '*',
   atomic: 'A',
   bottom: '!'
 }
 
-const COMPOSITIONS = {
+export const COMPOSITIONS = {
   simple: '.',
   left: 'L',
   right: 'R'
 }
 
-const COMPARISONS = {
+export const COMPARISONS = {
   equal: '=',
   lesser: '<',
   greater: '>',
@@ -155,7 +156,7 @@ function compareArys(ary1, ary2, fn) {
       acc = cmp;
 
     else if (cmp === COMPARISONS.equal)
-      ;
+      undefined;
 
     else if (acc === COMPARISONS.equal && cmp !== COMPARISONS.equal)
       acc = cmp;
@@ -170,7 +171,11 @@ function compareArys(ary1, ary2, fn) {
   return acc;
 }
 
-class ConsistencyLevel {
+export class ConsistencyLevel {
+  dimension: number;
+  maximals: any[];
+  expressions: Expression[];
+
   constructor(maximals) {
     let [first] = maximals;
     this.dimension = first.length;
@@ -272,19 +277,21 @@ class ConsistencyLevel {
 
   satisfies(...invocations) {
     assert.equal(this.expressions.length, invocations.length);
-    return this.expressions.each((e,i) => matchExpr(invocations[i], e));
+    return this.expressions.every((e,i) => Expression.match(invocations[i], e));
   }
 }
 
 class Attribute {
   static get(...args) {
     return args.length === 1
-      ? new SimpleAttribute(...args)
-      : new RelationalAttribute(...args);
+      ? new SimpleAttribute(args[0])
+      : new RelationalAttribute(args[0], args[1], args[2]);
   }
 }
 
 class SimpleAttribute extends Attribute {
+  name: string;
+
   constructor(name) {
     super();
     this.name = name;
@@ -300,6 +307,10 @@ class SimpleAttribute extends Attribute {
 }
 
 class RelationalAttribute extends Attribute {
+  relName: string;
+  baseName: string;
+  comp: any;
+
   constructor(relName, baseName, comp) {
     super();
     this.relName = relName;
@@ -418,7 +429,9 @@ class RelationalAttribute extends Attribute {
 }
 
 
-class Consistency {
+export class Consistency {
+  levels: Map<any,any>;
+
   constructor(entries) {
     this.levels = new Map(entries);
   }
@@ -550,6 +563,9 @@ class Consistency {
 
 
 class ConsistencyDisjunction {
+  consistencies: any[];
+  size: number;
+
   constructor(consistencies) {
     this.consistencies = consistencies;
     this.size = consistencies.length;
@@ -569,7 +585,7 @@ class ConsistencyDisjunction {
 }
 
 
-const ATTRIBUTES = {
+export const ATTRIBUTES = {
   lin_contains_po: Attribute.get(RELATIONS.linearization, RELATIONS.programorder, COMPOSITIONS.simple),
   vis_contains_po: Attribute.get(RELATIONS.visibility, RELATIONS.programorder, COMPOSITIONS.simple),
   vis_contains_vis_X_po: Attribute.get(RELATIONS.visibility, RELATIONS.programorder, COMPOSITIONS.left),
@@ -583,14 +599,3 @@ const ATTRIBUTES = {
 
 debug(`using consistency attributes:`)
 debug(ATTRIBUTES);
-
-module.exports = {
-  PROPERTIES,
-  RELATIONS,
-  EXPRESSIONS,
-  COMPOSITIONS,
-  COMPARISONS,
-  ATTRIBUTES,
-  ConsistencyLevel,
-  Consistency
-};

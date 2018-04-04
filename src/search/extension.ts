@@ -1,8 +1,13 @@
-const debug = require('debug')('history-extension');
-const detail = require('debug')('history-extension:detail');
-const assert = require('assert');
+import * as assert from 'assert';
+import * as Debug from 'debug';
+const debug = Debug('history-extension');
+const detail = Debug('history-extension:detail');
 
-class LinearizationExtender {
+import { LinearizationValidator, ConsistencyValidator } from './validation';
+
+export class LinearizationExtender {
+  validator: LinearizationValidator;
+
   constructor(validator) {
     this.validator = validator;
   }
@@ -10,7 +15,7 @@ class LinearizationExtender {
   async * extensions(pos, lin) {
     for (let op of pos.unconsumedMinimals()) {
       let [nextPos, linExt] = this._extend(pos, lin, op);
-      let valid = await this.validator.validate(linExt, pos);
+      let valid = await this.validator.validate({ lin: linExt, pos });
       debug(`extension: %s / %s`, linExt, valid);
       if (valid)
         yield [nextPos, linExt];
@@ -24,7 +29,7 @@ class LinearizationExtender {
   }
 }
 
-class JustInTimeLinearizationExtender extends LinearizationExtender {
+export class JustInTimeLinearizationExtender extends LinearizationExtender {
   constructor(validator) {
     super(validator);
   }
@@ -37,7 +42,7 @@ class JustInTimeLinearizationExtender extends LinearizationExtender {
     for (let ops of subsets(pending).reverse()) {
       for (let seq of linearizations([...ops, op])) {
         let [nextPos, linExt] = seq.reduce(([p,l],op) => this._extend(p,l,op), [pos, lin]);
-        let valid = await this.validator.validate(linExt, pos);
+        let valid = await this.validator.validate({ lin: linExt, pos });
         debug(`extension: %s / %s`, linExt, valid);
         if (valid)
           yield [nextPos, linExt];
@@ -46,7 +51,9 @@ class JustInTimeLinearizationExtender extends LinearizationExtender {
   }
 }
 
-class VisibilityExtender {
+export class VisibilityExtender {
+  validator: ConsistencyValidator;
+
   constructor(validator) {
     this.validator = validator;
   }
@@ -70,7 +77,7 @@ class VisibilityExtender {
       detail(`subset: %o`, ops);
 
       let visExt = visBase.extend(op, ops);
-      let valid = await this.validator.validate(lin, visExt, pos);
+      let valid = await this.validator.validate({ lin, vis: visExt, pos });
 
       debug(`extension: %s / %s`, visExt, valid);
 
@@ -80,7 +87,7 @@ class VisibilityExtender {
   }
 }
 
-class MinimalVisibilityExtender extends VisibilityExtender {
+export class MinimalVisibilityExtender extends VisibilityExtender {
   constructor(validator) {
     super(validator);
   }
@@ -109,7 +116,7 @@ class MinimalVisibilityExtender extends VisibilityExtender {
       }
 
       let visExt = visBase.extend(op, ops);
-      let valid = await this.validator.validate(lin, visExt, pos);
+      let valid = await this.validator.validate({ lin, vis: visExt, pos });
 
       debug(`extension: %s / %s`, visExt, valid);
 
@@ -128,10 +135,3 @@ function subsets([x, ...xs]) {
 function linearizations(xs) {
   return xs.length ? [].concat(...xs.map(x => linearizations(xs.filter(y => y !== x)).map(ys => [x, ...ys]))) : [[]];
 }
-
-module.exports = {
-  LinearizationExtender,
-  JustInTimeLinearizationExtender,
-  VisibilityExtender,
-  MinimalVisibilityExtender
-};

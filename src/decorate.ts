@@ -1,4 +1,6 @@
-const debug = require('debug')('decorate');
+import * as assert from 'assert';
+import * as Debug from 'debug';
+const debug = Debug('decorate');
 
 function escape(outcome) {
   return outcome.replace(/([\[\]\{\}])/g, '\\\\$1');
@@ -10,7 +12,7 @@ function addOutcome(harnessCode, outcome) {
   );
 }
 
-module.exports = function(violation) {
+export function decorate(violation) {
   return JSON.stringify(violation, null, 2).replace(/^/gm,'// ')
   + '\n'
   + violation.outcomes.reduce((code,outcome) =>

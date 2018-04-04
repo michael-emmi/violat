@@ -1,7 +1,10 @@
-const debug = require('debug')('jcstress:reader');
-const assert = require('assert');
+import * as assert from 'assert';
+import * as Debug from 'debug';
+const debug = Debug('jcstress:reader');
 
 class JCStressOutputReader {
+  generator: AsyncIterable<string>;
+
   constructor(generator) {
     this.generator = generator;
   }

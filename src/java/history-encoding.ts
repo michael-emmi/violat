@@ -1,10 +1,14 @@
-const assert = require('assert');
-const debug = require('debug')('history-encoding');
-const detail = require('debug')('history-encoding:detail');
+import * as assert from 'assert';
+import * as Debug from 'debug';
+const debug = Debug('history-encoding');
+const detail = Debug('history-encoding:detail');
 
-const { Event, Trace, History } = require('../history.js');
+import { Schema } from '../schema';
+import { Event, Trace, History } from '../history';
 
 class HistoryEncoding {
+  schema: Schema;
+
   constructor(schema) {
     this.schema = schema;
   }
@@ -43,7 +47,7 @@ class HistoryEncoding {
           let event = new Event({
             kind: isCall ? 'call' : 'return',
             sid: +i,
-            invocation: this.schema.sequences.find(s => s.id == i).invocations[invIdx],
+            invocation: this.schema.sequences.find(s => s.id == +i).invocations[invIdx],
             value: (!isCall && pcs.result !== 'void') ? pcs.result : undefined
           });
           detail(`got event: %o`, event);

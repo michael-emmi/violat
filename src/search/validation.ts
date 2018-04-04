@@ -1,21 +1,28 @@
-const debug = require('debug')('history-validation');
-const assert = require('assert');
+import * as assert from 'assert';
+import * as Debug from 'debug';
+const debug = Debug('history-validation');
 
-class TrivialValidator {
-  constructor() {
+import { Executor } from '../java/executor';
 
-  }
-  validate() {
+export abstract class Validator {
+  abstract async validate(args: {}): Promise<boolean>;
+}
+
+export class TrivialValidator implements Validator {
+  async validate({}) {
     return true;
   }
 }
 
-class LinearizationValidator {
+export class LinearizationValidator extends TrivialValidator {
+  executor: Executor;
+
   constructor(executor) {
+    super();
     this.executor = executor;
   }
 
-  async validate(lin, pos) {
+  async validate({ lin, pos }) {
     let schema = pos.getSchema();
 
     // TODO avoid re-retieval of the invocations each time.
@@ -24,7 +31,7 @@ class LinearizationValidator {
 
     let response = await this.executor.execute(sequence, schema);
     let actual = lin.getSequence().map(id => pos.getValue(id));
-    let expected = response.map((val,idx) => actual[idx] !== undefined ? val : undefined);
+    let expected = Object.values(response).map((val,idx) => actual[idx] !== undefined ? val : undefined);
     let result = actual.every((val, idx) => val == expected[idx]);
 
     debug(`validate(%o, %o): %s`, lin, pos, result);
@@ -36,12 +43,12 @@ class LinearizationValidator {
   }
 }
 
-class ConsistencyValidator extends LinearizationValidator {
+export class ConsistencyValidator extends LinearizationValidator {
   constructor(executor) {
     super(executor);
   }
 
-  async validate(lin, vis, pos) {
+  async validate({ lin, vis, pos }) {
     let result = true;
     let schema = pos.getSchema();
     let sequence = lin.getSequence();
@@ -55,7 +62,7 @@ class ConsistencyValidator extends LinearizationValidator {
       let projection = this._projection(prefix, vis).map(id => invocations.find(i => i.id == id));
       let response = await this.executor.execute(projection, schema);
       let actual = sequence.filter(id => projection.includes(id)).map(id => pos.getValue(id));
-      let expected = response.map((val,idx) => actual[idx] !== undefined ? val : undefined);
+      let expected = Object.values(response).map((val,idx) => actual[idx] !== undefined ? val : undefined);
       result = result && actual.every((val, idx) => val == expected[idx]);
 
       debug(`response: %s`, response);
@@ -77,9 +84,3 @@ class ConsistencyValidator extends LinearizationValidator {
     return seq.filter(id => id === op || vis.has(op, id));
   }
 }
-
-module.exports = {
-  TrivialValidator,
-  LinearizationValidator,
-  ConsistencyValidator
-};

@@ -1,5 +1,6 @@
-const debug = require('debug')('violat:java:build');
-const assert = require('assert');
+import * as assert from 'assert';
+import * as Debug from 'debug';
+const debug = Debug('violat:java:build');
 
 const path = require('path');
 const cp = require('child_process');
@@ -8,7 +9,7 @@ const ncp = require('ncp');
 const { findFiles } = require('../utils/find.js');
 const { targetsOutdated } = require('../utils/deps.js');
 
-function gradleBuildJar({ sourcePath, workPath, name }) {
+export function gradleBuildJar({ sourcePath, workPath, name }) {
   debug(`build ${name}.jar in ${workPath} from ${sourcePath}`);
 
   return new Promise((resolve, reject) => {
@@ -42,7 +43,3 @@ function gradleBuildJar({ sourcePath, workPath, name }) {
     }
   });
 }
-
-module.exports = {
-  gradleBuildJar
-};

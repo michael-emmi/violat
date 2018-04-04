@@ -1,7 +1,10 @@
-const es = require('event-stream');
-const debug = require('debug')('records');
+import * as assert from 'assert';
+import * as Debug from 'debug';
+const debug = Debug('records');
 
-module.exports = delimiter => ({
+import * as es from 'event-stream';
+
+export const records = delimiter => ({
 
   count: readable => {
     return new Promise((resolve, reject) => {

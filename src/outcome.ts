@@ -1,7 +1,7 @@
 const debug = require('debug')('outcome');
 const assert = require('assert');
 
-const { Consistency } = require('../lib/consistency');
+import { Consistency } from './consistency';
 
 export class Outcome {
   consistency: Consistency;

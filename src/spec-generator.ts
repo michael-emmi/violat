@@ -4,7 +4,7 @@ let java = require('java');
 let Class = java.import('java.lang.Class');
 let Void = java.import('java.lang.Void');
 
-let Object = Class.forNameSync('java.lang.Object');
+let _Object = Class.forNameSync('java.lang.Object');
 let Modifier = java.import('java.lang.reflect.Modifier');
 
 function getSpec(className) {

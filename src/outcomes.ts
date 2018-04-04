@@ -1,21 +1,21 @@
-const createDebug = require('debug');
-
-const debug = createDebug('outcomes');
-const trace = createDebug('outcomes:trace');
-const assert = require('assert');
+import * as assert from 'assert';
+import * as Debug from 'debug';
+const debug = Debug('outcomes');
+const trace = Debug('outcomes:trace');
 
 const path = require('path');
 const cp = require('child_process');
 const fs = require('fs');
 
-const config = require('./config.js');
-const { Executor } = require('./java/executor.js');
-const linearization = require('./linearization.js');
-const visibility = require('./visibility.js');
+import { config } from './config.js';
+import { Executor } from './java/executor';
+import { linearizations } from './linearization';
+import { visibilities } from './visibility';
 
-const Outcome = require('./outcome.js');
-const PartialOrder = require('./partial-order.js');
-const { RELATIONS, COMPARISONS, Consistency } = require('./consistency');
+import { Schema } from './schema';
+import { Outcome } from './outcome';
+import { PartialOrder } from './partial-order';
+import { RELATIONS, COMPARISONS, Consistency } from './consistency';
 
 function splitBulkOperations(schema, spec) {
   let result = JSON.parse(JSON.stringify(schema));
@@ -78,7 +78,7 @@ function combineSplitResults(schema, spec, outcome) {
             result = results.reduce((acc,r) => acc && r, true);
             break;
           default:
-            throw `uknown combiner: ${combine}`;
+            throw `uknown combiner: ${method.bulk.combine}`;
         }
         // TODO replace results with result in outcome
       }
@@ -98,19 +98,25 @@ function getQuerySequence(schema, invocations) {
 }
 
 class OutcomePredictor {
+  args: any;
+  executor: Executor;
+  executorCache: {};
+  useCache: boolean;
+
   constructor(args) {
     this.args = args;
 
     // XXX TODO update to new executor model
 
-    this.executor = new Executor();
+    this.executor = new Executor(undefined);
     this.executorCache = {};
     this.useCache = true;
   }
 
   close() {
+    // XXX TODO update to new executor model
     assert.ok(this.executor);
-    this.executor.close();
+    // this.executor.close();
     this.executor = undefined;
   }
 
@@ -125,10 +131,10 @@ class OutcomePredictor {
 
     trace(`using happens before %s`, programOrder);
 
-    for (let lin of linearization(programOrder, this.args)) {
+    for (let lin of linearizations(programOrder, this.args)) {
       trace(`using linearization %s`, lin);
 
-      for (let viz of visibility(programOrder, lin, this.args)) {
+      for (let viz of visibilities(programOrder, lin, this.args)) {
         trace(`using visibility %s`, viz);
 
         results.push(this.getOutcome(schema, lin, viz));
@@ -224,7 +230,7 @@ class OutcomePredictor {
   }
 }
 
-module.exports = function(schemas, args) {
+export function outcomes(schemas: Schema[], args): Promise<Schema[]> {
   return new Promise(async (resolve, reject) => {
     debug(`annotating ${schemas.length} harness schemas`);
 

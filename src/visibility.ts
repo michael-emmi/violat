@@ -1,15 +1,22 @@
-const debug = require('debug')('visibility');
-const detail = require('debug')('visibility:detail');
-const assert = require('assert');
+import * as assert from 'assert';
+import * as Debug from 'debug';
+const debug = Debug('visibility');
+const detail = Debug('visibility:detail');
 
-const PartialOrder = require('./partial-order');
-const { RELATIONS, COMPOSITIONS, Consistency } = require('./consistency');
+import { PartialOrder } from './partial-order';
+import { RELATIONS, COMPOSITIONS, Consistency } from './consistency';
 
 class Visibility {
+  program: PartialOrder<any>;
+  linearization: any;
+  relation: Map<any,any>;
+  excluded: any[];
+  consistency: Consistency;
+
   constructor(args) {
     assert.ok(args.consistency);
     Object.assign(this, args, {
-      relation: new Map([...args.relation].map(([k,vs]) => [k, new Set(vs)]))
+      relation: new Map([...args.relation].map(([k,vs]) => [k, new Set(vs)]) as Iterable<any>)
     });
   }
 
@@ -148,7 +155,7 @@ class Visibility {
   }
 }
 
-module.exports = function*(program, linearization, args) {
+export function * visibilities(program, linearization, args) {
   for (let viz of Visibility.enumerate(program, linearization, args.weak, args.weakRelaxVisibility))
     yield viz;
 }
