@@ -1,6 +1,6 @@
 const fs = require('fs');
 const assert = require('assert');
-const PartialOrder = require('../lib/partial-order');
+const { PartialOrder } = require('../lib/partial-order');
 
 const PO1 = new PartialOrder();
 PO1.sequence(1, 2);

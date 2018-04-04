@@ -1,7 +1,7 @@
 const fs = require('fs');
 const assert = require('assert');
-const PartialOrder = require('../lib/partial-order');
-const linearization = require('../lib/linearization');
+const { PartialOrder } = require('../lib/partial-order');
+const { linearizations } = require('../lib/linearization');
 
 const I1 = { id: 1, atomic: true };
 const I2 = { id: 2, atomic: true };
@@ -23,7 +23,7 @@ const W0 = {weakRelaxLinearization: false};
 const W1 = {weakRelaxLinearization: true};
 
 function lins(po, w) {
-  return new Set([...linearization(po, w)].map(l => l.sequence));
+  return new Set([...linearizations(po, w)].map(l => l.sequence));
 }
 
 describe('linearization', function() {

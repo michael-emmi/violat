@@ -2,7 +2,7 @@ import * as assert from 'assert';
 import * as Debug from 'debug';
 const debug = Debug('enum');
 
-const randomenum = require('./random.js');
+const { RandomProgramGenerator } = require('./random.js');
 const basicenum = require('./basic.js');
 const shuffle = require('../shuffle.js');
 
@@ -11,7 +11,7 @@ export function generator(args) {
 
   switch (args.enum) {
     case 'random':
-      return randomenum.generator(args);
+      return new RandomProgramGenerator({ limits: {...args}, ...args}).getPrograms();
 
     case 'complete':
       return basicenum.generator(args)();

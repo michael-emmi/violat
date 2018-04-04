@@ -1,6 +1,6 @@
 const fs = require('fs');
 const assert = require('assert');
-const generator = require('../lib/enumeration/index');
+const { generator } = require('../lib/enumeration/index');
 const annotate = require('../lib/outcomes');
 const spec = require('../resources/specs/java/util/concurrent/ConcurrentHashMap.json');
 

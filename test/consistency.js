@@ -1,7 +1,7 @@
 const assert = require('assert');
 const debug = require('debug')('consistency');
 
-const PartialOrder = require('../lib/partial-order');
+const { PartialOrder } = require('../lib/partial-order');
 const {
   PROPERTIES, RELATIONS, COMPOSITIONS, EXPRESSIONS, ATTRIBUTES, COMPARISONS,
   ConsistencyLevel, Consistency

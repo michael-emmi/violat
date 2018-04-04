@@ -1,6 +1,6 @@
 const fs = require('fs');
 const assert = require('assert');
-const generator = require('../lib/enumeration/index');
+const { generator } = require('../lib/enumeration/index');
 const strategies = ['complete', 'shuffle', 'random'];
 const specs = [
   require('../resources/specs/java/util/concurrent/ConcurrentHashMap.json'),
@@ -17,6 +17,7 @@ describe('generate()', function() {
           methods: ['clear'],
           values: 2,
           sequences: 2,
+          maxThreads: 2,
           invocations: 3
         });
 
@@ -26,7 +27,9 @@ describe('generate()', function() {
 
         for (let schemas of tests) {
           it(`generates ${schemas.length} schemas for ${spec.class.split('.').pop()}`, function() {
-            assert.ok(schemas.every(s => s.sequences.length === 2));
+            for (let schema of schemas)
+              console.log(`schema: %s`, schema);
+            schemas.forEach(s => assert.equal(s.sequences.length, 2));
           });
         }
       }

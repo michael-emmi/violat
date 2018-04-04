@@ -1,8 +1,8 @@
 const fs = require('fs');
 const assert = require('assert');
 const debug = require('debug')('visibility');
-const PartialOrder = require('../lib/partial-order');
-const visibility = require('../lib/visibility');
+const { PartialOrder } = require('../lib/partial-order');
+const { visibilities } = require('../lib/visibility');
 const Atomicity = require('./atomicity');
 const { Consistency } = require('../lib/consistency');
 const { Schema, Invocation } = require('../lib/schema.js');
@@ -12,7 +12,7 @@ function pairs(values) {
 }
 
 function vizPairs(po, lin, opts) {
-  return [...visibility(po, lin, opts)].map(viz => {
+  return [...visibilities(po, lin, opts)].map(viz => {
     return pairs(viz.values()).filter(([x,y]) => viz.isVisible(x,y));
   });
 }
