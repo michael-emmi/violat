@@ -20,4 +20,4 @@ export const config = {
   resourcesPath: path.join(__dirname, '../resources')
 };
 
-mkdirp.sync(module.exports.outputPath);
+mkdirp.sync(outputPath);
