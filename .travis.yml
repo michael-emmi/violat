@@ -8,6 +8,7 @@ before_script:
   - echo $JAVA_HOME
   - java -version
   - gradle -version
+  - npm run build
 
 deploy:
   provider: npm
