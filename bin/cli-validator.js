@@ -1,6 +1,7 @@
 #!/usr/bin/env node --harmony_async_iteration
 "use strict";
 
+require('source-map-support').install();
 require('console.table');
 
 let fs = require('fs-extra');

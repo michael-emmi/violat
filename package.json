@@ -32,6 +32,7 @@
     "@types/chance": "^1.0.0",
     "@types/node": "^9.6.2",
     "mocha": "^3.4.2",
+    "source-map-support": "^0.5.4",
     "typescript": "^2.8.1"
   },
   "engines": {
