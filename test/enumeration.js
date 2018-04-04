@@ -17,7 +17,10 @@ describe('generate()', function() {
           methods: ['clear'],
           values: 2,
           sequences: 2,
+          minThreads: 2,
           maxThreads: 2,
+          minInvocations: 3,
+          maxInvocations: 3,
           invocations: 3
         });
 
@@ -27,8 +30,6 @@ describe('generate()', function() {
 
         for (let schemas of tests) {
           it(`generates ${schemas.length} schemas for ${spec.class.split('.').pop()}`, function() {
-            for (let schema of schemas)
-              console.log(`schema: %s`, schema);
             schemas.forEach(s => assert.equal(s.sequences.length, 2));
           });
         }
