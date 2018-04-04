@@ -28,7 +28,8 @@
   },
   "devDependencies": {
     "@types/node": "^9.6.2",
-    "mocha": "^3.4.2"
+    "mocha": "^3.4.2",
+    "typescript": "^2.8.1"
   },
   "engines": {
     "node": ">=7.0"
