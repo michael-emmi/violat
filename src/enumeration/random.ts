@@ -79,7 +79,7 @@ class SingleUseRandomProgramGenerator {
     this.numSequences = this.chance.integer(limits.threads);
     this.numInvocations = this.chance.integer({
       min: Math.max(this.numSequences, limits.invocations.min),
-      max: limits.invocations.max
+      max: Math.max(this.numSequences, limits.invocations.max)
     });
     this.numValues = this.chance.integer(limits.values);
 
