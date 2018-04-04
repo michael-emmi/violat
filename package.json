@@ -35,7 +35,7 @@
     "node": ">=7.0"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc; true",
     "test": "mocha",
     "consistency-experiments": "node resources/scripts/experiments/consistency.js",
     "monitoring-experiments": "bash ./resources/scripts/experiments/monitoring.sh"
