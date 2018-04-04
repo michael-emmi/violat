@@ -38,7 +38,10 @@ export class JCStressOutputReader {
       let [ value, countS, expectation, description ] = this.match(line, RESULT_LINE);
 
       if (value) {
+
+        // TODO XXX this assertion is failing nondeterministically. XXX
         assert.ok(result);
+
         let count = parseInt(countS.replace(/,/g,''));
         result.outcomes.push({ value, count, expectation, description });
         continue;
