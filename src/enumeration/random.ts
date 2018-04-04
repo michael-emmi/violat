@@ -20,7 +20,7 @@ export class RandomProgramGenerator {
 
   constructor({ spec, limits: {
     minThreads = 2,
-    maxThreads = os.cpus().length,
+    maxThreads = Math.max(os.cpus().length, minThreads),
     minInvocations = 3,
     maxInvocations = 6,
     minValues = 1,
