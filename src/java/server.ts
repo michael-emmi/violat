@@ -1,10 +1,17 @@
-const debug = require('debug')('server');
-const assert = require('assert');
+import * as assert from 'assert';
+import * as Debug from 'debug';
+const debug = Debug('server');
 
-const cp = require('child_process');
+import * as cp from 'child_process';
+
 const split = require('split');
 
-class Server {
+export class Server {
+  resolves: {resolve: any, reject: any}[];
+  closed: boolean;
+  ready: Promise<boolean>;
+  proc: cp.ChildProcess;
+
   constructor(jarProvider) {
     this.resolves = [];
     this.closed = false;
@@ -87,7 +94,7 @@ class Server {
 
     assert.ok(this.resolves.length > 0);
     let resolver = this.resolves.shift();
-    resolver.reject(`server process ${proc.pid} exited unexpectedly`);
+    resolver.reject(`server process ${this.proc.pid} exited unexpectedly`);
   }
 
 }
@@ -95,5 +102,3 @@ class Server {
 // class CachingServer extends Server {
 //   ...
 // }
-
-module.exports = { Server };

@@ -1,5 +1,4 @@
-
-function *batch(generator, { size = 1, max = undefined }) {
+export function *batch<T>(generator: Iterable<T>, { size = 1, max }): Iterable<T[]> {
   let elems = [];
   let count = 0;
   for (let elem of generator) {
@@ -18,8 +17,4 @@ function *batch(generator, { size = 1, max = undefined }) {
   // emit the leftover elements
   if (elems.length)
     yield elems;
-}
-
-module.exports = {
-  batch
 }

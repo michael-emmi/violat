@@ -1,7 +1,10 @@
-const debug = require('debug')('schema');
-const assert = require('assert');
+import * as assert from 'assert';
+import * as Debug from 'debug';
+const debug = Debug('schema');
 
 const PartialOrder = require('./partial-order.js');
+
+import { Method } from './spec/spec';
 
 class Argument {
   static toString(arg) {
@@ -14,7 +17,11 @@ class Argument {
   }
 }
 
-class Invocation {
+export class Invocation {
+  id: number;
+  method: Method;
+  arguments: Argument[];
+
   constructor(that) {
     Object.assign(this, that);
   }
@@ -31,7 +38,16 @@ class Invocation {
 
 }
 
-class Schema {
+export interface Sequence {
+  id: number;
+  invocations: Invocation[]
+}
+
+export class Schema {
+  id: number;
+  sequences: Sequence[];
+  order: [number,number][];
+
   constructor(that) {
     Object.assign(this, that);
     for (let seq of this.sequences || [])
@@ -103,8 +119,3 @@ class Schema {
     return order;
   }
 }
-
-module.exports = {
-  Invocation,
-  Schema
-};

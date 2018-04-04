@@ -1,5 +1,13 @@
-const debug = require('debug')('visibility');
-const assert = require('assert');
+import * as assert from 'assert';
+import * as Debug from 'debug';
+const debug = Debug('visibility');
+
+import { Schema, Sequence, Invocation } from '../schema';
+
+export interface Visibility {
+  isVisible(source: Invocation, target: Invocation): boolean;
+  visible(source: Invocation): Invocation[];
+}
 
 const LEVELS_ARRAY = [
   'weak',
@@ -13,7 +21,7 @@ const LEVELS_ARRAY = [
 const LEVELS_OBJECT = LEVELS_ARRAY
   .reduce((m, k, i) => Object.assign({}, m, {[k]: i}), {});
 
-class Level {
+export class Level {
   static of(str) {
     return LEVELS_OBJECT[str];
   }
@@ -43,7 +51,15 @@ class Level {
   }
 }
 
+
 class Constraints {
+  invocations: Invocation[];
+  source: Invocation;
+  target: Invocation;
+  schema: Schema;
+  sourceSeq: Sequence;
+  targetSeq: Sequence;
+  vis: Visibility;
 
   // NOTE here we assume that target is linearized before source
   // NOTE and that invocations is a prefix of the linearization up to source
@@ -116,9 +132,9 @@ class Constraints {
   }
 }
 
-class VisibilitySemantics {
-  mustSee({ invocations, source, target, po, vis }) {
-    let constraints = new Constraints({ invocations, source, target, po, vis });
+export class VisibilitySemantics {
+  mustSee({ invocations, source, target, schema, vis }) {
+    let constraints = new Constraints({ invocations, source, target, schema, vis });
     return constraints.mustSee();
   }
 
@@ -131,9 +147,9 @@ class VisibilitySemantics {
   }
 }
 
-class VisibilityGenerator {
+export class VisibilityGenerator {
   async * getVisibilities({ schema, linearization }) {
-    let extender = new VisibilityExtender({ schema, linearization, ...this });
+    let extender = new VisibilityExtender({ schema, linearization, ...<any>this });
 
     debug(`generating visibilities`);
     debug(`schema: %s`, schema);
@@ -150,9 +166,11 @@ class VisibilityGenerator {
   }
 }
 
-class VisibilityImpl {
-  constructor({ map } = {}) {
-    this.map = map || {};
+export class VisibilityImpl {
+  map: { };
+
+  constructor({ map = {} } = {}) {
+    this.map = map;
   }
 
   source(source) {
@@ -191,6 +209,9 @@ class VisibilityImpl {
 }
 
 class VisibilityExtender {
+  schema: Schema;
+  linearization: Invocation[];
+
   constructor({ schema, linearization }) {
     this.schema = schema;
     this.linearization = linearization;
@@ -231,7 +252,7 @@ class VisibilityExtender {
         for (let vis of extensions) {
           if (!vis.isVisible({ source, target })) {
             debug(`extension: %s sees %s`, source, target);
-            let ext = this.extend({ source, target, preds, vis });
+            let ext = this.extend({ source, target, vis });
             yield ext;
             extensions.push(ext);
           }
@@ -298,9 +319,3 @@ class VisibilityExtender {
     return constraints.isWitness(inter);
   }
 }
-
-module.exports = {
-  Level,
-  VisibilitySemantics,
-  VisibilityGenerator
-};

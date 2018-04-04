@@ -1,16 +1,18 @@
-const assert = require('assert');
+import * as assert from 'assert';
+import * as Debug from 'debug';
+const debug = Debug('jcstress');
+const trace = Debug('jcstress:trace');
+const detail = Debug('jcstress:detail');
+
+import * as cp from 'child_process';
 
 var path = require('path');
-var cp = require('child_process');
 var fs = require('fs');
 var mkdirp = require('mkdirp');
 var es = require('event-stream');
 var ncp = require('ncp');
 
 var config = require("../config.js");
-const debug = require('debug')('jcstress');
-const trace = require('debug')('jcstress:trace');
-const detail = require('debug')('jcstress:detail');
 const translate = require('./translation.js');
 const { JCStressOutputReader } = require('./jcstress/reader.js');
 const { JCStressCodeGenerator, JCStressHistoryRecordingCodeGenerator } = require('./translation.js');
@@ -20,6 +22,8 @@ const HistoryEncoding = require('./history-encoding.js');
 const { getOutputLines } = require('../utils/proc.js');
 const { targetsOutdated } = require('../utils/deps.js');
 const { findFiles } = require('../utils/find.js');
+
+import { Schema } from '../schema';
 
 function testsPath(jcstressPath) {
   return path.resolve(jcstressPath, 'src/main/java');
@@ -137,14 +141,22 @@ let get = p => b => (b.toString().match(p) || []).slice(1).map(s => s.trim());
 
 
 
-class JCStressRunner {
+abstract class JCStressRunner {
+  workPath: string;
+  proc: cp.ChildProcess;
+  codes: Iterable<string>;
+  limits: {
+    forksPerTest: number,
+    itersPerTest: number,
+    timePerTest: number
+  };
+  initialized: Promise<{}>;
+
   constructor(codes, { limits: { timePerTest = 1, itersPerTest = 1, forksPerTest = 1 } }) {
     this.workPath = path.join(config.outputPath, 'tests');
     this.proc = undefined;
     this.codes = codes;
     this.limits = { timePerTest, itersPerTest, forksPerTest };
-    this.results = [];
-    this.subscribers = [];
     this.initialized = this._initialize();
   }
 
@@ -175,6 +187,8 @@ class JCStressRunner {
         throw e;
     }
   }
+
+  abstract _resultData(result);
 
   _initialize() {
     return new Promise(async (resolve, reject) => {
@@ -207,17 +221,19 @@ class JCStressRunner {
   }
 }
 
-class JCStressTester extends JCStressRunner {
+export class JCStressTester extends JCStressRunner {
+  schemas: Schema[];
+
   constructor(schemas, { testName = '', maxViolations = 1, limits = {} } = {}) {
     super(JCStressTester._codeGenerator(schemas, testName), { limits });
     this.schemas = schemas;
-    let numViolations = 0;
-    this.subscribers.push(result => {
-      if (!result.status)
-        numViolations++;
-      if (maxViolations && numViolations >= maxViolations)
-        this._end();
-    });
+    // let numViolations = 0;
+    // this.subscribers.push(result => {
+    //   if (!result.status)
+    //     numViolations++;
+    //   if (maxViolations && numViolations >= maxViolations)
+    //     // this._end();
+    // });
   }
 
   static *_codeGenerator(schemas, id) {
@@ -240,9 +256,11 @@ class JCStressTester extends JCStressRunner {
   }
 }
 
-class JCStressHistoryGenerator extends JCStressRunner {
+export class JCStressHistoryGenerator extends JCStressRunner {
+  schemas: Schema[];
+
   constructor(schemas, testName) {
-    super(JCStressHistoryGenerator._codeGenerator(schemas, testName));
+    super(JCStressHistoryGenerator._codeGenerator(schemas, testName), { limits: {} });
     this.schemas = schemas;
   }
 
@@ -264,8 +282,3 @@ class JCStressHistoryGenerator extends JCStressRunner {
     };
   }
 }
-
-module.exports = {
-  JCStressTester,
-  JCStressHistoryGenerator
-};

@@ -12,6 +12,8 @@
   },
   "preferGlobal": true,
   "dependencies": {
+    "@types/debug": "0.0.30",
+    "@types/split": "^0.3.28",
     "chance": "^1.0.13",
     "console.table": "^0.10.0",
     "debug": "^2.6.4",
@@ -27,6 +29,7 @@
     "uuid": "^3.2.1"
   },
   "devDependencies": {
+    "@types/chance": "^1.0.0",
     "@types/node": "^9.6.2",
     "mocha": "^3.4.2",
     "typescript": "^2.8.1"

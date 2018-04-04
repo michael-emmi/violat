@@ -1,12 +1,23 @@
-const debug = require('debug')('enum:random');
-const trace = require('debug')('enum:random:trace');
-const assert = require('assert');
+import * as assert from 'assert';
+import * as Debug from 'debug';
+const debug = Debug('enum:random');
+const trace = Debug('enum:random:trace');
+
 const os = require('os');
 
-const Chance = require('chance');
-const { Schema } = require('../schema.js');
+import { Spec, Method } from '../spec/spec';
+import { Schema, Sequence, Invocation } from '../schema';
+import { Chance } from 'chance';
 
-class RandomProgramGenerator {
+type range = { min: number, max: number };
+
+export class RandomProgramGenerator {
+  spec: Spec;
+  limits: { threads: range, invocations: range, values: range; };
+  chance: Chance.Chance;
+  programId: number;
+  weights: number[];
+
   constructor({ spec, limits: {
     minThreads = 2,
     maxThreads = os.cpus().length,
@@ -33,7 +44,7 @@ class RandomProgramGenerator {
 
   getProgram() {
     let id = this.programId++;
-    let generator = new SingleUseRandomProgramGenerator({ id, ...this });
+    let generator = new SingleUseRandomProgramGenerator({ id, ...<any>this });
     let program = new Schema(generator.getProgram());
     debug(`generated program: %s`, program);
     return program;
@@ -50,18 +61,28 @@ class RandomProgramGenerator {
 }
 
 class SingleUseRandomProgramGenerator {
+  spec: Spec;
+  weights: number[];
+  numSequences: number;
+  numInvocations: number;
+  numValues: number;
+  chance: Chance.Chance;
+  id: number;
+  sequences: Sequence[];
+  invocations: Invocation[];
+
   constructor({ spec, weights, chance, limits, id }) {
     this.spec = spec;
     this.weights = weights;
+    this.chance = chance;
 
-    this.numSequences = chance.integer(limits.threads);
-    this.numInvocations = chance.integer({
+    this.numSequences = this.chance.integer(limits.threads);
+    this.numInvocations = this.chance.integer({
       min: Math.max(this.numSequences, limits.invocations.min),
       max: limits.invocations.max
     });
-    this.numValues = chance.integer(limits.values);
+    this.numValues = this.chance.integer(limits.values);
 
-    this.chance = chance;
     this.id = id;
 
     this.sequences = [];
@@ -105,7 +126,7 @@ class SingleUseRandomProgramGenerator {
   }
 
   getMethod() {
-    return this.chance.weighted(this.spec.methods, this.getWeights());
+    return this.chance.weighted<Method>(this.spec.methods, this.getWeights());
   }
 
   getWeights() {
@@ -131,10 +152,10 @@ class SingleUseRandomProgramGenerator {
       return this.getInt();
 
     if (isIntAssignableCollection(type))
-      return this.getIntCollection();
+      return this.getIntCollection(type);
 
     if (isIntAssignableMap(type))
-      return this.getIntMap();
+      return this.getIntMap(type);
 
     throw new Error(`Unexpected type: ${type}`);
   }
@@ -144,7 +165,7 @@ class SingleUseRandomProgramGenerator {
   }
 
   getIntMap(type) {
-    return this.chance.unique(_ => this.getInt(), 2)
+    return this.chance.unique(() => this.getInt(), 2)
       .reduce((m,k) => Object.assign({}, m, {[k]: this.getInt()}), {});
   }
 
@@ -164,8 +185,4 @@ function isIntAssignableCollection(type) {
 function isIntAssignableMap(type) {
   let keys = type ? Object.keys(type) : [];
   return keys.length == 1 && isIntAssignable(type[keys[0]])
-}
-
-module.exports = {
-  RandomProgramGenerator
 }

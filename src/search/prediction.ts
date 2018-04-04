@@ -1,12 +1,18 @@
-const debug = require('debug')('prediction');
-const assert = require('assert');
+import * as assert from 'assert';
+import * as Debug from 'debug';
+const debug = Debug('prediction');
 
-const { CachingExecutor } = require('../java/executor.js');
+import { ExecutionGenerator } from '../core/execution';
+import { RunJavaObjectServer } from '../java/runjobj';
+import { CachingExecutor } from '../java/executor';
 
 const Outcome = require('../outcome.js');
 const { Consistency } = require('../consistency.js');
 
-class OutcomePredictor {
+export class OutcomePredictor {
+  server: RunJavaObjectServer;
+  generator: ExecutionGenerator;
+
   constructor({ server, generator }) {
     this.server = server;
     this.generator = generator;
@@ -39,9 +45,4 @@ class OutcomePredictor {
     debug(`got %s`, outcome);
     return outcome;
   }
-
 }
-
-module.exports = {
-  OutcomePredictor
-};

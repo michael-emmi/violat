@@ -1,9 +1,14 @@
-const debug = require('debug')('execution');
-const assert = require('assert');
+import * as assert from 'assert';
+import * as Debug from 'debug';
+const debug = Debug('execution');
 
-const { VisibilityGenerator } = require('./visibility.js');
+import { Schema, Sequence, Invocation } from '../schema';
+import { Visibility, VisibilityGenerator } from './visibility';
 
 class AtomicExecution {
+  schema: Schema;
+  linearization: Invocation[];
+
   constructor({ schema, linearization }) {
     this.schema = schema;
     this.linearization = linearization;
@@ -14,7 +19,11 @@ class AtomicExecution {
   }
 }
 
-class AtomicExecutionGenerator {
+export interface ExecutionGenerator {
+  getExecutions(schema);
+}
+
+export class AtomicExecutionGenerator implements ExecutionGenerator {
   async * getExecutions(schema) {
     for (let linearization of schema.getProgramOrder().linearizations())
       yield new AtomicExecution({ schema, linearization });
@@ -22,6 +31,8 @@ class AtomicExecutionGenerator {
 }
 
 class RelaxedExecution extends AtomicExecution {
+  visibility: Visibility;
+
   constructor({ schema, linearization, visibility }) {
     super({ schema, linearization });
     this.visibility = visibility;
@@ -42,9 +53,11 @@ class RelaxedExecution extends AtomicExecution {
   }
 }
 
-class RelaxedExecutionGenerator {
+export class RelaxedExecutionGenerator {
+  visibilities: VisibilityGenerator;
+
   constructor(semantics) {
-    this.visibilities = new VisibilityGenerator(semantics);
+    this.visibilities = new VisibilityGenerator();
   }
 
   async * getExecutions(schema, visibilities) {
@@ -83,8 +96,3 @@ class OptimizedRelaxedExecution extends RelaxedExecution {
     return result;
   }
 }
-
-module.exports = {
-  AtomicExecutionGenerator,
-  RelaxedExecutionGenerator
-};

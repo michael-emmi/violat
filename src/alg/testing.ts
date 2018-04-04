@@ -1,10 +1,14 @@
-const debug = require('debug')('testing');
-const assert = require('assert');
+import * as assert from 'assert';
+import * as Debug from 'debug';
+const debug = Debug('testing');
 
-const { OutcomePredictor } = require('../search/prediction.js');
-const { JCStressTester } = require('../java/jcstress.js');
+import { OutcomePredictor } from '../search/prediction';
+import { JCStressTester } from '../java/jcstress';
 
-class StaticOutcomesTester {
+export class StaticOutcomesTester {
+  predictor: OutcomePredictor;
+  limits: {};
+
   constructor({ server, generator, limits }) {
     this.predictor = new OutcomePredictor({ server, generator });
     this.limits = limits;
@@ -33,7 +37,3 @@ class StaticOutcomesTester {
     }
   }
 }
-
-module.exports = {
-  StaticOutcomesTester
-};

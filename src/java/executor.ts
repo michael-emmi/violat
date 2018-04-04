@@ -1,7 +1,12 @@
-const debug = require('debug')('executor');
-const assert = require('assert');
+import * as assert from 'assert';
+import * as Debug from 'debug';
+const debug = Debug('executor');
 
-class Executor {
+import { RunJavaObjectServer } from '../java/runjobj';
+
+export class Executor {
+  server: RunJavaObjectServer;
+
   constructor(server) {
     this.server = server;
   }
@@ -49,7 +54,9 @@ class Executor {
   }
 }
 
-class CachingExecutor extends Executor {
+export class CachingExecutor extends Executor {
+  cache: Map<string, string>;
+
   constructor(server) {
     super(server);
     this.cache = new Map();
@@ -76,5 +83,3 @@ class CachingExecutor extends Executor {
     return JSON.stringify(query);
   }
 }
-
-module.exports = { Executor, CachingExecutor };

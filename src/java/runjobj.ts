@@ -1,17 +1,14 @@
-const debug = require('debug')('runjobj');
-const assert = require('assert');
+import * as assert from 'assert';
+import * as Debug from 'debug';
+const debug = Debug('runjobj');
 
 const path = require('path');
 
 const { gradleBuildJar } = require('./build.js');
-const { Server } = require('./server.js');
+import { Server } from './server';
 
-class RunJavaObjectServer extends Server {
+export class RunJavaObjectServer extends Server {
   constructor({ sourcePath, workPath }) {
     super(async () => await gradleBuildJar({ sourcePath, workPath, name: 'runjobj' }));
   }
 }
-
-module.exports = {
-  RunJavaObjectServer
-};

@@ -1,11 +1,23 @@
-const debug = require('debug')('validation');
-const assert = require('assert');
+import * as assert from 'assert';
+import * as Debug from 'debug';
+const debug = Debug('validation');
 
-const { batch } = require('../enumeration/batch.js');
-const { RandomProgramGenerator } = require('../enumeration/random.js');
-const { StaticOutcomesTester } = require('./testing.js');
+import { batch } from '../enumeration/batch';
+import { Schema } from '../schema';
+import { RandomProgramGenerator } from '../enumeration/random';
+import { StaticOutcomesTester } from './testing';
+import { SpecStrengthener } from '../spec/strengthener';
 
-class TestingBasedValidator {
+export interface SpecValidator {
+  getViolations(spec): AsyncIterable<{}>;
+  getFirstViolation(spec): Promise<{}>;
+}
+
+abstract class TestingBasedValidator implements SpecValidator {
+  tester: StaticOutcomesTester;
+  batchSize: number;
+  maxPrograms: number;
+
   constructor({ server, generator, limits: { maxPrograms, ...limits } }) {
     this.tester = new StaticOutcomesTester({ server, generator, limits });
     this.batchSize = 100;
@@ -32,9 +44,13 @@ class TestingBasedValidator {
         yield violation;
     }
   }
+
+  abstract getPrograms(spec);
 }
 
-class RandomTestValidator extends TestingBasedValidator {
+export class RandomTestValidator extends TestingBasedValidator {
+  limits: {};
+
   constructor({ server, generator, limits }) {
     super({ server, generator, limits });
     this.limits = limits;
@@ -48,7 +64,9 @@ class RandomTestValidator extends TestingBasedValidator {
   }
 }
 
-class SingleProgramValidator extends TestingBasedValidator {
+export class SingleProgramValidator extends TestingBasedValidator {
+  program: Schema;
+
   constructor({ server, generator, limits, program }) {
     super({ server, generator, limits });
     this.program = program;
@@ -59,7 +77,11 @@ class SingleProgramValidator extends TestingBasedValidator {
   }
 }
 
-class SpecStrengthValidator {
+export class SpecStrengthValidator {
+  limits: {};
+  strengthener: SpecStrengthener;
+  validator: SpecValidator;
+
   constructor({ server, generator, limits, strengthener }) {
     this.limits = limits;
     this.strengthener = strengthener;
@@ -81,9 +103,3 @@ class SpecStrengthValidator {
     }
   }
 }
-
-module.exports = {
-  SingleProgramValidator,
-  RandomTestValidator,
-  SpecStrengthValidator
-};
