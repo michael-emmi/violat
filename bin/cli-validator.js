@@ -31,6 +31,7 @@ let cli = meow(`
 
   Options
     --schema STRING
+    --method-filter REGEXP
     --maximality
     --max-programs N
     --min-threads N
@@ -46,6 +47,7 @@ let cli = meow(`
 `, {
   boolean: [],
   default: {
+    methodFilter: '.*',
     maxPrograms: 100,
     maxThreads: 2,
     maxInvocations: 6
@@ -62,6 +64,7 @@ async function main() {
 
     let inputSpec = JSON.parse(fs.readFileSync(cli.input[0]));
     let { maximality, schema, ...limits } = cli.flags;
+    let methods = inputSpec.methods.filter(m => m.name.match(limits.methodFilter));
 
     let server = new RunJavaObjectServer({
       sourcePath: path.resolve(config.resourcesPath, 'runjobj'),
@@ -70,7 +73,7 @@ async function main() {
 
     let semantics = new VisibilitySemantics();
     let generator = new RelaxedExecutionGenerator(semantics);
-    let spec = semantics.pruneSpecification(inputSpec);
+    let spec = semantics.pruneSpecification({ ...inputSpec, methods });
 
     let validator;
 
