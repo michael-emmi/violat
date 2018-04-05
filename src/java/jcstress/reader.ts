@@ -2,6 +2,29 @@ import * as assert from 'assert';
 import * as Debug from 'debug';
 const debug = Debug('jcstress:reader');
 
+const STATUS_LINE = /\[(OK|FAILED)\]\s+([A-Za-z_$.]+([0-9]+))\s*$/;
+const RESULT_LINE = /^\s+(.*)\s+([0-9,]+)\s+([A-Z_]+)\s+(.*)\s*$/;
+const FINISH_LINE = /RUN (COMPLETE)\./;
+
+function match(line: string, pattern: RegExp) {
+  return (line.match(pattern) || []).slice(1).map(s => s.trim());
+}
+
+type Outcome = {
+  value: string;
+  count: number;
+  expectation: string;
+  description: string;
+};
+
+type Result = {
+  name: string,
+  index: number;
+  status: boolean;
+  outcomes: Outcome[];
+  total?: number;
+};
+
 export class JCStressOutputReader {
   generator: AsyncIterable<string>;
 
@@ -9,13 +32,9 @@ export class JCStressOutputReader {
     this.generator = generator;
   }
 
-  async * getResults() {
-    const STATUS_LINE = /\[(OK|FAILED)\]\s+([A-Za-z_$.]+([0-9]+))\s*$/;
-    const RESULT_LINE = /^\s+(.*)\s+([0-9,]+)\s+([A-Z_]+)\s+(.*)\s*$/;
-    const FINISH_LINE = /RUN (COMPLETE)\./;
-
-    let result;
-    let complete;
+  async * getResults(): AsyncIterable<Result> {
+    let pendingResult: Result;
+    let complete: boolean;
 
     for await (let line of this.generator) {
 
@@ -25,44 +44,38 @@ export class JCStressOutputReader {
       if (complete)
         continue;
 
-      let [ statusS, name, idxS ] = this.match(line, STATUS_LINE);
+      let [ statusS, name, idxS ] = match(line, STATUS_LINE);
 
       if (statusS) {
-        assert.ok(!result);
+        assert.ok(!pendingResult);
         let index = parseInt(idxS);
         let status = statusS === 'OK';
-        result = { name, index, status, outcomes: [] };
+        pendingResult = { name, index, status, outcomes: [] };
         continue;
       }
 
-      let [ value, countS, expectation, description ] = this.match(line, RESULT_LINE);
+      let [ value, countS, expectation, description ] = match(line, RESULT_LINE);
 
       if (value) {
 
         // TODO XXX this assertion is failing nondeterministically. XXX
-        assert.ok(result);
+        assert.ok(pendingResult);
 
         let count = parseInt(countS.replace(/,/g,''));
-        result.outcomes.push({ value, count, expectation, description });
+        pendingResult.outcomes.push({ value, count, expectation, description });
         continue;
       }
 
-      if (result && !line.trim()) {
-        let total = result.outcomes.reduce((a,o) => a + o.count, 0);
-        yield { total, ... result };
-        result = undefined;
+      if (pendingResult && !line.trim()) {
+        let total = pendingResult.outcomes.reduce((a,o) => a + o.count, 0);
+        yield { total, ... pendingResult };
+        pendingResult = undefined;
         continue;
       }
 
-      [ complete ] = this.match(line, FINISH_LINE);
-
-      if (complete) {
-        assert.ok(!result);
+      if (complete = match(line, FINISH_LINE).length > 0) {
+        assert.ok(!pendingResult);
       }
     }
-  }
-
-  match(line, pattern) {
-    return (line.match(pattern) || []).slice(1).map(s => s.trim());
   }
 }
