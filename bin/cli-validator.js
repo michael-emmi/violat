@@ -33,8 +33,12 @@ let cli = meow(`
     --schema STRING
     --maximality
     --max-programs N
+    --min-threads N
     --max-threads N
+    --min-invocations N
     --max-invocations N
+    --min-values N
+    --max-values N
 
   Examples
     $ ${name} ConcurrentHashMap.json
