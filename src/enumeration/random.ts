@@ -82,12 +82,7 @@ class SingleUseRandomProgramGenerator {
       max: Math.max(this.numSequences, limits.invocations.max)
     });
 
-    let skew = Math.min(1, Math.atan(0.5 * this.numInvocations) / Math.atan(10));
-    let mean = (1-skew) * limits.values.min + skew * limits.values.max;
-    let dev = 0.3;
-
-    this.numValues = Math.min(limits.values.max, Math.max(limits.values.min,
-      Math.round(this.chance.normal({ mean, dev }))));
+    this.numValues = limits.values.max;
 
     this.id = id;
 
