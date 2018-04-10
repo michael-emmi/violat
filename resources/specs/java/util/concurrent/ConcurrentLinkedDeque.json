@@ -11,21 +11,24 @@
       ],
       "void": false,
       "readonly": false,
-      "trusted": true
+      "trusted": true,
+      "visibility": "complete"
     },
     {
       "name": "poll",
       "parameters": [],
       "void": false,
       "readonly": false,
-      "trusted": true
+      "trusted": true,
+      "visibility": "complete"
     },
     {
       "name": "peek",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": true
+      "trusted": true,
+      "visibility": "complete"
     },
     {
       "name": "offerLast",
@@ -34,21 +37,24 @@
       ],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "visibility": "complete"
     },
     {
       "name": "pollFirst",
       "parameters": [],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "visibility": "complete"
     },
     {
       "name": "peekFirst",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "visibility": "complete"
     },
     {
       "name": "offerFirst",
@@ -79,28 +85,32 @@
       "parameters": [],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "visibility": "weak"
     },
     {
       "name": "removeLast",
       "parameters": [],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "visibility": "weak"
     },
     {
       "name": "getLast",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "visibility": "monotonic"
     },
     {
       "name": "peekLast",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "visibility": "monotonic"
     },
     {
       "name": "addAll",
@@ -125,14 +135,16 @@
       ],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "visibility": "complete"
     },
     {
       "name": "isEmpty",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "visibility": "complete"
     },
     {
       "name": "remove",
@@ -141,7 +153,8 @@
       ],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "visibility": "complete"
     },
     {
       "name": "removeFirstOccurrence",
@@ -150,7 +163,8 @@
       ],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "visibility": "complete"
     },
     {
       "name": "removeLastOccurrence",
@@ -159,28 +173,32 @@
       ],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "visibility": "weak"
     },
     {
       "name": "size",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "visibility": "monotonic"
     },
     {
       "name": "toArray",
       "parameters": [],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "visibility": "weak"
     },
     {
       "name": "toString",
       "parameters": [],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "visibility": "monotonic"
     },
     {
       "name": "removeAll",
