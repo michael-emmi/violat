@@ -40,6 +40,9 @@ let cli = meow(`
     --max-invocations N
     --min-values N
     --max-values N
+    --time-per-test N
+    --iters-per-test N
+    --forks-per-test N
 
   Examples
     $ ${name} ConcurrentHashMap.json
