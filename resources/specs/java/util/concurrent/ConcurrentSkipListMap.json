@@ -9,105 +9,121 @@
       "parameters": [{"type": "java.lang.Object"}],
       "void": false,
       "readonly": true,
-      "trusted": true
+      "trusted": true,
+      "visibility": "complete"
     },
     {
       "name": "get",
       "parameters": [{"type": "java.lang.Object"}],
       "void": false,
       "readonly": true,
-      "trusted": true
+      "trusted": true,
+      "visibility": "complete"
     },
     {
       "name": "put",
       "parameters": [{"type": "java.lang.Object"}, {"type": "java.lang.Object"}],
       "void": false,
       "readonly": false,
-      "trusted": true
+      "trusted": true,
+      "visibility": "complete"
     },
     {
       "name": "remove",
       "parameters": [{"type": "java.lang.Object"}],
       "void": false,
       "readonly": false,
-      "trusted": true
+      "trusted": true,
+      "visibility": "complete"
     },
     {
       "name": "containsValue",
       "parameters": [{"type": "java.lang.Object"}],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "visibility": "monotonic"
     },
     {
       "name": "entrySet",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "visibility": "monotonic"
     },
     {
       "name": "keySet",
       "parameters": [],
       "void": false,
-      "readonly": true
+      "readonly": true,
+      "visibility": "complete"
     },
     {
       "name": "size",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "visibility": "self"
     },
     {
       "name": "toString",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "visibility": "monotonic"
     },
     {
       "name": "values",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "visibility": "monotonic"
     },
     {
       "name": "ceilingKey",
       "parameters": [{"type": "java.lang.Object"}],
       "void": false,
-      "readonly": true
+      "readonly": true,
+      "visibility": "complete"
     },
     {
       "name": "firstKey",
       "parameters": [],
       "void": false,
-      "readonly": true
+      "readonly": true,
+      "visibility": "complete"
     },
     {
       "name": "lastKey",
       "parameters": [],
       "void": false,
-      "readonly": true
+      "readonly": true,
+      "visibility": "complete"
     },
     {
       "name": "floorKey",
       "parameters": [{"type": "java.lang.Object"}],
       "void": false,
-      "readonly": true
+      "readonly": true,
+      "visibility": "complete"
     },
     {
       "name": "higherKey",
       "parameters": [{"type": "java.lang.Object"}],
       "void": false,
-      "readonly": true
+      "readonly": true,
+      "visibility": "complete"
     },
     {
       "name": "lowerKey",
       "parameters": [{"type": "java.lang.Object"}],
       "void": false,
-      "readonly": true
+      "readonly": true,
+      "visibility": "complete"
     },
     {
       "name": "pollFirstEntry",
@@ -127,14 +143,16 @@
       "name": "isEmpty",
       "parameters": [],
       "void": false,
-      "readonly": true
+      "readonly": true,
+      "visibility": "complete"
     },
     {
       "name": "headMap",
       "parameters": [{"type": "java.lang.Object"}],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "visibility": "complete"
     },
     {
       "name": "tailMap",
@@ -144,7 +162,8 @@
       "trusted": false,
       "harnessParameters": {
         "invocations": 5
-      }
+      },
+      "visibility": "monotonic"
     },
     {
       "name": "putAll",
