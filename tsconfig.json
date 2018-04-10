@@ -5,5 +5,8 @@
     "outDir": "./lib",
     "sourceMap": true
   },
+  "include": [
+    "src"
+  ],
   "compileOnSave": true
 }
