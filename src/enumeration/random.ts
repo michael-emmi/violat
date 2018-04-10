@@ -52,10 +52,7 @@ export class RandomProgramGenerator {
 
   getMethodWeights() {
     return this.spec.methods.map(method => {
-      if (method.trusted)
-        return 2;
-      else
-        return 1;
+      return (method.trusted && !method.readonly) ? 3 : 1;
     });
   }
 }
@@ -131,21 +128,7 @@ class SingleUseRandomProgramGenerator {
   }
 
   getWeights() {
-    let multiplier = this.getMultiplier();
-    return this.spec.methods.map((method,i) => this.weights[i] * multiplier(method));
-  }
-
-  getMultiplier() {
-    let m1 = this.getMutatorMultiplier();
-    return method => m1(method);
-  }
-
-  getMutatorMultiplier() {
-    let index = this.sequences.reduce((a,s) => a + s.invocations.length, 0);
-    let invocations = this.invocations.slice(index);
-    let readOnly = invocations.every(i => i.method.readonly);
-    let position = invocations.length + 1;
-    return method => (readOnly && !method.readonly) ? (2 ** position) : 1;
+    return this.weights;
   }
 
   getValue(type) {
