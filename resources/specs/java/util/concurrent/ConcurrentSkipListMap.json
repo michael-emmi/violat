@@ -65,7 +65,7 @@
       "void": false,
       "readonly": true,
       "trusted": false,
-      "visibility": "self"
+      "visibility": "monotonic"
     },
     {
       "name": "toString",
