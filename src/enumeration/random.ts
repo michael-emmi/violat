@@ -9,11 +9,12 @@ import { Spec, Method } from '../spec/spec';
 import { Schema, Sequence, Invocation } from '../schema';
 import { Chance } from 'chance';
 
-type range = { min: number, max: number };
+type Range = { min: number, max: number };
+export type Filter = (schema: Schema) => boolean;
 
 export class RandomProgramGenerator {
   spec: Spec;
-  limits: { threads: range, invocations: range, values: range; };
+  limits: { threads: Range, invocations: Range, values: Range; };
   chance: Chance.Chance;
   programId: number;
   weights: number[];
@@ -37,16 +38,24 @@ export class RandomProgramGenerator {
     this.weights = this.getMethodWeights();
   }
 
-  * getPrograms() {
-    while (true)
-      yield this.getProgram();
+  * getPrograms(filter: Filter = _ => true) {
+    while (true) {
+      let program = this.getProgram();
+      if (!filter(program)) {
+        trace(`skipping`);
+        continue;
+      }
+
+      debug(`generated program: %s`, program);
+      yield program;
+    }
   }
 
   getProgram() {
     let id = this.programId++;
     let generator = new SingleUseRandomProgramGenerator({ id, ...<any>this });
     let program = new Schema(generator.getProgram());
-    debug(`generated program: %s`, program);
+    trace(`generated program: %s`, program);
     return program;
   }
 
