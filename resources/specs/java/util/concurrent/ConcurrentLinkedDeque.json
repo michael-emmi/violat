@@ -85,14 +85,16 @@
       "parameters": [],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "visibility": "weak"
     },
     {
       "name": "removeLast",
       "parameters": [],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "visibility": "weak"
     },
     {
       "name": "getLast",
@@ -171,7 +173,8 @@
       ],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "visibility": "weak"
     },
     {
       "name": "size",
