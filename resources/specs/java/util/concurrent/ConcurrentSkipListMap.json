@@ -180,7 +180,8 @@
       "parameters": [],
       "void": true,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "visibility": "complete"
     }
   ]
 }
