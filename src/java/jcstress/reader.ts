@@ -10,14 +10,14 @@ function match(line: string, pattern: RegExp) {
   return (line.match(pattern) || []).slice(1).map(s => s.trim());
 }
 
-type Outcome = {
+export type Outcome = {
   value: string;
   count: number;
   expectation: string;
   description: string;
 };
 
-type Result = {
+export type Result = {
   name: string,
   index: number;
   status: boolean;
@@ -50,6 +50,7 @@ export class JCStressOutputReader {
         assert.ok(!pendingResult);
         let index = parseInt(idxS);
         let status = statusS === 'OK';
+        assert.notEqual(index, NaN);
         pendingResult = { name, index, status, outcomes: [] };
         continue;
       }
