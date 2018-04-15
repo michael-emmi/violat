@@ -3,7 +3,7 @@ const table = require('console.table');
 import { Schema } from '../schema';
 import { Outcome } from '../outcome';
 
-export class Violation {
+export class TestResult {
   schema: Schema;
   outcomes: Outcome[];
 
