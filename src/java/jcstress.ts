@@ -225,7 +225,7 @@ export class JCStressTester extends JCStressRunner {
 
   constructor(schemas, { testName = '', maxViolations = 1, limits = {} } = {}) {
     super(JCStressTester._codeGenerator(schemas, testName), { limits });
-    this.schemas = schemas;
+    this.schemas = [...schemas];
     // let numViolations = 0;
     // this.subscribers.push(result => {
     //   if (!result.status)
