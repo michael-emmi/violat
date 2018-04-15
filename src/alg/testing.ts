@@ -4,7 +4,7 @@ const debug = Debug('testing');
 
 import { OutcomePredictor } from '../search/prediction';
 import { JCStressTester } from '../java/jcstress';
-import { Violation } from './violation';
+import { TestResult } from './violation';
 
 export class StaticOutcomesTester {
   predictor: OutcomePredictor;
@@ -30,11 +30,12 @@ export class StaticOutcomesTester {
     let tester = new JCStressTester(programs, { limits });
 
     debug(`running test framework`);
-    for await (let result of tester.getResults()) {
-      debug(`got result: %o`, result);
+    for await (let r of tester.getResults()) {
+      let result = new TestResult(r);
+      debug(`got result:\n%s`, result);
 
-      if (!result.status)
-        yield new Violation(result);
+      if (!r.status)
+        yield result;
     }
   }
 }
