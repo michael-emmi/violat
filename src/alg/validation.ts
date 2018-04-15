@@ -64,16 +64,17 @@ export class RandomTestValidator extends TestingBasedValidator {
   }
 }
 
-export class SingleProgramValidator extends TestingBasedValidator {
-  program: Schema;
+export class ProgramValidator extends TestingBasedValidator {
+  programs: Schema[];
 
-  constructor({ server, generator, limits, program }) {
+  constructor({ server, generator, limits, programs }) {
     super({ server, generator, limits });
-    this.program = program;
+    this.programs = programs;
   }
 
   * getPrograms(spec) {
-    yield this.program;
+    for (let program of this.programs)
+      yield program;
   }
 }
 
