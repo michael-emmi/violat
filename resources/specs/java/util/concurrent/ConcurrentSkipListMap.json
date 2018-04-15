@@ -180,12 +180,7 @@
       "parameters": [],
       "void": true,
       "readonly": false,
-      "trusted": false,
-<<<<<<< HEAD
-      "visibility": "weak"
-=======
-      "visibility": "complete"
->>>>>>> 34c3967399a1c2eb02ec0e186e9ca4e424a1b591
+      "trusted": false
     }
   ]
 }
