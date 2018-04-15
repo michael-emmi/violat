@@ -11,28 +11,32 @@
       ],
       "void": false,
       "readonly": false,
-      "trusted": true
+      "trusted": true,
+      "visibility": "complete"
     },
     {
       "name": "peek",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "visibility": "weak"
     },
     {
       "name": "poll",
       "parameters": [],
       "void": false,
       "readonly": false,
-      "trusted": true
+      "trusted": true,
+      "visibility": "complete"
     },
     {
       "name": "clear",
       "parameters": [],
       "void": true,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "visibility": "complete"
     },
     {
       "name": "contains",
@@ -44,14 +48,16 @@
       "trusted": false,
       "harnessParameters": {
         "invocations": 6
-      }
+      },
+      "visibility": "complete"
     },
     {
       "name": "remainingCapacity",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "visibility": "complete"
     },
     {
       "name": "remove",
@@ -60,14 +66,16 @@
       ],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "visibility": "complete"
     },
     {
       "name": "size",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "visibility": "complete"
     },
     {
       "name": "toArray",
@@ -77,7 +85,8 @@
       "trusted": false,
       "harnessParameters": {
         "invocations": 6
-      }
+      },
+      "visibility": "complete"
     },
     {
       "name": "toString",
@@ -87,7 +96,8 @@
       "trusted": false,
       "harnessParameters": {
         "invocations": 6
-      }
+      },
+      "visibility": "complete"
     },
     {
       "name": "containsAll",
@@ -142,7 +152,8 @@
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "visibility": "complete"
     }
   ]
 }

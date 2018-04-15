@@ -9,7 +9,8 @@
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": true
+      "trusted": true,
+      "visibility": "complete"
     },
     {
       "name": "offer",
@@ -18,14 +19,16 @@
       ],
       "void": false,
       "readonly": false,
-      "trusted": true
+      "trusted": true,
+      "visibility": "complete"
     },
     {
       "name": "poll",
       "parameters": [],
       "void": false,
       "readonly": false,
-      "trusted": true
+      "trusted": true,
+      "visibility": "complete"
     },
     {
       "name": "addAll",
@@ -83,14 +86,16 @@
       ],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "visibility": "complete"
     },    
     {
       "name": "isEmpty",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "visibility": "complete"
     },
     {
       "name": "remove",
@@ -99,28 +104,32 @@
       ],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "visibility": "complete"
     },
     {
       "name": "size",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "visibility": "monotonic"
     },
     {
       "name": "toArray",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "visibility": "monotonic"
     },
     {
       "name": "toString",
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false
+      "trusted": false,
+      "visibility": "monotonic"
     }
   ]
 }
