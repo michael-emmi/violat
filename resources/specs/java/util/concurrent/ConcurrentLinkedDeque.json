@@ -85,7 +85,8 @@
       "parameters": [],
       "void": false,
       "readonly": false,
-      "trusted": false
+      "trusted": false,
+      "visibility": "weak"
     },
     {
       "name": "removeLast",
@@ -100,7 +101,7 @@
       "void": false,
       "readonly": true,
       "trusted": false,
-      "visibility": "self"
+      "visibility": "monotonic"
     },
     {
       "name": "peekLast",
@@ -108,7 +109,7 @@
       "void": false,
       "readonly": true,
       "trusted": false,
-      "visibility": "self"
+      "visibility": "monotonic"
     },
     {
       "name": "addAll",
@@ -172,7 +173,7 @@
       "void": false,
       "readonly": false,
       "trusted": false,
-      "visibility": "monotonic"
+      "visibility": "weak"
     },
     {
       "name": "size",
@@ -188,7 +189,7 @@
       "void": false,
       "readonly": false,
       "trusted": false,
-      "visibility": "self"
+      "visibility": "weak"
     },
     {
       "name": "toString",
