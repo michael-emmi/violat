@@ -85,8 +85,7 @@
       "parameters": [],
       "void": false,
       "readonly": false,
-      "trusted": false,
-      "visibility": "weak"
+      "trusted": false
     },
     {
       "name": "removeLast",
