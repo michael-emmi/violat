@@ -19,8 +19,7 @@
       "parameters": [],
       "void": false,
       "readonly": true,
-      "trusted": false,
-      "visibility": "weak"
+      "trusted": false
     },
     {
       "name": "poll",

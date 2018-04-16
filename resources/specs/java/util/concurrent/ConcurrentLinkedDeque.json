@@ -190,7 +190,7 @@
       "void": false,
       "readonly": false,
       "trusted": false,
-      "visibility": "weak"
+      "visibility": "self"
     },
     {
       "name": "toString",
