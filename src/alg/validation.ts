@@ -4,7 +4,7 @@ const debug = Debug('validation');
 
 import { batch } from '../enumeration/batch';
 import { Schema } from '../schema';
-import { RandomProgramGenerator } from '../enumeration/random';
+import { RandomProgramGenerator, Filter } from '../enumeration/random';
 import { StaticOutcomesTester } from './testing';
 import { SpecStrengthener } from '../spec/strengthener';
 
@@ -49,51 +49,62 @@ abstract class TestingBasedValidator implements SpecValidator {
 }
 
 export class RandomTestValidator extends TestingBasedValidator {
+  filter: Filter;
   limits: {};
 
-  constructor({ server, generator, limits }) {
+  constructor({ server, generator, filter = _ => true, limits }) {
     super({ server, generator, limits });
+    this.filter = filter;
     this.limits = limits;
   }
 
   * getPrograms(spec) {
+    let filter = this.filter;
     let limits = this.limits;
     let programGenerator = new RandomProgramGenerator({ spec, limits });
-    for (let program of programGenerator.getPrograms())
+    for (let program of programGenerator.getPrograms(this.filter))
       yield program;
   }
 }
 
-export class SingleProgramValidator extends TestingBasedValidator {
-  program: Schema;
+export class ProgramValidator extends TestingBasedValidator {
+  programs: Schema[];
 
-  constructor({ server, generator, limits, program }) {
+  constructor({ server, generator, limits, programs }) {
     super({ server, generator, limits });
-    this.program = program;
+    this.programs = programs;
   }
 
   * getPrograms(spec) {
-    yield this.program;
+    for (let program of this.programs)
+      yield program;
   }
 }
 
 export class SpecStrengthValidator {
+  server: any;
+  generator: any;
   limits: {};
   strengthener: SpecStrengthener;
-  validator: SpecValidator;
 
   constructor({ server, generator, limits, strengthener }) {
+    this.server = server;
+    this.generator = generator;
     this.limits = limits;
     this.strengthener = strengthener;
-    this.validator = new RandomTestValidator({ server, generator, limits });
   }
 
   async * getViolations(spec) {
     for (let method of spec.methods) {
+      let { server, generator, limits } = this;
+      let filter: Filter = program => program.sequences.some(s => s.invocations.some(i => i.method.name === method.name));
+
+      let validator = new RandomTestValidator({ server, generator, filter, limits });
+
       for (let { newSpec, attribute } of this.strengthener.getStrengthenings({ spec, method })) {
         debug(`trying %s: %s`, method.name, attribute);
 
-        let violation = await this.validator.getFirstViolation(newSpec);
+        let violation = await validator.getFirstViolation(newSpec);
 
         if (violation) {
           debug(`found violation to stronger spec:\n%s`, violation);

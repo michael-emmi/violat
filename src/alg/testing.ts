@@ -17,7 +17,7 @@ export class StaticOutcomesTester {
 
   async * getViolations(programs) {
 
-    debug(`computing expected outcomes`);
+    debug(`computing expected outcomes for ${programs.length} programs`);
     for (let program of programs) {
       program.outcomes = [];
       for await (let outcome of this.predictor.outcomes(program)) {

@@ -13,7 +13,7 @@ var es = require('event-stream');
 var ncp = require('ncp');
 
 import { config } from "../config";
-import { JCStressOutputReader } from './jcstress/reader';
+import { JCStressOutputReader, Result } from './jcstress/reader';
 import { JCStressCodeGenerator, JCStressHistoryRecordingCodeGenerator } from './translation';
 import { Outcome } from '../outcome';
 import { PartialOrder } from '../partial-order';
@@ -187,7 +187,7 @@ abstract class JCStressRunner {
     }
   }
 
-  abstract _resultData(result);
+  abstract _resultData(result: Result);
 
   _initialize() {
     return new Promise(async (resolve, reject) => {
@@ -225,7 +225,7 @@ export class JCStressTester extends JCStressRunner {
 
   constructor(schemas, { testName = '', maxViolations = 1, limits = {} } = {}) {
     super(JCStressTester._codeGenerator(schemas, testName), { limits });
-    this.schemas = schemas;
+    this.schemas = [...schemas];
     // let numViolations = 0;
     // this.subscribers.push(result => {
     //   if (!result.status)
@@ -240,7 +240,7 @@ export class JCStressTester extends JCStressRunner {
       yield new JCStressCodeGenerator(schema, id).toString();
   }
 
-  _resultData(result) {
+  _resultData(result: Result) {
     let schema = this.schemas.find(s => s.id === result.index);
     assert.ok(schema);
     return {
@@ -268,7 +268,7 @@ export class JCStressHistoryGenerator extends JCStressRunner {
       yield new JCStressHistoryRecordingCodeGenerator(schema, id, new HistoryEncoding(schema)).toString();
   }
 
-  _resultData(result) {
+  _resultData(result: Result) {
     let schema = this.schemas.find(s => s.id === result.index);
     let total = result.outcomes.reduce((tot,o) => tot + o.count, 0);
     return {

@@ -20,7 +20,7 @@ const { Schema } = require('../lib/schema.js');
 const { RunJavaObjectServer } = require('../lib/java/runjobj.js');
 const { VisibilitySemantics } = require('../lib/core/visibility.js');
 const { AtomicExecutionGenerator, RelaxedExecutionGenerator } = require('../lib/core/execution.js');
-const { SingleProgramValidator, RandomTestValidator, SpecStrengthValidator } = require('../lib/alg/validation.js');
+const { ProgramValidator, RandomTestValidator, SpecStrengthValidator } = require('../lib/alg/validation.js');
 const { VisibilitySpecStrengthener } = require('../lib/spec/visibility.js');
 
 const uuidv1 = require('uuid/v1');
@@ -66,7 +66,7 @@ async function main() {
     console.log(`---`);
 
     let inputSpec = JSON.parse(fs.readFileSync(cli.input[0]));
-    let { maximality, schema, ...limits } = cli.flags;
+    let { maximality, schema: schemas, ...limits } = cli.flags;
     let methods = inputSpec.methods.filter(m => m.name.match(limits.methodFilter));
 
     let server = new RunJavaObjectServer({
@@ -80,13 +80,14 @@ async function main() {
 
     let validator;
 
-    if (schema)
-      validator = new SingleProgramValidator({
+    if (schemas) {
+      let count = 0;
+      validator = new ProgramValidator({
         server, generator, limits,
-        program: Schema.fromString(schema, spec)
+        programs: [].concat(schemas).map(s => Schema.fromString(s, spec, count++))
       });
 
-    else if (maximality)
+    } else if (maximality)
       validator = new SpecStrengthValidator({
         server, generator, limits,
         strengthener: new VisibilitySpecStrengthener()
