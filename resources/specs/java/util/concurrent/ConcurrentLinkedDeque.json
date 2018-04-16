@@ -85,16 +85,14 @@
       "parameters": [],
       "void": false,
       "readonly": false,
-      "trusted": false,
-      "visibility": "weak"
+      "trusted": false
     },
     {
       "name": "removeLast",
       "parameters": [],
       "void": false,
       "readonly": false,
-      "trusted": false,
-      "visibility": "weak"
+      "trusted": false
     },
     {
       "name": "getLast",
@@ -102,7 +100,7 @@
       "void": false,
       "readonly": true,
       "trusted": false,
-      "visibility": "monotonic"
+      "visibility": "self"
     },
     {
       "name": "peekLast",
@@ -110,7 +108,7 @@
       "void": false,
       "readonly": true,
       "trusted": false,
-      "visibility": "monotonic"
+      "visibility": "self"
     },
     {
       "name": "addAll",
@@ -174,7 +172,7 @@
       "void": false,
       "readonly": false,
       "trusted": false,
-      "visibility": "self"
+      "visibility": "monotonic"
     },
     {
       "name": "size",
@@ -198,7 +196,7 @@
       "void": false,
       "readonly": false,
       "trusted": false,
-      "visibility": "monotonic"
+      "visibility": "weak"
     },
     {
       "name": "removeAll",
