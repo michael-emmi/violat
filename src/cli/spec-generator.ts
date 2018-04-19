@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 "use strict";
 
-let fs = require('fs');
-let path = require('path');
-let meow = require('meow');
-let gen = require(path.join(__dirname, '../lib', 'spec-generator.js'));
-let meta = require('../package.json');
+import * as fs from 'fs-extra';
+import * as path from 'path';
+import * as meow from 'meow';
+import * as gen from '../spec-generator';
+let meta = require('../../package.json');
 
 let cli = meow(`
   Usage

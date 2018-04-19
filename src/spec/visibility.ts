@@ -6,7 +6,7 @@ import { Spec, Method } from './spec';
 import { Level } from '../core/visibility';
 import { SpecStrengthener } from './strengthener';
 
-class VisibilitySpecStrengthener implements SpecStrengthener {
+export class VisibilitySpecStrengthener implements SpecStrengthener {
   * getStrengthenings({ spec, method }) {
     let current = method.visibility;
     if (current === undefined)
@@ -25,7 +25,3 @@ class VisibilitySpecStrengthener implements SpecStrengthener {
     yield { newSpec, attribute: visibility };
   }
 }
-
-module.exports = {
-  VisibilitySpecStrengthener
-};

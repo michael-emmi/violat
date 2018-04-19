@@ -51,7 +51,7 @@ async function fillInGaps(methods) {
   }
 }
 
-async function generateSpec(className) {
+export async function generateSpec(className) {
   let spec = getSpec(className);
   spec.methods.forEach(m => {
     m.readonly = false;
@@ -59,5 +59,3 @@ async function generateSpec(className) {
   });
   return spec;
 }
-
-exports.generateSpec = generateSpec;

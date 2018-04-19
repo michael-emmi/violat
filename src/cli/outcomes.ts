@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 "use strict";
 
-let fs = require('fs');
-let path = require('path');
-let meow = require('meow');
-var config = require(path.join(__dirname, '../lib', 'config.js'));
+import * as fs from 'fs-extra';
+import * as path from 'path';
+import * as meow from 'meow';
+import { config } from '../config';
 let defaults = config.defaultParameters;
 
-let meta = require('../package.json');
+let meta = require('../../package.json');
 let name = Object.keys(meta.bin)
   .find(key => meta.bin[key].match(path.basename(__filename)));
 

@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 "use strict";
 
-let fs = require('fs');
-let path = require('path');
-let meow = require('meow');
-var config = require(path.join(__dirname, '../lib', 'config.js'));
-let checker = require(path.join(__dirname, '../lib', 'index.js'));
-let meta = require('../package.json');
+import * as fs from 'fs-extra';
+import * as path from 'path';
+import * as meow from 'meow';
+import * as Mustache from 'mustache';
+import { config } from '../config';
+import { testMethod, testUntrustedMethods } from '../index';
+
+let meta = require('../../package.json');
 let defaults = config.defaultParameters;
 
 let cli = meow(`
@@ -74,8 +76,8 @@ let cli = meow(`
   };
 
   let results = args.methods
-    ? await checker.testMethod(args)
-    : await checker.testUntrustedMethods(args);
+    ? await testMethod(args)
+    : await testUntrustedMethods(args);
 
   console.log(`Found ${weaknesses} weakness(es) and ${violations} violation(s).`);
 })();

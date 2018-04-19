@@ -4,11 +4,11 @@
   "description": "Find test harnesses that expose linearizability violations.",
   "main": "lib/index.js",
   "bin": {
-    "violat": "./bin/cli.js",
-    "violat-outcomes": "./bin/cli-outcomes.js",
-    "violat-histories": "./bin/cli-histories.js",
-    "violat-history-checker": "./bin/cli-history-checker.js",
-    "violat-validator": "./bin/cli-validator.js"
+    "violat": "lib/cli/cli.js",
+    "violat-outcomes": "lib/cli/outcomes.js",
+    "violat-histories": "lib/cli/histories.js",
+    "violat-history-checker": "lib/cli/history-checker.js",
+    "violat-validator": "lib/cli/validator.js"
   },
   "preferGlobal": true,
   "dependencies": {

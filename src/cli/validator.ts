@@ -4,26 +4,24 @@
 require('source-map-support').install();
 require('console.table');
 
-let fs = require('fs-extra');
-let path = require('path');
-let meow = require('meow');
-const { config } = require(path.join(__dirname, '../lib', 'config.js'));
+import * as fs from 'fs-extra';
+import * as path from 'path';
+import * as meow from 'meow';
+import { config } from '../config';
 let defaults = config.defaultParameters;
 
-let meta = require('../package.json');
+let meta = require('../../package.json');
 let name = Object.keys(meta.bin)
   .find(key => meta.bin[key].match(path.basename(__filename)));
 
-const lib = path.join(__dirname, '../lib');
+import { Schema } from '../schema';
+import { RunJavaObjectServer } from '../java/runjobj';
+import { VisibilitySemantics } from '../core/visibility';
+import { AtomicExecutionGenerator, RelaxedExecutionGenerator } from '../core/execution';
+import { SpecValidator, ProgramValidator, RandomTestValidator, SpecStrengthValidator } from '../alg/validation';
+import { VisibilitySpecStrengthener } from '../spec/visibility';
 
-const { Schema } = require('../lib/schema.js');
-const { RunJavaObjectServer } = require('../lib/java/runjobj.js');
-const { VisibilitySemantics } = require('../lib/core/visibility.js');
-const { AtomicExecutionGenerator, RelaxedExecutionGenerator } = require('../lib/core/execution.js');
-const { ProgramValidator, RandomTestValidator, SpecStrengthValidator } = require('../lib/alg/validation.js');
-const { VisibilitySpecStrengthener } = require('../lib/spec/visibility.js');
-
-const uuidv1 = require('uuid/v1');
+import * as uuidv1 from 'uuid/v1';
 
 let cli = meow(`
   Usage
@@ -78,7 +76,7 @@ async function main() {
     let generator = new RelaxedExecutionGenerator(semantics);
     let spec = semantics.pruneSpecification({ ...inputSpec, methods });
 
-    let validator;
+    let validator: SpecValidator;
 
     if (schemas) {
       let count = 0;

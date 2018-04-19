@@ -9,21 +9,12 @@ import { StaticOutcomesTester } from './testing';
 import { SpecStrengthener } from '../spec/strengthener';
 
 export interface SpecValidator {
-  getViolations(spec): AsyncIterable<{}>;
-  getFirstViolation(spec): Promise<{}>;
+  getViolations(spec): AsyncIterable<any>;
+  getFirstViolation(spec): Promise<any>;
 }
 
-abstract class TestingBasedValidator implements SpecValidator {
-  tester: StaticOutcomesTester;
-  batchSize: number;
-  maxPrograms: number;
-
-  constructor({ server, generator, limits: { maxPrograms, ...limits } }) {
-    this.tester = new StaticOutcomesTester({ server, generator, limits });
-    this.batchSize = 100;
-    this.maxPrograms = maxPrograms;
-  }
-
+abstract class AbstractValidator implements SpecValidator {
+  abstract async getViolations(spec);
   async getFirstViolation(spec) {
     let first;
     for await (let violation of this.getViolations(spec)) {
@@ -34,6 +25,19 @@ abstract class TestingBasedValidator implements SpecValidator {
       break;
     }
     return first;
+  }
+}
+
+abstract class TestingBasedValidator extends AbstractValidator {
+  tester: StaticOutcomesTester;
+  batchSize: number;
+  maxPrograms: number;
+
+  constructor({ server, generator, limits: { maxPrograms, ...limits } }) {
+    super();
+    this.tester = new StaticOutcomesTester({ server, generator, limits });
+    this.batchSize = 100;
+    this.maxPrograms = maxPrograms;
   }
 
   async * getViolations(spec) {
@@ -81,13 +85,14 @@ export class ProgramValidator extends TestingBasedValidator {
   }
 }
 
-export class SpecStrengthValidator {
+export class SpecStrengthValidator extends AbstractValidator {
   server: any;
   generator: any;
   limits: {};
   strengthener: SpecStrengthener;
 
   constructor({ server, generator, limits, strengthener }) {
+    super();
     this.server = server;
     this.generator = generator;
     this.limits = limits;
