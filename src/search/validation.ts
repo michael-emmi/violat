@@ -2,6 +2,7 @@ import * as assert from 'assert';
 import * as Debug from 'debug';
 const debug = Debug('history-validation');
 
+import { Invocation } from '../schema';
 import { Executor } from '../java/executor';
 
 export abstract class Validator {
@@ -26,7 +27,7 @@ export class LinearizationValidator extends TrivialValidator {
     let schema = pos.getSchema();
 
     // TODO avoid re-retieval of the invocations each time.
-    let invocations = [].concat(...schema.sequences.map(s => s.invocations));
+    let invocations: Invocation[] = [].concat(...schema.sequences.map(s => s.invocations));
     let sequence = lin.getSequence().map(id => invocations.find(i => i.id == id));
 
     let response = await this.executor.execute(sequence, schema);
@@ -54,9 +55,9 @@ export class ConsistencyValidator extends LinearizationValidator {
     let sequence = lin.getSequence();
 
     // TODO avoid re-retieval of the invocations each time.
-    let invocations = [].concat(...schema.sequences.map(s => s.invocations));
+    let invocations: Invocation[] = [].concat(...schema.sequences.map(s => s.invocations));
 
-    let prefix = [];
+    let prefix: Invocation[] = [];
     for (let op of sequence) {
       prefix.push(op);
       let projection = this._projection(prefix, vis).map(id => invocations.find(i => i.id == id));

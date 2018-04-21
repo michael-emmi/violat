@@ -3,7 +3,7 @@ import * as Debug from 'debug';
 const debug = Debug('history-encoding');
 const detail = Debug('history-encoding:detail');
 
-import { Schema } from '../schema';
+import { Schema, Sequence } from '../schema';
 import { Event, Trace, History } from '../history';
 
 export class HistoryEncoding {
@@ -31,7 +31,7 @@ export class HistoryEncoding {
     let sequences = this._parse(string);
     let indices = Object.keys(sequences);
     let counters = indices.reduce((cs,i) => Object.assign({}, cs, {[i]: 0}), {});
-    let events = [];
+    let events: Event[] = [];
 
     detail(`generating events for schema %j`, this.schema);
 
@@ -44,10 +44,12 @@ export class HistoryEncoding {
         if (pcs && indices.every(j => j === i || pcs[j] <= counters[j])) {
           let invIdx = Math.floor(counters[i] / 2);
           let isCall = counters[i] % 2 === 0 ;
+          let sequence = this.schema.sequences.find(s => s.id == +i) as Sequence;
+          let invocation = sequence.invocations[invIdx];
           let event = new Event({
             kind: isCall ? 'call' : 'return',
             sid: +i,
-            invocation: this.schema.sequences.find(s => s.id == +i).invocations[invIdx],
+            invocation,
             value: (!isCall && pcs.result !== 'void') ? pcs.result : undefined
           });
           detail(`got event: %o`, event);

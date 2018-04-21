@@ -102,7 +102,7 @@ export class MinimalVisibilityExtender extends VisibilityExtender {
     let mustSee = lin.getSequence().filter(id => id !== op && !maySee.includes(id));
     let visBase = vis.extend(op, mustSee);
     let _subsets = subsets(maySee);
-    let validated = [];
+    let validated: any[] = [];
 
     detail(`lin: %o`, lin.getSequence());
     detail(`maySee: %o`, maySee);

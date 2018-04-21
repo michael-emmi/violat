@@ -209,7 +209,7 @@ export class ConsistencyLevel {
 
   weaken(...invocations) {
     assert.equal(invocations.length, this.dimension);
-    let maximals = [];
+    let maximals: any[] = [];
 
     if (this.isBottom())
       return this;
@@ -401,7 +401,7 @@ class RelationalAttribute extends Attribute {
   }
 
   unsatPairs(relName, baseName, rel, base) {
-    let pairs = [];
+    let pairs: any[] = [];
 
     for (let i2 of base.values()) {
       let invocations;
@@ -443,7 +443,7 @@ export class Consistency {
   }
 
   static join(...cs) {
-    let results = [];
+    let results: any[] = [];
     let worklist = Array.from(cs);
 
     OUTER_LOOP: while (worklist.length) {
@@ -490,8 +490,8 @@ export class Consistency {
 
   compare(that) {
     assert.equal(this.levels.size, that.levels.size);
-    let ls1 = [];
-    let ls2 = [];
+    let ls1: any[] = [];
+    let ls2: any[] = [];
     for (let attr of this.levels.keys()) {
       ls1.push(this.levels.get(attr));
       let level = that.levels.get(attr);
@@ -513,7 +513,7 @@ export class Consistency {
   }
 
   weakenRelationalLevel(relName, baseName, rel, base, i1, i2) {
-    let newLevels = [];
+    let newLevels: any[] = [];
     for (let [attr,level] of this.levels.entries()) {
       let attribute = ATTRIBUTES[attr];
       if (attribute instanceof RelationalAttribute) {
@@ -537,7 +537,7 @@ export class Consistency {
   }
 
   weakenRelationalLevelAll(relName, baseName, rel, base) {
-    let newLevels = [];
+    let newLevels: any[] = [];
     for (let [attr,level] of this.levels.entries()) {
       let attribute = ATTRIBUTES[attr];
       if (attribute instanceof RelationalAttribute) {

@@ -34,10 +34,7 @@ let cli = meow(`
       --sequences 2 \\
       --invocations 4 \\
       specs/java/util/concurrent/ConcurrentSkipListMap.json
-`, {
-  default: {
-  }
-});
+`);
 
 (async () => {
 

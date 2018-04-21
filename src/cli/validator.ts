@@ -46,12 +46,11 @@ let cli = meow(`
     $ ${name} ConcurrentHashMap.json
     $ ${name} --schema "{ clear(); put(0,1) } || { containsKey(1); remove(0) }" ConcurrentHashMap.json
 `, {
-  boolean: [],
-  default: {
-    methodFilter: '.*',
-    maxPrograms: 100,
-    maxThreads: 2,
-    maxInvocations: 6
+  flags: {
+    methodFilter: { default: '.*' },
+    maxPrograms: { default: 100 },
+    maxThreads: { default: 2 },
+    maxInvocations: { default: 6 }
   }
 });
 

@@ -113,8 +113,8 @@ export class Schema {
     }
 
     for (let [i1,i2] of this.order) {
-      let s1 = this.sequences.find(s => s.id === i1);
-      let s2 = this.sequences.find(s => s.id === i2);
+      let s1 = this.sequences.find(s => s.id === i1) as Sequence;
+      let s2 = this.sequences.find(s => s.id === i2) as Sequence;
       assert.ok(s1 && s2);
       order.sequence(
         s1.invocations[s1.invocations.length-1],

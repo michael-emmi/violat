@@ -69,9 +69,11 @@ export class Server {
       return;
 
     debug(`received stdout data: %s`, line);
-    assert.ok(this.resolves.length > 0);
     let resolver = this.resolves.shift();
-    resolver.resolve(JSON.parse(line));
+    if (resolver)
+      resolver.resolve(JSON.parse(line));
+    else
+      assert.fail("Expected resolver");
   }
 
   _err(line) {
@@ -92,9 +94,11 @@ export class Server {
     if (this.closed)
       return;
 
-    assert.ok(this.resolves.length > 0);
     let resolver = this.resolves.shift();
-    resolver.reject(`server process ${this.proc.pid} exited unexpectedly`);
+    if (resolver)
+      resolver.reject(`server process ${this.proc.pid} exited unexpectedly`);
+    else
+      assert.fail("Expected resolver");
   }
 
 }

@@ -13,15 +13,16 @@
   "preferGlobal": true,
   "dependencies": {
     "@types/debug": "0.0.30",
+    "@types/meow": "^4.0.1",
     "@types/split": "^0.3.28",
     "chance": "^1.0.13",
     "console.table": "^0.10.0",
-    "debug": "^2.6.4",
+    "debug": "^3.1.0",
     "event-stream": "^3.3.4",
     "fs-extra": "^5.0.0",
-    "growl": "^1.10.5",
-    "inquirer": "^3.0.6",
-    "meow": "^3.7.0",
+    "growl": "^1.10.3",
+    "inquirer": "^5.2.0",
+    "meow": "^4.0.0",
     "mkdirp": "^0.5.1",
     "mustache": "^2.3.0",
     "ncp": "^2.0.0",
@@ -31,10 +32,10 @@
   },
   "devDependencies": {
     "@types/chance": "^1.0.0",
-    "@types/node": "^9.6.2",
-    "mocha": "^3.4.2",
+    "@types/node": "^9.6.6",
+    "mocha": "^5.1.1",
     "source-map-support": "^0.5.4",
-    "typescript": "^2.8.1"
+    "typescript": "^2.8.3"
   },
   "engines": {
     "node": ">=7.0"

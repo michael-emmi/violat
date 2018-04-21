@@ -3,6 +3,7 @@ import * as Debug from 'debug';
 const debug = Debug('history-position');
 
 import { HistoryReader } from './reader';
+import { Event } from '../history';
 
 export class HistoryPosition {
   reader: HistoryReader;
@@ -45,7 +46,7 @@ export class HistoryPosition {
     // advance the reader beyond the events of consumed operations
     while (that.reader.hasMore()) {
       that.reader.mark();
-      let event = that.reader.read();
+      let event = that.reader.read() as Event;
       let id = event.invocation.id;
       if (!that.consumed.has(id)) {
         that.reader.reset();
@@ -67,7 +68,7 @@ export class HistoryPosition {
   }
 
   unconsumedMinimals() {
-    let ops = [];
+    let ops: number[] = [];
     this.reader.mark();
 
     for (let event of this._unconsumed()) {
@@ -126,9 +127,9 @@ export class HistoryPosition {
     return [...ops];
   }
 
-  * _unconsumed() {
+  * _unconsumed(): Iterable<Event> {
     while (this.reader.hasMore()) {
-      let event = this.reader.read();
+      let event = this.reader.read() as Event;
       let id = event.invocation.id;
       if (this.consumed.has(id))
         continue;
@@ -143,7 +144,7 @@ export class HistoryPosition {
     this.reader.mark();
 
     while (this.reader.hasMore()) {
-      let event = this.reader.read();
+      let event = this.reader.read() as Event;
       let id = event.invocation.id;
       if (id === op && event.kind === 'return')
         this.values[op] = event.value;
@@ -162,7 +163,7 @@ export class HistoryPosition {
     this.reader.mark();
 
     while (this.reader.hasMore()) {
-      let event = this.reader.read();
+      let event = this.reader.read() as Event;
       let id = event.invocation.id;
 
       if (id === op && event.kind === 'return')

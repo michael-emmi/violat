@@ -142,7 +142,6 @@ let get = p => b => (b.toString().match(p) || []).slice(1).map(s => s.trim());
 
 abstract class JCStressRunner {
   workPath: string;
-  proc: cp.ChildProcess;
   codes: Iterable<string>;
   limits: {
     forksPerTest: number,
@@ -153,7 +152,6 @@ abstract class JCStressRunner {
 
   constructor(codes, { limits: { timePerTest = 1, itersPerTest = 1, forksPerTest = 1 } }) {
     this.workPath = path.join(config.outputPath, 'tests');
-    this.proc = undefined;
     this.codes = codes;
     this.limits = { timePerTest, itersPerTest, forksPerTest };
     this.initialized = this._initialize();
@@ -197,8 +195,8 @@ abstract class JCStressRunner {
       cp.execSync(`find ${this.workPath} -name "*Test*.java" | xargs rm -rf`);
 
       for (let code of this.codes) {
-        let pkg = code.match(/^package (.*);/m)[1];
-        let cls = code.match(/^public class (\S+)\b/m)[1];
+        let pkg = (code.match(/^package (.*);/m) || [""])[1];
+        let cls = (code.match(/^public class (\S+)\b/m) || [""])[1];
         let dstFile = path.join(testsPath(this.workPath), ...pkg.split('.'), `${cls}.java`);
         mkdirp.sync(path.dirname(dstFile));
         fs.writeFileSync(dstFile, code);

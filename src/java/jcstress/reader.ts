@@ -33,8 +33,8 @@ export class JCStressOutputReader {
   }
 
   async * getResults(): AsyncIterable<Result> {
-    let pendingResult: Result;
-    let complete: boolean;
+    let pendingResult: Result | undefined;
+    let complete = false;
 
     for await (let line of this.generator) {
 
@@ -58,13 +58,13 @@ export class JCStressOutputReader {
       let [ value, countS, expectation, description ] = match(line, RESULT_LINE);
 
       if (value) {
-
-        // TODO XXX this assertion is failing nondeterministically. XXX
-        assert.ok(pendingResult);
-
-        let count = parseInt(countS.replace(/,/g,''));
-        pendingResult.outcomes.push({ value, count, expectation, description });
-        continue;
+        if (pendingResult) {
+          let count = parseInt(countS.replace(/,/g,''));
+          pendingResult.outcomes.push({ value, count, expectation, description });
+          continue;
+        } else
+          // TODO XXX this is failing nondeterministically. XXX
+          assert.fail("Expected pending result.");
       }
 
       if (pendingResult && !line.trim()) {

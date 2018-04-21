@@ -16,10 +16,7 @@ let cli = meow(`
 
   Examples
     $ generate-class-spec java.util.LinkedList
-`, {
-  default: {
-  }
-});
+`);
 
 if (!cli.input[0])
   cli.showHelp();

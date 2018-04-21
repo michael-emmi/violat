@@ -12,10 +12,9 @@ let meta = require('../../package.json');
 let name = Object.keys(meta.bin)
   .find(key => meta.bin[key].match(path.basename(__filename)));
 
-const { Schema } = require(path.join(__dirname, '../lib', 'schema.js'));
-const annotate = require(path.join(__dirname, '../lib', 'outcomes.js'));
-const { JCStressHistoryGenerator } = require(path.join(__dirname, '../lib/java', 'jcstress.js'));
-const { RandomProgramGenerator } = require(path.join(__dirname, '../lib/enumeration/random.js'));
+import { Schema } from '../schema';
+import { JCStressHistoryGenerator } from '../java/jcstress';
+import { RandomProgramGenerator } from '../enumeration/random';
 
 const uuidv1 = require('uuid/v1');
 
@@ -34,9 +33,8 @@ let cli = meow(`
     $ ${name} ConcurrentHashMap.json
     $ ${name} --schema "{ clear(); put(0,1) } || { containsKey(1); remove(0) }" ConcurrentHashMap.json
 `, {
-  boolean: [],
-  default: {
-    programs: 20,
+  flags: {
+    programs: { default: 20 }
   }
 });
 
@@ -85,7 +83,7 @@ async function output(args) {
   let programGenerator = new RandomProgramGenerator({ spec, limits });
   let { template } = await setup();
 
-  let schemas = [];
+  let schemas: Schema[] = [];
   let total = 0;
   let count = 0;
   let limit = cli.flags.programs;
@@ -108,9 +106,12 @@ async function output(args) {
 
       for (let history of result.histories)
         output({ history, template, runId, testId });
+<<<<<<< HEAD
     }
+=======
+>>>>>>> Added strict null checking.
 
-    await tester.run();
+    }
 
     if (limit <= total)
       break;

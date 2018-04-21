@@ -20,7 +20,7 @@ class SchemaIR {
 
     // TODO fix this nonsense hackery
     this.resultIndexes = this.schema.sequences
-      .reduce((xs,s) => xs.concat(s.invocations.map(v => ({seq: s, inv: v}))), [])
+      .reduce((xs,s) => xs.concat(s.invocations.map(v => ({seq: s, inv: v}))), [] as any[])
       .map((x,i) => Object.assign({}, x, {idx: i}))
       .filter(x => this.hasResult(x.seq, x.inv))
       .map((x,i) => {
@@ -141,7 +141,7 @@ class JavaCodeGenerator extends SchemaIR {
     ].join('\n');
   }
 
-  classAnnotations() {
+  classAnnotations(): string[] {
     return [];
   }
 
@@ -219,29 +219,29 @@ class JavaCodeGenerator extends SchemaIR {
       return arg;
   }
 
-  beginSequence(sequence) {
+  beginSequence(sequence): string[] {
     return this.localDecls(sequence);
   }
 
-  localDecls(sequence) {
+  localDecls(sequence): string[] {
     return [
       `Object r;`
     ];
   }
 
-  endSequence(sequence) {
+  endSequence(sequence): string[] {
     return [];
   }
 
-  beforeInvocation(sequence, invocation) {
+  beforeInvocation(sequence, invocation): string[] {
     return [];
   }
 
-  afterInvocation(sequence, invocation) {
+  afterInvocation(sequence, invocation): string[] {
     return [];
   }
 
-  postInvocation(sequence, invocation) {
+  postInvocation(sequence, invocation): string[] {
     return [];
   }
 }
@@ -327,7 +327,7 @@ export class JCStressCodeGenerator extends JavaCodeGenerator {
   }
 
   description(outcome) {
-    return [].concat(outcome.consistency)
+    return ([] as any[]).concat(outcome.consistency)
       .map(c => `"${c.toString()}"`).join(`\n         + `);
   }
 

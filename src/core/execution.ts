@@ -41,7 +41,7 @@ class RelaxedExecution extends AtomicExecution {
 
   async execute(executor) {
     let result = {};
-    let prefix = [];
+    let prefix: Invocation[] = [];
 
     for (let op of this.linearization) {
       let projection = prefix.filter(i => this.visibility.isVisible(op, i));
@@ -75,15 +75,22 @@ class OptimizedRelaxedExecution extends RelaxedExecution {
 
   async execute(executor) {
     let result = {};
-    let prefix = [];
+    let prefix: Invocation[] = [];
     let rest = [...this.linearization];
 
-    while (rest.length) {
+    while (true) {
       let idx = prefix.length;
-      prefix.push(rest.shift());
+      let inv = rest.shift()
+      if (!inv)
+        break;
+      prefix.push(inv);
 
-      while (rest.length && this.visibility.visible(rest[0]).length == prefix.length)
-        prefix.push(rest.shift());
+      while (this.visibility.visible(rest[0]).length == prefix.length) {
+        let inv = rest.shift();
+        if (!inv)
+          break;
+        prefix.push(inv);
+      }
 
       let last = prefix[prefix.length-1];
       let projection = prefix.filter(i => this.visibility.isVisible(last, i));

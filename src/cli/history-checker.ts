@@ -13,12 +13,19 @@ let meta = require('../../package.json');
 let name = Object.keys(meta.bin)
   .find(key => meta.bin[key].match(path.basename(__filename)));
 
+<<<<<<< HEAD
 const { Executor } = require('../lib/java/executor.js');
 const { RunJavaObjectServer } = require('../lib/java/runjobj.js');
 const { ConsistencyChecker } = require('../lib/search/checker.js');
+=======
+import { Schema } from '../schema';
+import { RunJavaObjectServer } from '../java/runjobj';
+import { Executor } from '../java/executor';
+import { ConsistencyChecker } from '../search/checker';
+>>>>>>> Added strict null checking.
 
-const { performance } = require('perf_hooks');
-const uuidv1 = require('uuid/v1');
+import { performance } from 'perf_hooks';
+import * as uuidv1 from 'uuid/v1';
 
 async function output(log) {
   await fs.ensureDir(path.join(config.resultsPath));
@@ -61,13 +68,11 @@ let cli = meow(`
   Examples
     $ ${name} --weak some_history.json
 `, {
-  boolean: [
-    'weak',
-    'jit',
-    'min'
-  ],
-  default: {
-    timeLimit: 1000
+  flags: {
+    weak: 'boolean',
+    jit: 'boolean',
+    min: 'boolean',
+    timeLimit: { default: 1000 }
   }
 });
 
@@ -80,10 +85,10 @@ let cli = meow(`
     sourcePath: path.resolve(config.resourcesPath, 'runjobj'),
     workPath: path.resolve(config.outputPath, 'runjobj')
   });
-
   let executor = new Executor(server);
+  await executor.isReady();
   let checker = new ConsistencyChecker({ executor, ...cli.flags });
-  let stats = [];
+  let stats: {}[] = [];
   let log = { ...cli.flags, stats };
 
   for (let input of cli.input) {

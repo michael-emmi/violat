@@ -219,7 +219,7 @@ class VisibilityExtender {
 
   getMinimal() {
     let vis = new VisibilityImpl();
-    let preds = [];
+    let preds: Invocation[] = [];
     for (let source of this.linearization) {
 
       // NOTE we consider predecessors in reverse order, in order to
@@ -245,7 +245,7 @@ class VisibilityExtender {
 
   async * getExtensions(base) {
     let extensions = [base];
-    let preds = [];
+    let preds: Invocation[] = [];
 
     for (let source of this.linearization) {
       for (let target of preds) {
@@ -266,7 +266,7 @@ class VisibilityExtender {
     let workList = [{ source: s0, target: t0 }];
 
     while (workList.length) {
-      let { source, target } = workList.shift();
+      let { source, target } = workList.shift() as { source: any, target: any };
       let sourceIdx = this.linearization.indexOf(source);
       let targetIdx = this.linearization.indexOf(target);
       let before = this.linearization.slice(0, targetIdx);

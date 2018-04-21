@@ -3,7 +3,8 @@
     "target": "esnext",
     "module": "commonjs",
     "outDir": "./lib",
-    "sourceMap": true
+    "sourceMap": true,
+    "strictNullChecks": true
   },
   "include": [
     "src"

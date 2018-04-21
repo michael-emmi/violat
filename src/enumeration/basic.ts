@@ -28,7 +28,7 @@ function select(path) {
     }
   }
   return x => {
-    let selection = []
+    let selection: any[] = []
     m('', x, path.split("."), selection);
     return selection;
   };
@@ -179,7 +179,7 @@ function placeOneOfEachMethod(methods) {
 }
 
 function combine(slots, choices) {
-  var result = [[]];
+  var result: any[] = [[]];
   for (var slot of slots) {
     let partial = result;
     result = [];

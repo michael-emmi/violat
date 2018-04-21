@@ -18,7 +18,7 @@ export const records = delimiter => ({
 
   get: readable => {
     return new Promise((resolve, reject) => {
-      let records = [];
+      let records: any[] = [];
       debug(`reading records`);
       readable.pipe(es.split(delimiter))
         .on('data', data => {

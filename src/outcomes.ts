@@ -12,7 +12,7 @@ import { Executor } from './java/executor';
 import { linearizations } from './linearization';
 import { visibilities } from './visibility';
 
-import { Schema } from './schema';
+import { Schema, Invocation } from './schema';
 import { Outcome } from './outcome';
 import { PartialOrder } from './partial-order';
 import { RELATIONS, COMPARISONS, Consistency } from './consistency';
@@ -115,9 +115,9 @@ class OutcomePredictor {
 
   close() {
     // XXX TODO update to new executor model
-    assert.ok(this.executor);
+    // assert.ok(this.executor);
     // this.executor.close();
-    this.executor = undefined;
+    // this.executor = undefined;
   }
 
   async getOutcomes(schema) {
@@ -125,7 +125,7 @@ class OutcomePredictor {
 
     // let reducedSchema = splitBulkOperations(schema, args.spec);
 
-    let results = [];
+    let results: Promise<Outcome|undefined>[] = [];
     let programOrder = schema.getProgramOrder();
     schema.indexInvocations();
 
@@ -145,7 +145,7 @@ class OutcomePredictor {
 
     debug(`enuerated linearizations & visibilities`);
 
-    let outcomes = (await Promise.all(results)).filter(x => x);
+    let outcomes = (await Promise.all(results)).filter(x => x) as Outcome[];
 
     debug(`got ${outcomes.length} total outcomes`);
     if (trace.enabled) {
@@ -164,7 +164,7 @@ class OutcomePredictor {
     return unique;
   }
 
-  async getOutcome(schema, linearization, visibility) {
+  async getOutcome(schema, linearization, visibility): Promise<Outcome | undefined> {
     let outcome;
 
     if (visibility.complete) {
@@ -178,7 +178,7 @@ class OutcomePredictor {
       outcome = Outcome.empty(visibility.consistency);
       let orderedIns = [].concat(...schema.sequences.map(s => s.invocations));
 
-      let prefix = [];
+      let prefix: Invocation[] = [];
       for (let invocation of linearization.sequence) {
         prefix.push(invocation);
         let projection = prefix.filter(i => visibility.isVisible(i, invocation));

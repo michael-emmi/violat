@@ -3,6 +3,7 @@ import * as Debug from 'debug';
 const debug = Debug('visibility');
 const detail = Debug('visibility:detail');
 
+import { Invocation } from './schema';
 import { PartialOrder } from './partial-order';
 import { RELATIONS, COMPOSITIONS, Consistency } from './consistency';
 
@@ -92,13 +93,12 @@ class Visibility {
           RELATIONS.visibility, RELATIONS.visibility,
           this, this, i1, i2);
     }
-    that.excluded = undefined;
     return that;
   }
 
   static full(program, linearization) {
-    let relation = [];
-    let preds = [];
+    let relation: [Invocation,Invocation[]][] = [];
+    let preds: Invocation[] = [];
     for (let i of linearization.sequence) {
       relation.push([i, preds.filter(p => !program.isBefore(i,p))]);
       preds.push(i);
@@ -121,8 +121,8 @@ class Visibility {
     debug(`relax: ${relax}`);
 
     let invocations = linearization.sequence;
-    let predecessors = [];
-    let visibilities = [];
+    let predecessors: Invocation[] = [];
+    let visibilities: Visibility[] = [];
 
     let complete = Visibility.full(program, linearization);
     visibilities.push(complete);
@@ -136,8 +136,10 @@ class Visibility {
         let worklist = visibilities;
         visibilities = [];
 
-        while (worklist.length) {
+        while (true) {
           let viz = worklist.shift();
+          if (!viz)
+            break;
           let weaker = viz.weaken(predecessor, invocation, weak, relax);
           if (weaker) {
             visibilities.push(weaker);

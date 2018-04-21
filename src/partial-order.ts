@@ -13,6 +13,18 @@ export class PartialOrder<T> {
     this.closure = new Map();
   }
 
+  getBasis(n) {
+    let ns = this.basis.get(n);
+    assert.ok(ns);
+    return ns as Set<T>;
+  }
+
+  getClosure(n): Set<T> {
+    let ns = this.closure.get(n);
+    assert.ok(ns);
+    return ns as Set<T>;
+  }
+
   static from(iterable) {
     let that = new PartialOrder();
     let last;
@@ -38,9 +50,9 @@ export class PartialOrder<T> {
   sequence(n1, n2) {
     this.add(n1);
     this.add(n2);
-    this.basis.get(n2).add(n1);
+    this.getBasis(n2).add(n1);
 
-    let before = Array.from(this.closure.get(n1));
+    let before = Array.from(this.getClosure(n1));
     let after = Array.from(this.closure.entries())
       .filter(([_,ns]) => ns.has(n2)).map(([n,_]) => n);
     before.push(n1)
@@ -48,11 +60,11 @@ export class PartialOrder<T> {
 
     for (let succ of after)
       for (let pred of before)
-        this.closure.get(succ).add(pred);
+        this.getClosure(succ).add(pred);
   }
 
   drop(node) {
-    let that = new PartialOrder();
+    let that = new PartialOrder<T>();
     let predsOfNode = this.basis.get(node);
 
     for (let [succ,preds] of this.basis.entries()) {
@@ -60,7 +72,7 @@ export class PartialOrder<T> {
         that.add(succ);
         for (let pred of preds)
           if (pred === node)
-            this.basis.get(node).forEach(pp => that.sequence(pp, succ));
+            this.getBasis(node).forEach(pp => that.sequence(pp, succ));
           else
             that.sequence(pred, succ);
       }
@@ -69,13 +81,13 @@ export class PartialOrder<T> {
   }
 
   before(node) {
-    let result = Array.from(this.closure.get(node));
+    let result = Array.from(this.getClosure(node));
     trace(`%s.before(%s) = { %s }`, this, node, result.join(', '));
     return result;
   }
 
   isBefore(n1, n2) {
-    let result = this.closure.get(n2).has(n1);
+    let result = this.getClosure(n2).has(n1);
     trace(`%s.isBefore(%s, %s) = %s`, this, n1, n2, result);
     return result;
   }
@@ -85,15 +97,15 @@ export class PartialOrder<T> {
   }
 
   minimals() {
-    return this.values().filter(n => this.basis.get(n).size == 0);
+    return this.values().filter(n => this.getBasis(n).size == 0);
   }
 
   * linearizations() {
     let count = 0;
-    let workList = [];
+    let workList: [T[], PartialOrder<T>][] = [];
     workList.push([[], this]);
     while (workList.length) {
-      let [seq, po] = workList.pop();
+      let [seq, po] = workList.pop() as [T[], PartialOrder<T>];
 
       if (po.values().length) {
         detail(`partial linearization %s with remainder %s`, seq, po);

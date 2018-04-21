@@ -2,10 +2,11 @@ import * as assert from 'assert';
 import * as Debug from 'debug';
 const debug = Debug('main');
 
+import { Schema } from './schema';
 import { generator } from './enumeration/index';
 import { outcomes } from './outcomes';
 import { decorate } from './decorate';
-import { JCStressTester } from './java/jcstress.js';
+import { JCStressTester } from './java/jcstress';
 import { output } from './output';
 import { config } from './config';
 
@@ -14,7 +15,7 @@ function capitalize(str) {
 }
 
 function pullSchemas(generator, n) {
-  let schemas = [];
+  let schemas: Schema[] = [];
   let count = 0;
   while (count++ < n) {
     let next = generator.next();
@@ -28,6 +29,8 @@ function pullSchemas(generator, n) {
   return schemas;
 }
 
+type Result = any;
+
 export async function testMethod(args) {
   let methods = args.methods.map(name => args.spec.methods.find(m => m.name === name) || name);
   let testName = methods.map(m => capitalize(m.name)).join("And");
@@ -35,9 +38,9 @@ export async function testMethod(args) {
   for (let name of methods.filter(m => typeof(m) === 'string'))
     throw `no entry for method ${name} in spec ${args.spec}`;
 
-  let allresults = [];
-  let allviolations = [];
-  let weakresults = [];
+  let allresults: Result[] = [];
+  let allviolations: Result[] = [];
+  let weakresults: Result[] = [];
   let explored = 0;
   let startTime = new Date();
 
@@ -76,7 +79,7 @@ export async function testMethod(args) {
 
     let tester = new JCStressTester(annotated, { testName, maxViolations: args.limit && args.limit - allviolations.length });
     // XXX TODO clean this up
-    let results = [];
+    let results: Result[] = [];
     for await (let result of tester.getResults()) {
       if (args.onResult &&
           result.outcomes.some(o => !o.isAtomic() && o.count > 0))
@@ -106,7 +109,7 @@ export async function testMethod(args) {
 }
 
 export async function testUntrustedMethods(args) {
-  let results = [];
+  let results: Result[] = [];
   for (let m of args.spec.methods.filter(m => !m.trusted))
     results.push(...await testMethod(Object.assign({}, args, {methods: [m.name]})));
   return results;
