@@ -1,4 +1,4 @@
-#!/usr/bin/env node --harmony_async_iteration
+#!/usr/bin/env node
 "use strict";
 
 let fs = require('fs-extra');
@@ -6,15 +6,15 @@ let glob = require("glob");
 let path = require('path');
 let meow = require('meow');
 let Mustache = require('mustache');
-var config = require(path.join(__dirname, '../lib', 'config.js'));
+var config = require(path.join(__dirname, '../lib', 'config.js')).config;
 let defaults = config.defaultParameters;
 
 let meta = require('../package.json');
 let name = Object.keys(meta.bin)
   .find(key => meta.bin[key].match(path.basename(__filename)));
 
-const utils = require("../lib/utils.js");
 const { Executor } = require('../lib/java/executor.js');
+const { RunJavaObjectServer } = require('../lib/java/runjobj.js');
 const { ConsistencyChecker } = require('../lib/search/checker.js');
 
 const { performance } = require('perf_hooks');
@@ -76,8 +76,12 @@ let cli = meow(`
   if (cli.input.length < 1)
     cli.showHelp();
 
-  let executor = new Executor();
-  await executor.isReady();
+  let server = new RunJavaObjectServer({
+    sourcePath: path.resolve(config.resourcesPath, 'runjobj'),
+    workPath: path.resolve(config.outputPath, 'runjobj')
+  });
+
+  let executor = new Executor(server);
   let checker = new ConsistencyChecker({ executor, ...cli.flags });
   let stats = [];
   let log = { ...cli.flags, stats };
@@ -112,7 +116,7 @@ let cli = meow(`
       process.exitCode++;
   }
 
-  executor.close();
+  server.close();
   output(log);
 
 })();

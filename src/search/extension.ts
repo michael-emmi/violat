@@ -94,6 +94,8 @@ export class MinimalVisibilityExtender extends VisibilityExtender {
 
   async * extensions(pos, lin, vis, ...newOps) {
     let [op, ...more] = newOps;
+
+    // TODO combine with JIT-linearizability
     assert.ok(more.length === 0);
 
     let maySee = pos.getConcurrentWith(op).filter(id => lin.getSequence().includes(id));

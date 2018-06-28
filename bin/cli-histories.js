@@ -5,7 +5,7 @@ let fs = require('fs-extra');
 let path = require('path');
 let meow = require('meow');
 let Mustache = require('mustache');
-var config = require(path.join(__dirname, '../lib', 'config.js'));
+var config = require(path.join(__dirname, '../lib', 'config.js')).config;
 let defaults = config.defaultParameters;
 
 let meta = require('../package.json');
@@ -14,7 +14,7 @@ let name = Object.keys(meta.bin)
 
 const { Schema } = require(path.join(__dirname, '../lib', 'schema.js'));
 const annotate = require(path.join(__dirname, '../lib', 'outcomes.js'));
-const { JCStressHistoryGenerator } = require(path.join(__dirname, '../lib', 'jcstress.js'));
+const { JCStressHistoryGenerator } = require(path.join(__dirname, '../lib/java', 'jcstress.js'));
 const { RandomProgramGenerator } = require(path.join(__dirname, '../lib/enumeration/random.js'));
 
 const uuidv1 = require('uuid/v1');
@@ -99,7 +99,7 @@ async function output(args) {
 
     let tester = new JCStressHistoryGenerator(schemas, 'History');
 
-    tester.onResult(result => {
+    for await (let result of tester.getResults()) {
       console.log(`result ${++count} of ${limit}`);
       console.log(`observed ${result.histories.length} histories in ${result.total} executions`);
       console.log(`---`);
@@ -108,7 +108,7 @@ async function output(args) {
 
       for (let history of result.histories)
         output({ history, template, runId, testId });
-    });
+    }
 
     await tester.run();
 
