@@ -106,10 +106,6 @@ async function output(args) {
 
       for (let history of result.histories)
         output({ history, template, runId, testId });
-<<<<<<< HEAD
-    }
-=======
->>>>>>> Added strict null checking.
 
     }
 

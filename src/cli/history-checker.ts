@@ -13,16 +13,10 @@ let meta = require('../../package.json');
 let name = Object.keys(meta.bin)
   .find(key => meta.bin[key].match(path.basename(__filename)));
 
-<<<<<<< HEAD
-const { Executor } = require('../lib/java/executor.js');
-const { RunJavaObjectServer } = require('../lib/java/runjobj.js');
-const { ConsistencyChecker } = require('../lib/search/checker.js');
-=======
 import { Schema } from '../schema';
 import { RunJavaObjectServer } from '../java/runjobj';
 import { Executor } from '../java/executor';
 import { ConsistencyChecker } from '../search/checker';
->>>>>>> Added strict null checking.
 
 import { performance } from 'perf_hooks';
 import * as uuidv1 from 'uuid/v1';
