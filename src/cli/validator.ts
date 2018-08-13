@@ -1,4 +1,4 @@
-#!/usr/bin/env node --harmony_async_iteration
+#!/usr/bin/env node
 "use strict";
 
 require('source-map-support').install();
