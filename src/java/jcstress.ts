@@ -11,6 +11,7 @@ var fs = require('fs');
 var mkdirp = require('mkdirp');
 var es = require('event-stream');
 var ncp = require('ncp');
+var xml2js = require('xml2js');
 
 import { config } from "../config";
 import { JCStressOutputReader, Result } from './jcstress/reader';
@@ -129,16 +130,49 @@ function getOutcome(result, schema) {
   return outcome;
 }
 
-function copyTemplate(dstPath) {
+function copyTemplate(dstPath, jars: string[]) {
   return new Promise((resolve, reject) => {
     let templateDir = path.join(config.resourcesPath, 'jcstress');
-    ncp(templateDir, dstPath, err => err ? reject(err) : resolve());
+    ncp(templateDir, dstPath, err => {
+      if (err) {
+        reject(err);
+        return;
+      }
+
+      let file = path.join(dstPath, 'pom.xml');
+      fs.readFile(file, (err, data) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+
+        xml2js.parseString(data, (err, pom) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          for (let jar of jars) {
+            let groupId = 'xxx';
+            let artifactId = path.basename(jar, '.jar');
+            let version = '1.0';
+            let packageSpec = { groupId, artifactId, version };
+            let installCmd = `mvn install:install-file -Dfile=${jar} -DgroupId=${groupId} -DartifactId=${artifactId} -Dversion=${version} -Dpackaging=jar`;
+            cp.execSync(installCmd);
+            pom.project.dependencies[0].dependency.push(packageSpec);
+          }
+          let builder = new xml2js.Builder();
+          let xml = builder.buildObject(pom);
+          fs.writeFileSync(file, xml);
+          resolve();
+        });
+      });
+    });
   });
 }
 
 let get = p => b => (b.toString().match(p) || []).slice(1).map(s => s.trim());
 
-
+export type PackageSpec = {groupId: string, artifactId: string, version: string};
 
 abstract class JCStressRunner {
   workPath: string;
@@ -150,11 +184,11 @@ abstract class JCStressRunner {
   };
   initialized: Promise<{}>;
 
-  constructor(codes, { limits: { timePerTest = 1, itersPerTest = 1, forksPerTest = 1 } }) {
+  constructor(codes, jars: string[] = [], { limits: { timePerTest = 1, itersPerTest = 1, forksPerTest = 1 } }) {
     this.workPath = path.join(config.outputPath, 'tests');
     this.codes = codes;
     this.limits = { timePerTest, itersPerTest, forksPerTest };
-    this.initialized = this._initialize();
+    this.initialized = this._initialize(jars);
   }
 
   async * getResults() {
@@ -187,11 +221,11 @@ abstract class JCStressRunner {
 
   abstract _resultData(result: Result);
 
-  _initialize() {
+  _initialize(jars: string[]) {
     return new Promise(async (resolve, reject) => {
       debug(`initiating JCStress tester`);
 
-      await copyTemplate(this.workPath);
+      await copyTemplate(this.workPath, jars);
       cp.execSync(`find ${this.workPath} -name "*Test*.java" | xargs rm -rf`);
 
       for (let code of this.codes) {
@@ -221,8 +255,8 @@ abstract class JCStressRunner {
 export class JCStressTester extends JCStressRunner {
   schemas: Schema[];
 
-  constructor(schemas, { testName = '', maxViolations = 1, limits = {} } = {}) {
-    super(JCStressTester._codeGenerator(schemas, testName), { limits });
+  constructor(schemas, jars: string[] = [], { testName = '', maxViolations = 1, limits = {} } = {}) {
+    super(JCStressTester._codeGenerator(schemas, testName), jars, { limits });
     this.schemas = [...schemas];
     // let numViolations = 0;
     // this.subscribers.push(result => {
@@ -256,8 +290,8 @@ export class JCStressTester extends JCStressRunner {
 export class JCStressHistoryGenerator extends JCStressRunner {
   schemas: Schema[];
 
-  constructor(schemas, testName) {
-    super(JCStressHistoryGenerator._codeGenerator(schemas, testName), { limits: {} });
+  constructor(schemas, jars = [], testName) {
+    super(JCStressHistoryGenerator._codeGenerator(schemas, testName), jars, { limits: {} });
     this.schemas = schemas;
   }
 

@@ -12,12 +12,12 @@ export class Server {
   ready: Promise<boolean>;
   proc: cp.ChildProcess;
 
-  constructor(jarProvider) {
+  constructor(jarProvider, main: string) {
     this.resolves = [];
     this.closed = false;
     this.ready = new Promise(async (resolve, reject) => {
-      let jarFile = await jarProvider();
-      this.proc = this._spawn(jarFile);
+      let jars = await jarProvider();
+      this.proc = this._spawn(jars, main);
       await this.query({});
       resolve(true);
     });
@@ -37,9 +37,11 @@ export class Server {
     this._close();
   }
 
-  _spawn(jar) {
-    debug(`spawning server: ${jar}`);
-    let proc = cp.spawn('java', ['-Djava.awt.headless=true', '-ea', '-jar', jar]);
+  _spawn(jars: string[], main: string) {
+    const classpath = jars.join(":");
+    const args = ['-Djava.awt.headless=true', '-ea', '-cp', classpath, main];
+    debug(`spawning server with args: %o`, args);
+    let proc = cp.spawn('java', args);
     proc.stdout.pipe(split()).on('data', this._recv.bind(this));
     proc.stderr.pipe(split()).on('data', this._err.bind(this));
     proc.on('exit', this._exit.bind(this));

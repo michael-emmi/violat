@@ -33,9 +33,9 @@ abstract class TestingBasedValidator extends AbstractValidator {
   batchSize: number;
   maxPrograms: number;
 
-  constructor({ server, generator, limits: { maxPrograms, ...limits } }) {
+  constructor({ server, jars, generator, limits: { maxPrograms, ...limits } }) {
     super();
-    this.tester = new StaticOutcomesTester({ server, generator, limits });
+    this.tester = new StaticOutcomesTester({ server, jars, generator, limits });
     this.batchSize = 100;
     this.maxPrograms = maxPrograms;
   }
@@ -56,8 +56,8 @@ export class RandomTestValidator extends TestingBasedValidator {
   filter: Filter;
   limits: {};
 
-  constructor({ server, generator, filter = _ => true, limits }) {
-    super({ server, generator, limits });
+  constructor({ server, jars, generator, filter = _ => true, limits }) {
+    super({ server, jars, generator, limits });
     this.filter = filter;
     this.limits = limits;
   }
@@ -74,8 +74,8 @@ export class RandomTestValidator extends TestingBasedValidator {
 export class ProgramValidator extends TestingBasedValidator {
   programs: Schema[];
 
-  constructor({ server, generator, limits, programs }) {
-    super({ server, generator, limits });
+  constructor({ server, jars, generator, limits, programs }) {
+    super({ server, jars, generator, limits });
     this.programs = programs;
   }
 
@@ -87,13 +87,15 @@ export class ProgramValidator extends TestingBasedValidator {
 
 export class SpecStrengthValidator extends AbstractValidator {
   server: any;
+  jars: string[];
   generator: any;
   limits: {};
   strengthener: SpecStrengthener;
 
-  constructor({ server, generator, limits, strengthener }) {
+  constructor({ server, jars, generator, limits, strengthener }) {
     super();
     this.server = server;
+    this.jars = jars;
     this.generator = generator;
     this.limits = limits;
     this.strengthener = strengthener;
@@ -101,10 +103,10 @@ export class SpecStrengthValidator extends AbstractValidator {
 
   async * getViolations(spec) {
     for (let method of spec.methods) {
-      let { server, generator, limits } = this;
+      let { server, jars, generator, limits } = this;
       let filter: Filter = program => program.sequences.some(s => s.invocations.some(i => i.method.name === method.name));
 
-      let validator = new RandomTestValidator({ server, generator, filter, limits });
+      let validator = new RandomTestValidator({ server, jars, generator, filter, limits });
 
       for (let { newSpec, attribute } of this.strengthener.getStrengthenings({ spec, method })) {
         debug(`trying %s: %s`, method.name, attribute);

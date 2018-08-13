@@ -29,6 +29,7 @@ let cli = meow(`
 
   Options
     --schema STRING
+    --jar STRING
     --method-filter REGEXP
     --maximality
     --max-programs N
@@ -63,12 +64,14 @@ async function main() {
     console.log(`---`);
 
     let inputSpec = JSON.parse(fs.readFileSync(cli.input[0]));
-    let { maximality, schema: schemas, ...limits } = cli.flags;
+    let { maximality, schema: schemas, jar, ...limits } = cli.flags;
     let methods = inputSpec.methods.filter(m => m.name.match(limits.methodFilter));
+    let jars = [].concat(jar);
 
     let server = new RunJavaObjectServer({
       sourcePath: path.resolve(config.resourcesPath, 'runjobj'),
-      workPath: path.resolve(config.outputPath, 'runjobj')
+      workPath: path.resolve(config.outputPath, 'runjobj'),
+      jars
     });
 
     let semantics = new VisibilitySemantics();
@@ -80,18 +83,18 @@ async function main() {
     if (schemas) {
       let count = 0;
       validator = new ProgramValidator({
-        server, generator, limits,
+        server, jars, generator, limits,
         programs: [].concat(schemas).map(s => Schema.fromString(s, spec, count++))
       });
 
     } else if (maximality)
       validator = new SpecStrengthValidator({
-        server, generator, limits,
+        server, jars, generator, limits,
         strengthener: new VisibilitySpecStrengthener()
       });
 
     else
-      validator = new RandomTestValidator({ server, generator, limits });
+      validator = new RandomTestValidator({ server, jars, generator, limits });
 
     let count = 0;
 

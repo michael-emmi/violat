@@ -95,7 +95,7 @@ async function output(args) {
     if (schemas.length < 100 && !(limit <= ++total))
       continue;
 
-    let tester = new JCStressHistoryGenerator(schemas, 'History');
+    let tester = new JCStressHistoryGenerator(schemas, [], 'History');
 
     for await (let result of tester.getResults()) {
       console.log(`result ${++count} of ${limit}`);

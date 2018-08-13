@@ -8,7 +8,7 @@ const { gradleBuildJar } = require('./build.js');
 import { Server } from './server';
 
 export class RunJavaObjectServer extends Server {
-  constructor({ sourcePath, workPath }) {
-    super(async () => await gradleBuildJar({ sourcePath, workPath, name: 'runjobj' }));
+  constructor({ sourcePath, workPath, jars = [] }) {
+    super(async () => jars.concat(await gradleBuildJar({ sourcePath, workPath, name: 'runjobj' })), 'org.mje.runjobj.Main');
   }
 }
