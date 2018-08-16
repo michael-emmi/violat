@@ -66,7 +66,7 @@ async function main() {
     let inputSpec = JSON.parse(fs.readFileSync(cli.input[0]));
     let { maximality, schema: schemas, jar, ...limits } = cli.flags;
     let methods = inputSpec.methods.filter(m => m.name.match(limits.methodFilter));
-    let jars = [].concat(jar);
+    let jars = jar ? [].concat(jar) : [];
 
     let server = new RunJavaObjectServer({
       sourcePath: path.resolve(config.resourcesPath, 'runjobj'),
