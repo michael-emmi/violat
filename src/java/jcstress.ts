@@ -10,8 +10,14 @@ var path = require('path');
 var fs = require('fs');
 var mkdirp = require('mkdirp');
 var es = require('event-stream');
-var ncp = require('ncp');
 var xml2js = require('xml2js');
+
+import { promisify } from 'util';
+const readFile = promisify(fs.readFile);
+const writeFile = promisify(fs.writeFile);
+const parseXml = promisify(xml2js.parseString);
+const ncp = promisify(require('ncp'));
+const exec = promisify(cp.exec);
 
 import { config } from "../config";
 import { JCStressOutputReader, Result } from './jcstress/reader';
@@ -130,44 +136,28 @@ function getOutcome(result, schema) {
   return outcome;
 }
 
-function copyTemplate(dstPath, jars: string[]) {
-  return new Promise((resolve, reject) => {
-    let templateDir = path.join(config.resourcesPath, 'jcstress');
-    ncp(templateDir, dstPath, err => {
-      if (err) {
-        reject(err);
-        return;
-      }
+async function copyTemplate(dstPath, jars: string[]) {
+  let templateDir = path.join(config.resourcesPath, 'jcstress');
+  let projectFile = path.join(dstPath, 'pom.xml');
 
-      let file = path.join(dstPath, 'pom.xml');
-      fs.readFile(file, (err, data) => {
-        if (err) {
-          reject(err);
-          return;
-        }
+  await ncp(templateDir, dstPath);
+  let inXml = await readFile(projectFile);
+  let pom = await parseXml(inXml);
 
-        xml2js.parseString(data, (err, pom) => {
-          if (err) {
-            reject(err);
-            return;
-          }
-          for (let jar of jars) {
-            let groupId = 'xxx';
-            let artifactId = path.basename(jar, '.jar');
-            let version = '1.0';
-            let packageSpec = { groupId, artifactId, version };
-            let installCmd = `mvn install:install-file -Dfile=${jar} -DgroupId=${groupId} -DartifactId=${artifactId} -Dversion=${version} -Dpackaging=jar`;
-            cp.execSync(installCmd);
-            pom.project.dependencies[0].dependency.push(packageSpec);
-          }
-          let builder = new xml2js.Builder();
-          let xml = builder.buildObject(pom);
-          fs.writeFileSync(file, xml);
-          resolve();
-        });
-      });
-    });
-  });
+  for (let jar of jars) {
+    let groupId = 'xxx';
+    let artifactId = path.basename(jar, '.jar');
+    let version = '1.0';
+    let packageSpec = { groupId, artifactId, version };
+    let installCmd = `mvn install:install-file -Dfile=${jar} -DgroupId=${groupId} -DartifactId=${artifactId} -Dversion=${version} -Dpackaging=jar`;
+    await exec(installCmd);
+
+    let dependencies = pom.project.dependencies[0];
+    dependencies.dependency.push(packageSpec);
+  }
+  let builder = new xml2js.Builder();
+  let outXml = builder.buildObject(pom);
+  await writeFile(projectFile, outXml);
 }
 
 let get = p => b => (b.toString().match(p) || []).slice(1).map(s => s.trim());
