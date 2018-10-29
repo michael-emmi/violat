@@ -8,7 +8,7 @@ import { outcomes } from './outcomes';
 import { decorate } from './decorate';
 import { JCStressTester } from './java/jcstress';
 import { output } from './output';
-import { config } from './config';
+import config from './config';
 
 function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);

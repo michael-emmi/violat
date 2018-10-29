@@ -7,7 +7,7 @@ const path = require('path');
 const cp = require('child_process');
 const fs = require('fs');
 
-import { config } from './config.js';
+import config from './config.js';
 import { Executor } from './java/executor';
 import { linearizations } from './linearization';
 import { visibilities } from './visibility';

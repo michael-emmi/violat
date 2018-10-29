@@ -5,7 +5,7 @@ const debug = Debug('output');
 const fs = require('fs');
 const path = require('path');
 const mkdirp = require('mkdirp');
-import { config } from './config.js';
+import config from './config.js';
 
 export function output(location, name, data) {
   let filename = path.join(config.outputPath, location, name);

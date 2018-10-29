@@ -7,7 +7,7 @@ require('console.table');
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as meow from 'meow';
-import { config } from '../config';
+import config from '../config';
 let defaults = config.defaultParameters;
 
 let meta = require('../../package.json');

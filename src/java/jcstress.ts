@@ -19,7 +19,7 @@ const parseXml = promisify(xml2js.parseString);
 const ncp = promisify(require('ncp'));
 const exec = promisify(cp.exec);
 
-import { config } from "../config";
+import config from "../config";
 import { JCStressOutputReader, Result } from './jcstress/reader';
 import { JCStressCodeGenerator, JCStressHistoryRecordingCodeGenerator } from './translation';
 import { Outcome } from '../outcome';
