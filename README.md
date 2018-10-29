@@ -51,12 +51,14 @@ To reproduce the experiments reported in the [CAV 2018 paper]:
 
     $ cd /path/to/my/working/copy/of/violat
     $ git checkout cav-2018-submission
+    $ npm link
     $ npm run monitoring-experiments
 
 To reproduce the experiments reported in the [POPL 2019 paper]:
 
     $ cd /path/to/my/working/copy/of/violat
     $ git checkout atomicity-submission-data
+    $ npm link
     $ npm run experiments
 
 ## Various Use Cases
