@@ -12,12 +12,12 @@ export class Server {
   ready: Promise<boolean>;
   proc: cp.ChildProcess;
 
-  constructor(jarProvider, main: string) {
+  constructor(jarProvider, main: string, javaHome?: string) {
     this.resolves = [];
     this.closed = false;
     this.ready = new Promise(async (resolve, reject) => {
       let jars = await jarProvider();
-      this.proc = this._spawn(jars, main);
+      this.proc = this._spawn(jars, main, javaHome);
       await this.query({});
       resolve(true);
     });
@@ -37,11 +37,18 @@ export class Server {
     this._close();
   }
 
-  _spawn(jars: string[], main: string) {
-    const classpath = jars.join(":");
-    const args = ['-Djava.awt.headless=true', '-ea', '-cp', classpath, main];
-    debug(`spawning server with args: %o`, args);
-    let proc = cp.spawn('java', args);
+  _spawn(jars: string[], main: string, javaHome?: string) {
+    const cmd = javaHome ? `${javaHome}/bin/java` : 'java';
+    const args = ['-Djava.awt.headless=true', '-ea'];
+    if (javaHome) {
+      jars.unshift(`${javaHome}/jre/lib/rt.jar`);
+      args.push(`-Xbootclasspath:${jars.join(':')}`);
+    } else {
+      args.push(`-classpath`, jars.join(':'));
+    }
+    args.push(main);
+    debug(`spawning server cmd %s with args: %o`, cmd, args);
+    let proc = cp.spawn(cmd, args);
     proc.stdout.pipe(split()).on('data', this._recv.bind(this));
     proc.stderr.pipe(split()).on('data', this._err.bind(this));
     proc.on('exit', this._exit.bind(this));

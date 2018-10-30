@@ -29,6 +29,7 @@ let cli = meow(`
 
   Options
     --schema STRING
+    --java-home PATH
     --jar STRING
     --method-filter REGEXP
     --maximality
@@ -64,14 +65,15 @@ async function main() {
     console.log(`---`);
 
     let inputSpec = JSON.parse(fs.readFileSync(cli.input[0]));
-    let { maximality, schema: schemas, jar, ...limits } = cli.flags;
+    let { maximality, schema: schemas, jar, javaHome, ...limits } = cli.flags;
     let methods = inputSpec.methods.filter(m => m.name.match(limits.methodFilter));
     let jars = jar ? [].concat(jar) : [];
 
     let server = new RunJavaObjectServer({
       sourcePath: path.resolve(config.resourcesPath, 'runjobj'),
       workPath: path.resolve(config.outputPath, 'runjobj'),
-      jars
+      jars,
+      javaHome
     });
 
     let semantics = new VisibilitySemantics();

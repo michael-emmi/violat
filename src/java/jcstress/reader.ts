@@ -2,7 +2,7 @@ import * as assert from 'assert';
 import * as Debug from 'debug';
 const debug = Debug('jcstress:reader');
 
-const STATUS_LINE = /\[(OK|FAILED)\]\s+([A-Za-z_$.]+([0-9]+))\s*$/;
+const STATUS_LINE = /\[(OK|FAILED|ERROR)\]\s+([A-Za-z_$.]+([0-9]+))\s*$/;
 const RESULT_LINE = /^\s+(.*)\s+([0-9,]+)\s+([A-Z_]+)\s+(.*)\s*$/;
 const FINISH_LINE = /RUN (COMPLETE)\./;
 
@@ -33,16 +33,31 @@ export class JCStressOutputReader {
   }
 
   async * getResults(): AsyncIterable<Result> {
+    let errorClass: string | undefined;
+    let errorMessage: string[] | undefined;
     let pendingResult: Result | undefined;
     let complete = false;
 
     for await (let line of this.generator) {
+
+      debug(line);
 
       // NOTE nobody will catch promise rejection if we break out of this loop
       // NOTE for this reason we continue to consume all generated lines
 
       if (complete)
         continue;
+
+      if (errorMessage) {
+        if (line.trim() === '')
+          throw errorMessage.join('\n');
+
+        errorMessage.push(line);
+      }
+
+      if (line.trim() === 'Messages:') {
+        errorMessage = [];
+      }
 
       let [ statusS, name, idxS ] = match(line, STATUS_LINE);
 

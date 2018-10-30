@@ -9,7 +9,7 @@ const ncp = require('ncp');
 const { findFiles } = require('../utils/find.js');
 const { targetsOutdated } = require('../utils/deps.js');
 
-export function gradleBuildJar({ sourcePath, workPath, name }) {
+export function gradleBuildJar({ sourcePath, workPath, name, javaHome }) {
   debug(`build ${name}.jar in ${workPath} from ${sourcePath}`);
 
   return new Promise((resolve, reject) => {
@@ -30,7 +30,10 @@ export function gradleBuildJar({ sourcePath, workPath, name }) {
           debug(`unable to copy ${name}: ${err}`);
           reject(err);
         } else {
-          cp.exec(`gradle`, {cwd: workPath}, (rc, out, err) => {
+          let cmd = [`gradle`];
+          if (javaHome)
+            cmd.push(`-Dorg.gradle.java.home=${javaHome}`);
+          cp.exec(cmd.join(' '), {cwd: workPath}, (rc, out, err) => {
             if (rc) {
               debug(`unable to build ${name}: ${err}`);
               reject(err);
