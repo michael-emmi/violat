@@ -16,7 +16,7 @@ function transparentPromise() {
 }
 
 export async function * getOutputLines(command, args, options) {
-  debug(`spawning ${command} process`);
+  debug(`spawning process %s %s with options %o`, command, args.join(' '), options);
 
   let proc = cp.spawn(command, args, options);
   let lines = proc.stdout.pipe(es.split());

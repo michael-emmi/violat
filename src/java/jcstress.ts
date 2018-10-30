@@ -166,6 +166,7 @@ export type PackageSpec = {groupId: string, artifactId: string, version: string}
 
 abstract class JCStressRunner {
   workPath: string;
+  javaHome?: string;
   codes: Iterable<string>;
   limits: {
     forksPerTest: number,
@@ -174,8 +175,9 @@ abstract class JCStressRunner {
   };
   initialized: Promise<{}>;
 
-  constructor(codes, jars: string[] = [], { limits: { timePerTest = 1, itersPerTest = 1, forksPerTest = 1 } }) {
+  constructor(codes, jars: string[] = [], javaHome, { limits: { timePerTest = 1, itersPerTest = 1, forksPerTest = 1 } }) {
     this.workPath = path.join(config.outputPath, 'tests');
+    this.javaHome = javaHome;
     this.codes = codes;
     this.limits = { timePerTest, itersPerTest, forksPerTest };
     this.initialized = this._initialize(jars);
@@ -183,7 +185,8 @@ abstract class JCStressRunner {
 
   async * getResults() {
     await this.initialized;
-    const ARGS = [
+    const cmd = this.javaHome ? `${this.javaHome}/bin/java` : 'java';
+    const args = [
       '-Djava.awt.headless=true',
       '-jar', jarFile(this.workPath),
       '-v',
@@ -193,7 +196,7 @@ abstract class JCStressRunner {
       '-jvmArgs', '-server'
     ];
     try {
-      let generator = getOutputLines('java', ARGS, {cwd: this.workPath});
+      let generator = getOutputLines(cmd, args, {cwd: this.workPath});
       let reader = new JCStressOutputReader(generator);
 
       for await (let result of reader.getResults()) {
@@ -245,8 +248,8 @@ abstract class JCStressRunner {
 export class JCStressTester extends JCStressRunner {
   schemas: Schema[];
 
-  constructor(schemas, jars: string[] = [], { testName = '', maxViolations = 1, limits = {} } = {}) {
-    super(JCStressTester._codeGenerator(schemas, testName), jars, { limits });
+  constructor(schemas, jars: string[] = [], javaHome, { testName = '', maxViolations = 1, limits = {} } = {}) {
+    super(JCStressTester._codeGenerator(schemas, testName), jars, javaHome, { limits });
     this.schemas = [...schemas];
     // let numViolations = 0;
     // this.subscribers.push(result => {
@@ -280,8 +283,8 @@ export class JCStressTester extends JCStressRunner {
 export class JCStressHistoryGenerator extends JCStressRunner {
   schemas: Schema[];
 
-  constructor(schemas, jars = [], testName) {
-    super(JCStressHistoryGenerator._codeGenerator(schemas, testName), jars, { limits: {} });
+  constructor(schemas, jars = [], javaHome, testName) {
+    super(JCStressHistoryGenerator._codeGenerator(schemas, testName), jars, javaHome, { limits: {} });
     this.schemas = schemas;
   }
 

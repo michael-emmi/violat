@@ -80,6 +80,7 @@ async function output(args) {
 
   let spec = JSON.parse(fs.readFileSync(cli.input[0]));
   let limits = cli.flags;
+  let { javaHome } = cli.flags;
   let programGenerator = new RandomProgramGenerator({ spec, limits });
   let { template } = await setup();
 
@@ -95,7 +96,7 @@ async function output(args) {
     if (schemas.length < 100 && !(limit <= ++total))
       continue;
 
-    let tester = new JCStressHistoryGenerator(schemas, [], 'History');
+    let tester = new JCStressHistoryGenerator(schemas, [], javaHome, 'History');
 
     for await (let result of tester.getResults()) {
       console.log(`result ${++count} of ${limit}`);

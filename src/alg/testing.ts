@@ -9,11 +9,13 @@ import { TestResult } from './violation';
 export class StaticOutcomesTester {
   predictor: OutcomePredictor;
   jars: string[];
+  javaHome?: string;
   limits: {};
 
-  constructor({ server, jars, generator, limits }) {
+  constructor({ server, jars, javaHome, generator, limits }) {
     this.predictor = new OutcomePredictor({ server, generator });
     this.jars = jars;
+    this.javaHome = javaHome;
     this.limits = limits;
   }
 
@@ -29,7 +31,8 @@ export class StaticOutcomesTester {
 
     debug(`initializing test framework`);
     let limits = this.limits;
-    let tester = new JCStressTester(programs, this.jars, { limits });
+    let javaHome = this.javaHome;
+    let tester = new JCStressTester(programs, this.jars, javaHome, { limits });
 
     debug(`running test framework`);
     for await (let r of tester.getResults()) {

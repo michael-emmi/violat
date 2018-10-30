@@ -85,18 +85,18 @@ async function main() {
     if (schemas) {
       let count = 0;
       validator = new ProgramValidator({
-        server, jars, generator, limits,
+        server, jars, javaHome, generator, limits,
         programs: [].concat(schemas).map(s => Schema.fromString(s, spec, count++))
       });
 
     } else if (maximality)
       validator = new SpecStrengthValidator({
-        server, jars, generator, limits,
+        server, jars, javaHome, generator, limits,
         strengthener: new VisibilitySpecStrengthener()
       });
 
     else
-      validator = new RandomTestValidator({ server, jars, generator, limits });
+      validator = new RandomTestValidator({ server, jars, javaHome, generator, limits });
 
     let count = 0;
 
