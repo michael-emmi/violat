@@ -75,9 +75,12 @@ let cli = meow(`
   if (cli.input.length < 1)
     cli.showHelp();
 
+  let { javaHome } = cli.flags;
+
   let server = new RunJavaObjectServer({
     sourcePath: path.resolve(config.resourcesPath, 'runjobj'),
-    workPath: path.resolve(config.outputPath, 'runjobj')
+    workPath: path.resolve(config.outputPath, 'runjobj'),
+    javaHome
   });
   let executor = new Executor(server);
   await executor.isReady();
