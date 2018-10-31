@@ -11,6 +11,7 @@ export class Server {
   closed: boolean;
   ready: Promise<boolean>;
   proc: cp.ChildProcess;
+  error?: string[];
 
   constructor(jarProvider, main: string, javaHome?: string) {
     this.resolves = [];
@@ -90,8 +91,14 @@ export class Server {
       return;
 
     debug(`received stderr data: %s`, line);
-    debug(`ignoring stderr data`);
-    return;
+    
+    if (this.error === undefined)
+      this.error = [];
+    
+    if (line.trim() === '')
+      throw this.error.join('\n');
+      
+    this.error.push(line);
 
     // assert.ok(this.resolves.length > 0);
     // let resolver = resolves.shift();
