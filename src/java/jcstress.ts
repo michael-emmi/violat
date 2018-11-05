@@ -7,16 +7,13 @@ const detail = Debug('jcstress:detail');
 import * as cp from 'child_process';
 
 var path = require('path');
-var fs = require('fs');
+var fs = require('fs-extra');
 var mkdirp = require('mkdirp');
 var es = require('event-stream');
 var xml2js = require('xml2js');
 
 import { promisify } from 'util';
-const readFile = promisify(fs.readFile);
-const writeFile = promisify(fs.writeFile);
 const parseXml = promisify(xml2js.parseString);
-const ncp = promisify(require('ncp'));
 const exec = promisify(cp.exec);
 
 import config from "../config";
@@ -140,9 +137,15 @@ async function copyTemplate(dstPath, jars: string[]) {
   let templateDir = path.join(config.resourcesPath, 'jcstress');
   let projectFile = path.join(dstPath, 'pom.xml');
 
-  await ncp(templateDir, dstPath);
-  let inXml = await readFile(projectFile);
+  debug(`copying %s to %s`, templateDir, dstPath)
+  await fs.copy(templateDir, dstPath);
+
+  debug(`project file: %s`, projectFile);
+  let inXml = await fs.readFile(projectFile);
+  debug(`project data: %s`, inXml);
+
   let pom = await parseXml(inXml);
+  debug(`project: %o`, pom)
 
   for (let jar of jars) {
     let groupId = 'xxx';
@@ -157,7 +160,7 @@ async function copyTemplate(dstPath, jars: string[]) {
   }
   let builder = new xml2js.Builder();
   let outXml = builder.buildObject(pom);
-  await writeFile(projectFile, outXml);
+  await fs.writeFile(projectFile, outXml);
 }
 
 let get = p => b => (b.toString().match(p) || []).slice(1).map(s => s.trim());
