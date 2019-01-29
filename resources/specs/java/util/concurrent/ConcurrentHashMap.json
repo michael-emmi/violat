@@ -66,7 +66,7 @@
       "harnessParameters": {
         "invocations": 5
       },
-      "visibility": "complete"
+      "visibility": "monotonic"
     },
     {
       "name": "contains",
@@ -79,7 +79,7 @@
       "harnessParameters": {
         "invocations": 4
       },
-      "visibility": "complete"
+      "visibility": "monotonic"
     },
     {
       "name": "entrySet",
@@ -87,7 +87,7 @@
       "void": false,
       "readonly": true,
       "trusted": false,
-      "visibility": "complete"
+      "visibility": "monotonic"
     },
     {
       "name": "isEmpty",
@@ -95,7 +95,7 @@
       "void": false,
       "readonly": true,
       "trusted": false,
-      "visibility": "complete"
+      "visibility": "weak"
     },
     {
       "name": "keySet",
@@ -103,7 +103,7 @@
       "void": false,
       "readonly": true,
       "trusted": false,
-      "visibility": "complete"
+      "visibility": "monotonic"
     },
     {
       "name": "size",
@@ -125,7 +125,7 @@
       "void": false,
       "readonly": true,
       "trusted": false,
-      "visibility": "complete"
+      "visibility": "monotonic"
     },
     {
       "name": "values",
@@ -133,7 +133,7 @@
       "void": false,
       "readonly": true,
       "trusted": false,
-      "visibility": "complete"
+      "visibility": "monotonic"
     },
     {
       "name": "elements",
@@ -141,7 +141,7 @@
       "void": false,
       "readonly": true,
       "trusted": false,
-      "visibility": "complete"
+      "visibility": "monotonic"
     },
     {
       "name": "keys",
@@ -149,7 +149,7 @@
       "void": false,
       "readonly": true,
       "trusted": false,
-      "visibility": "complete"
+      "visibility": "monotonic"
     }
   ]
 }
