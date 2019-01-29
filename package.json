@@ -14,6 +14,7 @@
   "dependencies": {
     "@types/debug": "0.0.30",
     "@types/meow": "^4.0.1",
+    "@types/node": "^10.12.19",
     "@types/split": "^0.3.28",
     "chance": "^1.0.13",
     "console.table": "^0.10.0",
@@ -28,15 +29,16 @@
     "ncp": "^2.0.0",
     "seedrandom": "^2.4.2",
     "split": "^1.0.1",
+    "tmp-promise": "^1.0.5",
     "uuid": "^3.2.1",
     "xml2js": "^0.4.19"
   },
   "devDependencies": {
     "@types/chance": "^1.0.0",
-    "@types/node": "^9.6.28",
+    "@types/fs-extra": "^5.0.4",
     "mocha": "^5.1.1",
     "source-map-support": "^0.5.4",
-    "typescript": "^2.8.3"
+    "typescript": "^3.2.4"
   },
   "engines": {
     "node": ">=10.0"

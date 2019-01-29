@@ -78,7 +78,7 @@ async function output(args) {
   console.log(`${cli.pkg.name} version ${cli.pkg.version}`);
   console.log(`---`);
 
-  let spec = JSON.parse(fs.readFileSync(cli.input[0]));
+  let spec = JSON.parse(fs.readFileSync(cli.input[0]).toString());
   let limits = cli.flags;
   let { javaHome } = cli.flags;
   let programGenerator = new RandomProgramGenerator({ spec, limits });

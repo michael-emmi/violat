@@ -40,7 +40,7 @@ let cli = meow(`
 
   let args = Object.assign({}, cli.flags, {
     specFile: cli.input.length == 1 && cli.input[0] || cli.showHelp(),
-    spec: JSON.parse(fs.readFileSync(cli.input[0])),
+    spec: JSON.parse(fs.readFileSync(cli.input[0]).toString()),
     methods: cli.flags.methods && cli.flags.methods.split(',')
   });
 

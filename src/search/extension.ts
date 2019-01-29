@@ -130,7 +130,7 @@ export class MinimalVisibilityExtender extends VisibilityExtender {
   }
 }
 
-function subsets([x, ...xs]) {
+function subsets([x, ...xs]: any) {
   return x !== undefined ? [].concat(...subsets(xs).map(ys => [ys, [x, ...ys]])) : [[]];
 }
 

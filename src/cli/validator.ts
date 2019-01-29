@@ -28,6 +28,7 @@ let cli = meow(`
     $ ${name} <spec-file.json>
 
   Options
+    --tester TESTER
     --schema STRING
     --java-home PATH
     --jar STRING
@@ -49,6 +50,7 @@ let cli = meow(`
     $ ${name} --schema "{ clear(); put(0,1) } || { containsKey(1); remove(0) }" ConcurrentHashMap.json
 `, {
   flags: {
+    tester: { default: 'JCStress' },
     methodFilter: { default: '.*' },
     maxPrograms: { default: 100 },
     maxThreads: { default: 2 },
@@ -64,8 +66,8 @@ async function main() {
     console.log(`${cli.pkg.name} version ${cli.pkg.version}`);
     console.log(`---`);
 
-    let inputSpec = JSON.parse(fs.readFileSync(cli.input[0]));
-    let { maximality, schema: schemas, jar, javaHome, ...limits } = cli.flags;
+    let inputSpec = JSON.parse(fs.readFileSync(cli.input[0]).toString());
+    let { maximality, schema: schemas, jar, javaHome, tester, ...limits } = cli.flags;
     let methods = inputSpec.methods.filter(m => m.name.match(limits.methodFilter));
     let jars = jar ? [].concat(jar) : [];
 
@@ -85,18 +87,18 @@ async function main() {
     if (schemas) {
       let count = 0;
       validator = new ProgramValidator({
-        server, jars, javaHome, generator, limits,
+        server, jars, javaHome, generator, limits, tester,
         programs: [].concat(schemas).map(s => Schema.fromString(s, spec, count++))
       });
 
     } else if (maximality)
       validator = new SpecStrengthValidator({
-        server, jars, javaHome, generator, limits,
+        server, jars, javaHome, generator, limits, tester,
         strengthener: new VisibilitySpecStrengthener()
       });
 
     else
-      validator = new RandomTestValidator({ server, jars, javaHome, generator, limits });
+      validator = new RandomTestValidator({ server, jars, javaHome, generator, limits, tester });
 
     let count = 0;
 

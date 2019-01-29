@@ -99,7 +99,7 @@ let cli = meow(`
     let result = await Promise.race([checker.check(input), sleep(cli.flags.timeLimit)]);
 
     let time = performance.now() - t0;
-    let schema = JSON.parse(await fs.readFile(input)).schema;
+    let schema = JSON.parse(await fs.readFile(input).toString()).schema;
     let frequency = schema.frequency;
 
     stats.push({

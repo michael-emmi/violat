@@ -43,7 +43,7 @@ let cli = meow(`
   if (cli.input.length !== 1)
     cli.showHelp();
 
-  let json = fs.readFileSync(cli.input[0]);
+  let json = fs.readFileSync(cli.input[0]).toString();
   let schema = cli.flags.schema
     ? Schema.fromString(cli.flags.schema, JSON.parse(json))
     : Schema.fromJson(json);
