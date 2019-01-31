@@ -17,9 +17,8 @@ export function getTestHarness(schema: Schema): Source {
 
   const idx: ResultIndex = new Map<number,number>();
   for (const seq of sequences)
-    for (const { id, method: { void: isVoid } } of seq.invocations)
-      if (!isVoid)
-        idx.set(id, idx.size);
+    for (const { id } of seq.invocations)
+      idx.set(id, idx.size);
 
   const code = `
 import ${fullClassName};
@@ -92,7 +91,7 @@ function getInvocation({ arguments: args, id, method }: Invocation, idx: ResultI
   const invocation = `obj.${name}(${args.join(', ')})`;
 
   if (isVoid)
-    return `${invocation};`;
+    return `${invocation}; results[${idx.get(id)}] = "_";`;
 
   return `results[${idx.get(id)}] = resultToString(${invocation});`;
 }
