@@ -21,33 +21,28 @@ export function getTestHarness(schema: Schema): Source {
       idx.set(id, idx.size);
 
   const code = `
-import ${fullClassName};
-import java.util.*;
-import java.util.stream.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.stream.Collectors;
 import java.util.HashSet;
+import ${fullClassName};
 
 public class ${name} {
-  static ${className} obj = new ${className}();
-  static String results[] = new String[${idx.size}];
-  static Set<String> expected = new HashSet<String>();
 
-  static {
-    ${outcomes.map((o: Outcome) => `expected.add("${o.valueString()}");`).join('\n    ')}
-  };
-
-  static String resultToString(Object object) {
+  static String stringify(Object object) {
     String result;
     if (object instanceof Exception)
       result = String.valueOf(object.getClass().getName());
 
     else if (object instanceof Enumeration)
       result = Collections.list((Enumeration<?>) object).stream()
-        .map(${name}::resultToString)
+        .map(${name}::stringify)
         .collect(Collectors.joining(",", "[", "]"));
 
     else if (object instanceof Object[])
       result = Arrays.stream((Object[]) object)
-        .map(${name}::resultToString)
+        .map(${name}::stringify)
         .collect(Collectors.joining(",", "[", "]"));
 
     else
@@ -57,12 +52,19 @@ public class ${name} {
   }
 
   public static void main(String[] args) {
+    final ${className} obj = new ${className}();
+    final String results[] = new String[${idx.size}];
+    final HashSet<String> expected = new HashSet<String>();
+
+    ${outcomes.map((o: Outcome) => `expected.add("${o.valueString()}");`).join('\n    ')}
 
     Thread t1 = new Thread(() -> {
+      String r;
       ${sequences[0].invocations.map(i => getInvocation(i, idx)).join('\n      ')}
     });
 
     Thread t2 = new Thread(() -> {
+      String r;
       ${sequences[1].invocations.map(i => getInvocation(i, idx)).join('\n      ')}
     });
 
@@ -83,6 +85,7 @@ public class ${name} {
 }
   `;
 
+  debug(code);
   return { name, code };
 }
 
@@ -90,8 +93,12 @@ function getInvocation({ arguments: args, id, method }: Invocation, idx: ResultI
   const { name, void: isVoid } = method;
   const invocation = `obj.${name}(${args.join(', ')})`;
 
-  if (isVoid)
-    return `${invocation}; results[${idx.get(id)}] = "_";`;
+  const normalPath = isVoid
+    ? `${invocation}; r = "_";`
+    : `r = stringify(${invocation});`;
 
-  return `results[${idx.get(id)}] = resultToString(${invocation});`;
+  return `
+      try { ${normalPath} }
+      catch (Exception e) { r = stringify(e); }
+      results[${idx.get(id)}] = r;`;
 }
