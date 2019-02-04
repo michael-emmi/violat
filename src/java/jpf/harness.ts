@@ -30,6 +30,13 @@ import ${fullClassName};
 
 public class ${name} {
 
+  static class StringResults {
+    ${[...idx.values()].map(i => `@sun.misc.Contended public String r${i};`).join('\n    ')}
+    public String toString() {
+      return ${[...idx.values()].map(i => `r${i}`).join(` + ", " + `)};
+    }
+  }
+
   static String stringify(Object object) {
     String result;
     if (object instanceof Exception)
@@ -53,7 +60,7 @@ public class ${name} {
 
   public static void main(String[] args) {
     final ${className} obj = new ${className}();
-    final String results[] = new String[${idx.size}];
+    final StringResults results = new StringResults();
     final HashSet<String> expected = new HashSet<String>();
 
     ${outcomes.map((o: Outcome) => `expected.add("${o.valueString()}");`).join('\n    ')}
@@ -74,7 +81,7 @@ public class ${name} {
       t1.join();
       t2.join();
 
-      String result = ${[...idx.values()].map(idx => `results[${idx}]`).join(` + ", " + `)};
+      String result = results.toString();
       System.out.println(result);
       assert expected.contains(result);
 
@@ -100,5 +107,5 @@ function getInvocation({ arguments: args, id, method }: Invocation, idx: ResultI
   return `
       try { ${normalPath} }
       catch (Exception e) { r = stringify(e); }
-      results[${idx.get(id)}] = r;`;
+      results.r${idx.get(id)} = r;`;
 }
