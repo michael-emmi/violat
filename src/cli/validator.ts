@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env NODE_NO_WARNINGS=1 node
 "use strict";
 
 require('source-map-support').install();
