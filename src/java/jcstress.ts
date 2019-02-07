@@ -25,6 +25,7 @@ import { HistoryEncoding } from './history-encoding';
 import { getOutputLines } from '../utils/proc';
 import { targetsOutdated } from '../utils/deps';
 import { findFiles } from '../utils/find';
+import { lines } from './jpf/reader';
 
 import { Schema } from '../schema';
 
@@ -42,19 +43,17 @@ function needsCompile(jcstressPath) {
   return targetsOutdated([jar], sources);
 }
 
-function compile(jcstressPath) {
-  return new Promise((resolve, reject) => {
-    cp.exec(`mvn clean install`, {cwd: jcstressPath}, (rc, stdout, stderr) => {
-      if (rc) {
-        let message = stdout.split('\n')
-          .filter(l => l.match(/ERROR/))
-          .slice(0,5)
-          .join('\n');
-        reject(message || stderr);
-      } else
-        resolve();
-    });
-  });
+async function compile(jcstressPath) {
+  const cmd = 'mvn clean install';
+  const [ exe, ...args ] = cmd.split(' ');
+  const cwd = jcstressPath;
+
+  debug(`running command: %s`, cmd);
+  const proc = cp.spawn(exe, args, { cwd });
+
+  for await (const line of lines(proc.stdout)) {
+    debug(`mvn: %s`, line);
+  }
 }
 
 function parseResult(result) {
@@ -211,7 +210,7 @@ abstract class JCStressRunner {
       if (e.toString().match(/TEST FAILURES/))
         debug(`jcstress found failures`);
       else
-        throw e;
+        throw new Error(e);
     }
   }
 
@@ -238,7 +237,7 @@ abstract class JCStressRunner {
           await compile(this.workPath);
           debug(`test harnesses compiled`);
         } catch (e) {
-          reject(`test-harness compilation failed: ${e}`);
+          reject(new Error(`test-harness compilation failed: ${e.stack || e}`));
           return;
         }
       }

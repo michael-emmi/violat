@@ -36,7 +36,7 @@ export async function * getOutcomes(readable: Readable, outcomes: Iterable<Outco
   }
 }
 
-function lines(input: Readable): AsyncIterable<string> {
+export function lines(input: Readable): AsyncIterable<string> {
   const output = new PassThrough({ objectMode: true });
   const readline = createInterface({ input });
   readline.on('line', line => output.write(line));
