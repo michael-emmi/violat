@@ -22,7 +22,6 @@ import { JCStressCodeGenerator, JCStressHistoryRecordingCodeGenerator } from './
 import { Outcome } from '../outcome';
 import { PartialOrder } from '../partial-order';
 import { HistoryEncoding } from './history-encoding';
-import { getOutputLines } from '../utils/proc';
 import { targetsOutdated } from '../utils/deps';
 import { findFiles } from '../utils/find';
 import { lines } from './jpf/reader';
@@ -198,7 +197,7 @@ abstract class JCStressRunner {
       '-jvmArgs', '-server'
     ];
     try {
-      let generator = getOutputLines(cmd, args, {cwd: this.workPath});
+      let generator = lines(cp.spawn(cmd, args, {cwd: this.workPath}).stdout);
       let reader = new JCStressOutputReader(generator);
 
       for await (let result of reader.getResults()) {
