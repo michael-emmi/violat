@@ -3,8 +3,12 @@ import * as Debug from 'debug';
 const debug = Debug('violat:utils:find');
 
 import * as cp from 'child_process';
+import { lines } from './lines';
 
-export function findFiles(path, pattern) {
-  return cp.execSync(`find ${path} ${pattern}`)
-    .toString().split('\n').filter(f => f);
+export async function findFiles(path: string, pattern: string): Promise<string[]> {
+  const proc = cp.spawn(`find`, [path, pattern]);
+  const files: string[] = [];
+  for await (const line of lines(proc.stdout))
+    files.push(line);
+  return files;
 }

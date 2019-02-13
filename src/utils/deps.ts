@@ -2,9 +2,9 @@ import * as assert from 'assert';
 import * as Debug from 'debug';
 const debug = Debug('violat:utils:deps');
 
-import * as fs from 'fs';
+import * as fs from 'fs-extra';
 
-export function targetsOutdated(targets, sources) {
+export async function targetsOutdated(targets: string[], sources: string[]): Promise<boolean> {
   debug(`checking outdated`);
   debug(`sources: %o`, sources);
   debug(`targets: %o`, targets);
@@ -14,8 +14,8 @@ export function targetsOutdated(targets, sources) {
     return true;
   }
 
-  let t0 = Math.max(...sources.map(f => fs.statSync(f).mtime))
-  let t = Math.min(...targets.map(f => fs.statSync(f).mtime));
+  let t0 = Math.max(...sources.map(f => fs.statSync(f).mtime.getTime()))
+  let t = Math.min(...targets.map(f => fs.statSync(f).mtime.getTime()));
   let outdated = t0 > t;
 
   debug(`targets ${outdated ? `out of` : `up to` } date`);

@@ -21,37 +21,26 @@ import { JCStressOutputReader, Result } from './reader';
 import { JCStressCodeGenerator } from './harness';
 import { Outcome } from '../../outcome';
 import { targetsOutdated } from '../../utils/deps';
+import { maven } from '../build';
 import { findFiles } from '../../utils/find';
 import { lines } from '../../utils/lines';
 
 import { Schema } from '../../schema';
 
-function testsPath(jcstressPath) {
+function testsPath(jcstressPath: string): string {
   return path.resolve(jcstressPath, 'src/main/java');
 }
 
-function jarFile(jcstressPath) {
+function jarFile(jcstressPath: string): string {
   return path.resolve(jcstressPath, 'target/jcstress.jar');
 }
 
-function needsCompile(jcstressPath) {
+async function needsCompile(jcstressPath: string): Promise<boolean> {
   let jar = jarFile(jcstressPath);
-  let sources = findFiles(testsPath(jcstressPath), `-name "*.java"`);
-  return targetsOutdated([jar], sources);
+  let sources = await findFiles(testsPath(jcstressPath), `-name "*.java"`);
+  return await targetsOutdated([jar], sources);
 }
 
-async function compile(jcstressPath) {
-  const cmd = 'mvn clean install';
-  const [ exe, ...args ] = cmd.split(' ');
-  const cwd = jcstressPath;
-
-  debug(`running command: %s`, cmd);
-  const proc = cp.spawn(exe, args, { cwd });
-
-  for await (const line of lines(proc.stdout)) {
-    debug(`mvn: %s`, line);
-  }
-}
 
 function parseResult(result) {
   let sanitized = result
@@ -189,9 +178,9 @@ export abstract class JCStressRunner {
       '-Djava.awt.headless=true',
       '-jar', jarFile(this.workPath),
       '-v',
-      '-f', this.limits.forksPerTest,
-      '-iters', this.limits.itersPerTest,
-      '-time', this.limits.timePerTest * 1000,
+      '-f', this.limits.forksPerTest.toString(),
+      '-iters', this.limits.itersPerTest.toString(),
+      '-time', (this.limits.timePerTest * 1000).toString(),
       '-jvmArgs', '-server'
     ];
     try {
@@ -228,10 +217,10 @@ export abstract class JCStressRunner {
         fs.writeFileSync(dstFile, code);
       }
 
-      if (needsCompile(this.workPath)) {
+      if (await needsCompile(this.workPath)) {
         try {
           debug(`compiling test harnesses`);
-          await compile(this.workPath);
+          await maven(this.workPath);
           debug(`test harnesses compiled`);
         } catch (e) {
           reject(new Error(`test-harness compilation failed: ${e.stack || e}`));

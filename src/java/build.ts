@@ -17,14 +17,27 @@ type Parameters = {
   javaHome?: string;
 };
 
-export async function gradleBuildJar(parameters: Parameters): Promise<string> {
+export async function maven(jcstressPath: string) {
+  const cmd = 'mvn clean install';
+  const [ exe, ...args ] = cmd.split(' ');
+  const cwd = jcstressPath;
+
+  debug(`running command: %s`, cmd);
+  const proc = cp.spawn(exe, args, { cwd });
+
+  for await (const line of lines(proc.stdout)) {
+    debug(`maven: %s`, line);
+  }
+}
+
+export async function gradle(parameters: Parameters): Promise<string> {
   const { sourcePath, workPath, name, javaHome } = parameters;
   debug(`build ${name}.jar in ${workPath} from ${sourcePath}`);
   debug(`checking whether ${name} needs compiling`);
 
-  let sources = findFiles(sourcePath, `-name "*.java"`);
+  let sources = await findFiles(sourcePath, `-name "*.java"`);
   let jarFile = path.resolve(workPath, `build/libs/${name}.jar`);
-  let outdated = targetsOutdated([jarFile], sources);
+  let outdated = await targetsOutdated([jarFile], sources);
 
   if (!outdated) {
     debug(`${name} has already been compiled`);
@@ -38,7 +51,7 @@ export async function gradleBuildJar(parameters: Parameters): Promise<string> {
     args.push(`-Dorg.gradle.java.home=${javaHome}`);
   const proc = cp.spawn(`gradle`, args, { cwd });
   for await (const line of lines(proc.stdout))
-    debug(`gradle %s`, line);
+    debug(`gradle: %s`, line);
 
   return jarFile;
 }
