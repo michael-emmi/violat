@@ -24,7 +24,7 @@ import { PartialOrder } from '../partial-order';
 import { HistoryEncoding } from './history-encoding';
 import { targetsOutdated } from '../utils/deps';
 import { findFiles } from '../utils/find';
-import { lines } from './jpf/reader';
+import { lines } from '../utils/lines';
 
 import { Schema } from '../schema';
 

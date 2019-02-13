@@ -15,7 +15,7 @@ let name = Object.keys(meta.bin)
   .find(key => meta.bin[key].match(path.basename(__filename)));
 
 import { Schema } from '../schema';
-import { RunJavaObjectServer } from '../java/runjobj';
+import * as RunJavaObjectServer from '../java/runjobj';
 import { VisibilitySemantics } from '../core/visibility';
 import { AtomicExecutionGenerator, RelaxedExecutionGenerator } from '../core/execution';
 import { SpecValidator, ProgramValidator, RandomTestValidator, SpecStrengthValidator } from '../alg/validation';
@@ -71,7 +71,7 @@ async function main() {
     let methods = inputSpec.methods.filter(m => m.name.match(limits.methodFilter));
     let jars = jar ? [].concat(jar) : [];
 
-    let server = new RunJavaObjectServer({
+    let server = await RunJavaObjectServer.create({
       sourcePath: path.resolve(config.resourcesPath, 'runjobj'),
       workPath: path.resolve(config.outputPath, 'runjobj'),
       jars,

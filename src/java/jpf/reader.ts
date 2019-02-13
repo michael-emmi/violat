@@ -2,8 +2,8 @@ import * as Debug from 'debug';
 const debug = Debug('jpf:reader');
 
 import { Outcome } from '../../outcome';
-import { Readable, PassThrough } from 'stream';
-import { createInterface } from 'readline';
+import { Readable } from 'stream';
+import { lines } from '../../utils/lines';
 
 export async function * getOutcomes(readable: Readable, outcomes: Iterable<Outcome>): AsyncIterable<Outcome> {
   const resultMap = new Map<string,number>();
@@ -34,12 +34,4 @@ export async function * getOutcomes(readable: Readable, outcomes: Iterable<Outco
       yield outcome;
     }
   }
-}
-
-export function lines(input: Readable): AsyncIterable<string> {
-  const output = new PassThrough({ objectMode: true });
-  const readline = createInterface({ input });
-  readline.on('line', line => output.write(line));
-  readline.on('close', () => output.end());
-  return output;
 }

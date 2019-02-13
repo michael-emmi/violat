@@ -14,7 +14,7 @@ let name = Object.keys(meta.bin)
   .find(key => meta.bin[key].match(path.basename(__filename)));
 
 import { Schema } from '../schema';
-import { RunJavaObjectServer } from '../java/runjobj';
+import * as RunJavaObjectServer from '../java/runjobj';
 import { Executor } from '../java/executor';
 import { ConsistencyChecker } from '../search/checker';
 
@@ -77,7 +77,7 @@ let cli = meow(`
 
   let { javaHome } = cli.flags;
 
-  let server = new RunJavaObjectServer({
+  let server = await RunJavaObjectServer.create({
     sourcePath: path.resolve(config.resourcesPath, 'runjobj'),
     workPath: path.resolve(config.outputPath, 'runjobj'),
     javaHome

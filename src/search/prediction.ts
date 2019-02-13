@@ -3,13 +3,13 @@ import * as Debug from 'debug';
 const debug = Debug('prediction');
 
 import { ExecutionGenerator } from '../core/execution';
-import { RunJavaObjectServer } from '../java/runjobj';
+import { Server } from '../java/server';
 import { CachingExecutor } from '../java/executor';
 import { Outcome } from '../outcome';
 import { Consistency } from '../consistency';
 
 export class OutcomePredictor {
-  server: RunJavaObjectServer;
+  server: Server;
   generator: ExecutionGenerator;
 
   constructor({ server, generator }) {

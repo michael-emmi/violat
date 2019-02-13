@@ -7,8 +7,16 @@ const path = require('path');
 const { gradleBuildJar } = require('./build.js');
 import { Server } from './server';
 
-export class RunJavaObjectServer extends Server {
-  constructor({ sourcePath, workPath, jars = [], javaHome }) {
-    super(async () => jars.concat(await gradleBuildJar({ sourcePath, workPath, name: 'runjobj', javaHome })), 'org.mje.runjobj.Main', javaHome);
-  }
+type Arguments = {
+  sourcePath: string;
+  workPath: string;
+  jars?: string[];
+  javaHome: string;
+};
+
+export async function create({ sourcePath, workPath, jars = [], javaHome}: Arguments) {
+  const main = 'org.mje.runjobj.Main';
+  const name = 'runjobj';
+  const jar = await gradleBuildJar({ sourcePath, workPath, name, javaHome });
+  return Server.create(async () => jars.concat(jar), main, javaHome);
 }

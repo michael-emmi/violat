@@ -108,7 +108,7 @@ class OutcomePredictor {
 
     // XXX TODO update to new executor model
 
-    this.executor = new Executor(undefined);
+    this.executor = new Executor(undefined!);
     this.executorCache = {};
     this.useCache = true;
   }

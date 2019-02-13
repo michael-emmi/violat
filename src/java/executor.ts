@@ -3,12 +3,12 @@ import * as Debug from 'debug';
 const debug = Debug('executor');
 
 import { Invocation, Schema } from '../schema';
-import { RunJavaObjectServer } from '../java/runjobj';
+import { Server } from '../java/server';
 
 export class Executor {
-  server: RunJavaObjectServer;
+  server: Server;
 
-  constructor(server) {
+  constructor(server: Server) {
     this.server = server;
   }
 

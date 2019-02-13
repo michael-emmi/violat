@@ -9,7 +9,7 @@ const ncp = require('ncp');
 const { findFiles } = require('../utils/find.js');
 const { targetsOutdated } = require('../utils/deps.js');
 
-export function gradleBuildJar({ sourcePath, workPath, name, javaHome }) {
+export function gradleBuildJar({ sourcePath, workPath, name, javaHome }): Promise<string> {
   debug(`build ${name}.jar in ${workPath} from ${sourcePath}`);
 
   return new Promise((resolve, reject) => {
