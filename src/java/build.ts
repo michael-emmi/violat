@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import * as Debug from 'debug';
-const debug = Debug('violat:java:build');
+const debug = Debug('build');
 
 import * as fs from 'fs-extra';
 import * as path from 'path';
