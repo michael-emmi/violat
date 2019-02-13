@@ -2,47 +2,43 @@ import * as assert from 'assert';
 import * as Debug from 'debug';
 const debug = Debug('violat:java:build');
 
-const path = require('path');
-const cp = require('child_process');
-const ncp = require('ncp');
+import * as fs from 'fs-extra';
+import * as path from 'path';
+import * as cp from 'child_process';
 
-const { findFiles } = require('../utils/find.js');
-const { targetsOutdated } = require('../utils/deps.js');
+import { lines } from '../utils/lines';
+import { findFiles } from '../utils/find';
+import { targetsOutdated } from '../utils/deps';
 
-export function gradleBuildJar({ sourcePath, workPath, name, javaHome }): Promise<string> {
+type Parameters = {
+  sourcePath: string;
+  workPath: string;
+  name: string;
+  javaHome?: string;
+};
+
+export async function gradleBuildJar(parameters: Parameters): Promise<string> {
+  const { sourcePath, workPath, name, javaHome } = parameters;
   debug(`build ${name}.jar in ${workPath} from ${sourcePath}`);
+  debug(`checking whether ${name} needs compiling`);
 
-  return new Promise((resolve, reject) => {
-    debug(`checking whether ${name} needs compiling`);
+  let sources = findFiles(sourcePath, `-name "*.java"`);
+  let jarFile = path.resolve(workPath, `build/libs/${name}.jar`);
+  let outdated = targetsOutdated([jarFile], sources);
 
-    let sources = findFiles(sourcePath, `-name "*.java"`);
-    let jarFile = path.resolve(workPath, `build/libs/${name}.jar`);
-    let outdated = targetsOutdated([jarFile], sources);
+  if (!outdated) {
+    debug(`${name} has already been compiled`);
+    return jarFile;
+  }
+  debug(`recompiling ${name}`);
+  await fs.copy(sourcePath, workPath);
+  const args: string[] = [];
+  const cwd = workPath;
+  if (javaHome !== undefined)
+    args.push(`-Dorg.gradle.java.home=${javaHome}`);
+  const proc = cp.spawn(`gradle`, args, { cwd });
+  for await (const line of lines(proc.stdout))
+    debug(`gradle %s`, line);
 
-    if (!outdated) {
-      debug(`${name} has already been compiled`);
-      resolve(jarFile);
-
-    } else {
-      debug(`recompiling ${name}`);
-      ncp(sourcePath, workPath, err => {
-        if (err) {
-          debug(`unable to copy ${name}: ${err}`);
-          reject(err);
-        } else {
-          let cmd = [`gradle`];
-          if (javaHome)
-            cmd.push(`-Dorg.gradle.java.home=${javaHome}`);
-          cp.exec(cmd.join(' '), {cwd: workPath}, (rc, out, err) => {
-            if (rc) {
-              debug(`unable to build ${name}: ${err}`);
-              reject(err);
-            } else {
-              resolve(jarFile);
-            }
-          });
-        }
-      });
-    }
-  });
+  return jarFile;
 }
