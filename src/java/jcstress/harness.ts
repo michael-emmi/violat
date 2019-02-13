@@ -2,7 +2,7 @@ import * as assert from 'assert';
 import * as Debug from 'debug';
 const debug = Debug('translation');
 
-import { Schema } from '../schema';
+import { Schema } from '../../schema';
 
 class SchemaIR {
   schema: Schema;

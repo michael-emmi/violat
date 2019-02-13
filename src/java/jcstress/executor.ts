@@ -16,17 +16,15 @@ import { promisify } from 'util';
 const parseXml = promisify(xml2js.parseString);
 const exec = promisify(cp.exec);
 
-import config from "../config";
-import { JCStressOutputReader, Result } from './jcstress/reader';
-import { JCStressCodeGenerator, JCStressHistoryRecordingCodeGenerator } from './translation';
-import { Outcome } from '../outcome';
-import { PartialOrder } from '../partial-order';
-import { HistoryEncoding } from './history-encoding';
-import { targetsOutdated } from '../utils/deps';
-import { findFiles } from '../utils/find';
-import { lines } from '../utils/lines';
+import config from "../../config";
+import { JCStressOutputReader, Result } from './reader';
+import { JCStressCodeGenerator } from './harness';
+import { Outcome } from '../../outcome';
+import { targetsOutdated } from '../../utils/deps';
+import { findFiles } from '../../utils/find';
+import { lines } from '../../utils/lines';
 
-import { Schema } from '../schema';
+import { Schema } from '../../schema';
 
 function testsPath(jcstressPath) {
   return path.resolve(jcstressPath, 'src/main/java');
@@ -165,7 +163,7 @@ let get = p => b => (b.toString().match(p) || []).slice(1).map(s => s.trim());
 
 export type PackageSpec = {groupId: string, artifactId: string, version: string};
 
-abstract class JCStressRunner {
+export abstract class JCStressRunner {
   workPath: string;
   javaHome?: string;
   codes: Iterable<string>;
@@ -276,33 +274,6 @@ export class JCStressTester extends JCStressRunner {
         detail(`got outcome: %s`, outcome);
         assert.ok(!result.status || outcome.consistency);
         return outcome;
-      })
-    };
-  }
-}
-
-export class JCStressHistoryGenerator extends JCStressRunner {
-  schemas: Schema[];
-
-  constructor(schemas, jars = [], javaHome, testName) {
-    super(JCStressHistoryGenerator._codeGenerator(schemas, testName), jars, javaHome, { limits: {} });
-    this.schemas = schemas;
-  }
-
-  static *_codeGenerator(schemas, id) {
-    for (let schema of schemas)
-      yield new JCStressHistoryRecordingCodeGenerator(schema, id, new HistoryEncoding(schema)).toString();
-  }
-
-  _resultData(result: Result) {
-    let schema = this.schemas.find(s => s.id === result.index);
-    let total = result.outcomes.reduce((tot,o) => tot + o.count, 0);
-    return {
-      histories: result.outcomes.map(o => {
-        let h = new HistoryEncoding(schema).decode(o.value);
-        let count = o.count;
-        h.frequency = { count, total };
-        return h;
       })
     };
   }

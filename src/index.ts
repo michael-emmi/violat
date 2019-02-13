@@ -6,7 +6,7 @@ import { Schema } from './schema';
 import { generator } from './enumeration/index';
 import { outcomes } from './outcomes';
 import { decorate } from './decorate';
-import { JCStressTester } from './java/jcstress';
+import { JCStressTester } from './java/jcstress/executor';
 import { output } from './output';
 import config from './config';
 

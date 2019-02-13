@@ -13,7 +13,7 @@ let name = Object.keys(meta.bin)
   .find(key => meta.bin[key].match(path.basename(__filename)));
 
 import { Schema } from '../schema';
-import { JCStressHistoryGenerator } from '../java/jcstress';
+import { JCStressHistoryGenerator } from '../java/jcstress/histories';
 import { RandomProgramGenerator } from '../enumeration/random';
 
 const uuidv1 = require('uuid/v1');

@@ -4,7 +4,7 @@ const debug = Debug('testing');
 
 import { Schema } from '../schema';
 import { OutcomePredictor } from '../search/prediction';
-import { JCStressTester } from '../java/jcstress';
+import { JCStressTester } from '../java/jcstress/executor';
 import { TestResult } from './violation';
 import * as JpfChecker from '../java/jpf/checker';
 
