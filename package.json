@@ -26,9 +26,7 @@
     "meow": "^4.0.0",
     "mkdirp": "^0.5.1",
     "mustache": "^2.3.0",
-    "ncp": "^2.0.0",
     "seedrandom": "^2.4.2",
-    "split": "^1.0.1",
     "tmp-promise": "^1.0.5",
     "uuid": "^3.2.1",
     "xml2js": "^0.4.19"
