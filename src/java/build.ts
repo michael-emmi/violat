@@ -35,7 +35,7 @@ export async function gradle(parameters: Parameters): Promise<string> {
   debug(`build ${name}.jar in ${workPath} from ${sourcePath}`);
   debug(`checking whether ${name} needs compiling`);
 
-  let sources = await findFiles(sourcePath, `-name "*.java"`);
+  let sources = await findFiles(sourcePath, `*.java`);
   let jarFile = path.resolve(workPath, `build/libs/${name}.jar`);
   let outdated = await targetsOutdated([jarFile], sources);
 

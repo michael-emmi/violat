@@ -37,7 +37,7 @@ function jarFile(jcstressPath: string): string {
 
 async function needsCompile(jcstressPath: string): Promise<boolean> {
   let jar = jarFile(jcstressPath);
-  let sources = await findFiles(testsPath(jcstressPath), `-name "*.java"`);
+  let sources = await findFiles(testsPath(jcstressPath), `*.java`);
   return await targetsOutdated([jar], sources);
 }
 
