@@ -27,6 +27,7 @@
     "mkdirp": "^0.5.1",
     "mustache": "^2.3.0",
     "seedrandom": "^2.4.2",
+    "source-map-support": "^0.5.12",
     "tmp-promise": "^1.0.5",
     "uuid": "^3.2.1",
     "xml2js": "^0.4.19"
@@ -35,7 +36,6 @@
     "@types/chance": "^1.0.0",
     "@types/fs-extra": "^5.0.4",
     "mocha": "^5.1.1",
-    "source-map-support": "^0.5.12",
     "typescript": "^3.2.4"
   },
   "engines": {
