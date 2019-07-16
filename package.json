@@ -35,7 +35,7 @@
     "@types/chance": "^1.0.0",
     "@types/fs-extra": "^5.0.4",
     "mocha": "^5.1.1",
-    "source-map-support": "^0.5.4",
+    "source-map-support": "^0.5.12",
     "typescript": "^3.2.4"
   },
   "engines": {
