@@ -77,7 +77,7 @@ export async function testMethod(args) {
     let annotated = await outcomes(schemas, args);
     debug(`got ${annotated.length} outcome-annotated schemas`);
 
-    let tester = new JCStressTester(annotated, [], { testName, maxViolations: args.limit && args.limit - allviolations.length });
+    let tester = new JCStressTester(annotated, [], undefined, { testName, maxViolations: args.limit && args.limit - allviolations.length });
     // XXX TODO clean this up
     let results: Result[] = [];
     for await (let result of tester.getResults()) {

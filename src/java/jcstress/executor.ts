@@ -152,18 +152,25 @@ let get = p => b => (b.toString().match(p) || []).slice(1).map(s => s.trim());
 
 export type PackageSpec = {groupId: string, artifactId: string, version: string};
 
+export interface JCStressLimits {
+  forksPerTest: number;
+  itersPerTest: number;
+  timePerTest: number;
+}
+
 export abstract class JCStressRunner {
   workPath: string;
   javaHome?: string;
   codes: Iterable<string>;
-  limits: {
-    forksPerTest: number,
-    itersPerTest: number,
-    timePerTest: number
-  };
-  initialized: Promise<{}>;
+  limits: JCStressLimits;
+  initialized: Promise<void>;
 
-  constructor(codes, jars: string[] = [], javaHome, { limits: { timePerTest = 1, itersPerTest = 1, forksPerTest = 1 } }) {
+  constructor(codes: Iterable<string>,
+      jars: string[] = [],
+      javaHome: string | undefined,
+      limits: Partial<JCStressLimits>) {
+
+    const { timePerTest = 1, itersPerTest = 1, forksPerTest = 1 } = limits;
     this.workPath = path.join(config.outputPath, 'tests');
     this.javaHome = javaHome;
     this.codes = codes;
@@ -202,7 +209,7 @@ export abstract class JCStressRunner {
 
   abstract _resultData(result: Result);
 
-  _initialize(jars: string[]) {
+  _initialize(jars: string[]): Promise<void> {
     return new Promise(async (resolve, reject) => {
       debug(`initiating JCStress tester`);
 
@@ -233,11 +240,22 @@ export abstract class JCStressRunner {
   }
 }
 
+export interface JCStressTesterInputs {
+  testName: string;
+  maxViolations: number;
+  limits: Partial<JCStressLimits>;
+}
+
 export class JCStressTester extends JCStressRunner {
   schemas: Schema[];
 
-  constructor(schemas, jars: string[] = [], javaHome, { testName = '', maxViolations = 1, limits = {} } = {}) {
-    super(JCStressTester._codeGenerator(schemas, testName), jars, javaHome, { limits });
+  constructor(schemas: Iterable<Schema>,
+      jars: string[] = [],
+      javaHome: string | undefined,
+      params: Partial<JCStressTesterInputs>) {
+
+    const { testName = '', maxViolations = 1, limits = {} } = params
+    super(JCStressTester._codeGenerator(schemas, testName), jars, javaHome, limits);
     this.schemas = [...schemas];
     // let numViolations = 0;
     // this.subscribers.push(result => {

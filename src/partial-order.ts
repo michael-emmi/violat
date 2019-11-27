@@ -13,20 +13,20 @@ export class PartialOrder<T> {
     this.closure = new Map();
   }
 
-  getBasis(n) {
+  getBasis(n: T) {
     let ns = this.basis.get(n);
     assert.ok(ns);
     return ns as Set<T>;
   }
 
-  getClosure(n): Set<T> {
+  getClosure(n: T): Set<T> {
     let ns = this.closure.get(n);
     assert.ok(ns);
     return ns as Set<T>;
   }
 
-  static from(iterable) {
-    let that = new PartialOrder();
+  static from<T>(iterable: Iterable<T>) {
+    let that = new PartialOrder<T>();
     let last;
     for (let item of iterable) {
       that.add(item);
@@ -34,7 +34,7 @@ export class PartialOrder<T> {
         that.sequence(last, item);
       last = item;
     }
-    trace(`from( %s ) = %s`, iterable.join('; '), that);
+    trace(`from( %s ) = %s`, [...iterable].join('; '), that);
     return that;
   }
 
@@ -42,12 +42,12 @@ export class PartialOrder<T> {
     return `{ ${[...this.closure.entries()].map(([n,preds]) => `${n} > {${[...preds].join(', ')}}`).join('; ')} }`;
   }
 
-  add(n) {
+  add(n: T) {
     this.basis.has(n) || this.basis.set(n, new Set());
     this.closure.has(n) || this.closure.set(n, new Set());
   }
 
-  sequence(n1, n2) {
+  sequence(n1: T, n2: T) {
     this.add(n1);
     this.add(n2);
     this.getBasis(n2).add(n1);
@@ -63,7 +63,7 @@ export class PartialOrder<T> {
         this.getClosure(succ).add(pred);
   }
 
-  drop(node) {
+  drop(node: T) {
     let that = new PartialOrder<T>();
     let predsOfNode = this.basis.get(node);
 
@@ -80,13 +80,13 @@ export class PartialOrder<T> {
     return that;
   }
 
-  before(node) {
+  before(node: T) {
     let result = Array.from(this.getClosure(node));
     trace(`%s.before(%s) = { %s }`, this, node, result.join(', '));
     return result;
   }
 
-  isBefore(n1, n2) {
+  isBefore(n1: T, n2: T) {
     let result = this.getClosure(n2).has(n1);
     trace(`%s.isBefore(%s, %s) = %s`, this, n1, n2, result);
     return result;

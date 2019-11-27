@@ -3,9 +3,9 @@ import * as Debug from 'debug';
 const debug = Debug('schema');
 
 import { PartialOrder } from './partial-order';
-import { Method, Parameter } from './spec/spec';
+import { Method, Parameter, Spec } from './spec/spec';
 
-class Argument {
+export class Argument {
   static toString(arg) {
     let entries = Object.entries(arg);
     return Array.isArray(arg)
@@ -42,6 +42,15 @@ export interface Sequence {
   invocations: Invocation[]
 }
 
+export interface SchemaParameters {
+  id?: number;
+  class: string;
+  parameters: Parameter[];
+  arguments: Argument[];
+  sequences: Sequence[];
+  order: [number,number][];
+}
+
 export class Schema {
   id: number;
   class: string;
@@ -53,23 +62,23 @@ export class Schema {
   // TODO fix this hackery
   outcomes: any[];
 
-  constructor(that) {
+  constructor(that: SchemaParameters) {
     Object.assign(this, that);
     for (let seq of this.sequences || [])
       seq.invocations = seq.invocations.map(i => new Invocation(i));
   }
 
-  static fromJson(json) {
+  static fromJson(json: string) {
     return new Schema(JSON.parse(json));
   }
 
-  static fromString(string, spec, id = 0) {
+  static fromString(string: string, spec: Spec, id = 0) {
     debug(`parsing schema: %s`, string);
     let json = string
       .replace(/\{([^}]*)\}/g, '{ "invocations": [ $1 ] }')
       .replace(/;|(\|\|)/g, ',')
       .replace(/(\w+)\(([^)]*)\)/g, '{ "method": { "name": "$1" }, "arguments": [ $2 ] }');
-    let obj = JSON.parse(`{ "class": "${spec.class}", "parameters": [], "sequences": [ ${json} ], "order": [] }`);
+    let obj = JSON.parse(`{ "class": "${spec.class}", "parameters": [], "sequences": [ ${json} ], "order": [] }`) as SchemaParameters;
     obj.id = id;
     let ids = { seq: 0, inv: 0 };
     for (let seq of obj.sequences) {
@@ -77,6 +86,9 @@ export class Schema {
       for (let inv of seq.invocations) {
         inv.id = ids.inv++;
         let method = spec.methods.find(m => m.name === inv.method.name);
+        if (method === undefined) {
+          throw Error(`Method ${inv.method.name} not found for spec ${spec.class}`);
+        }
         Object.assign(inv.method, method);
       }
     }
@@ -101,7 +113,7 @@ export class Schema {
   }
 
   getProgramOrder() {
-    let order = new PartialOrder();
+    let order = new PartialOrder<Invocation>();
     for (let sequence of this.sequences) {
       let predecessor;
       for (let invocation of sequence.invocations) {

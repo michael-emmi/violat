@@ -5,6 +5,7 @@ const debug = Debug('server');
 import * as cp from 'child_process';
 import { ChildProcess } from 'child_process';
 import { lines } from '../utils/lines';
+import { Query } from './executor';
 
 type Resolver<T> = (value?: T | PromiseLike<T> | undefined) => void;
 type Rejector = (reason?: any) => void;
@@ -28,8 +29,10 @@ function getServerProcess(jars: string[], main: string, javaHome?: string): Chil
   return proc;
 }
 
+export type Response = Array<string>;
+
 export class Server {
-  resolves: PromiseArgs<any>[];
+  resolves: PromiseArgs<Response>[];
   process: ChildProcess;
   closed: Promise<void>;
 
@@ -43,7 +46,7 @@ export class Server {
     return server;
   }
 
-  query(request: any) {
+  query(request: Partial<Query>): Promise<Response> {
     return new Promise((resolve, reject) => {
       debug(`query: %o`, request);
       const data = JSON.stringify(request);
@@ -52,14 +55,14 @@ export class Server {
     });
   }
 
-  async loop(resolve: Resolver<boolean>) {
+  async loop(resolve: Resolver<void>) {
     for await (const line of lines(this.process.stdout)) {
       debug(`received: %s`, line);
       const last = this.resolves.pop();
       if (last === undefined)
         throw new Error(`expected pending query`);
       const { resolve } = last;
-      const result = JSON.parse(line);
+      const result = JSON.parse(line) as Response;
       debug(`result: %o`, result);
       resolve(result);
     }

@@ -13,7 +13,7 @@ export class JCStressHistoryGenerator extends JCStressRunner {
   schemas: Schema[];
 
   constructor(schemas, jars = [], javaHome, testName) {
-    super(JCStressHistoryGenerator._codeGenerator(schemas, testName), jars, javaHome, { limits: {} });
+    super(JCStressHistoryGenerator._codeGenerator(schemas, testName), jars, javaHome, {});
     this.schemas = schemas;
   }
 

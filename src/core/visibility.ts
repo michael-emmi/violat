@@ -3,6 +3,7 @@ import * as Debug from 'debug';
 const debug = Debug('visibility');
 
 import { Schema, Sequence, Invocation } from '../schema';
+import { Spec } from '../spec/spec';
 
 export interface Visibility {
   isVisible(source: Invocation, target: Invocation): boolean;
@@ -138,7 +139,7 @@ export class VisibilitySemantics {
     return constraints.mustSee();
   }
 
-  pruneSpecification({ methods: specMethods, ...rest }) {
+  pruneSpecification({ methods: specMethods, ...rest }: Spec): Spec {
     let methods = specMethods.filter(m => {
       m.visibility || debug(`omitting method: ${m.name}`);
       return m.visibility;
@@ -148,8 +149,9 @@ export class VisibilitySemantics {
 }
 
 export class VisibilityGenerator {
-  async * getVisibilities({ schema, linearization }) {
-    let extender = new VisibilityExtender({ schema, linearization, ...<any>this });
+  async * getVisibilities(inputs: VisibilityInputs) {
+    const { schema, linearization } = inputs;
+    let extender = new VisibilityExtender({ schema, linearization });
 
     debug(`generating visibilities`);
     debug(`schema: %s`, schema);
@@ -166,58 +168,68 @@ export class VisibilityGenerator {
   }
 }
 
-export class VisibilityImpl {
+export class VisibilityImpl implements Visibility {
   map: { };
 
   constructor({ map = {} } = {}) {
     this.map = map;
   }
 
-  source(source) {
+  source(source: Invocation) {
     if (!this.map[source.id])
       this.map[source.id] = new Set();
   }
 
-  isVisible({ source, target }) {
+  isVisible(source: Invocation, target: Invocation) {
     this.source(source);
     return this.map[source.id].has(target.id);
   }
 
-  allVisible({ source }) {
+  visible(source: Invocation) {
+    return this.allVisible(source);
+  }
+
+  allVisible(source: Invocation) {
     this.source(source);
     return [...this.map[source.id]];
   }
 
-  add({ source, target }) {
+  add(source: Invocation, target: Invocation) {
     this.source(source);
     this.map[source.id].add(target.id);
   }
 
-  extend({ source, target }) {
+  extend(source: Invocation, target: Invocation) {
     let { map } = this;
     return new VisibilityImpl({
       map: Object.assign({}, map, { [source.id]: new Set([target.id, ...map[source.id]]) }),
     });
   }
 
-  toVisibility() {
+  toVisibility(): Visibility {
     return {
-      isVisible: (source, target) => this.isVisible({ source, target }),
-      visible: (source) => this.allVisible({ source })
+      isVisible: (source: Invocation, target: Invocation) => this.isVisible(source, target),
+      visible: (source) => this.allVisible(source)
     };
   }
+}
+
+interface VisibilityInputs {
+  schema: Schema;
+  linearization: Invocation[];
 }
 
 class VisibilityExtender {
   schema: Schema;
   linearization: Invocation[];
 
-  constructor({ schema, linearization }) {
+  constructor(inputs: VisibilityInputs) {
+    const { schema, linearization } = inputs;
     this.schema = schema;
     this.linearization = linearization;
   }
 
-  getMinimal() {
+  getMinimal(): VisibilityImpl {
     let vis = new VisibilityImpl();
     let preds: Invocation[] = [];
     for (let source of this.linearization) {
@@ -235,7 +247,7 @@ class VisibilityExtender {
         });
 
         if (constraints.mustSee())
-          vis.add({ source, target });
+          vis.add(source, target);
       }
 
       preds.push(source);
@@ -243,16 +255,16 @@ class VisibilityExtender {
     return vis;
   }
 
-  async * getExtensions(base) {
+  async * getExtensions(base: VisibilityImpl) {
     let extensions = [base];
     let preds: Invocation[] = [];
 
     for (let source of this.linearization) {
       for (let target of preds) {
         for (let vis of extensions) {
-          if (!vis.isVisible({ source, target })) {
+          if (!vis.isVisible(source, target)) {
             debug(`extension: %s sees %s`, source, target);
-            let ext = this.extend({ source, target, vis });
+            let ext = this.extend(source, target, vis);
             yield ext;
             extensions.push(ext);
           }
@@ -262,7 +274,7 @@ class VisibilityExtender {
     }
   }
 
-  extend({ source: s0, target: t0, vis }) {
+  extend(s0: Invocation, t0: Invocation, vis: VisibilityImpl) {
     let workList = [{ source: s0, target: t0 }];
 
     while (workList.length) {
@@ -274,7 +286,7 @@ class VisibilityExtender {
 
       debug(`adding: %s sees %s`, source, target);
       debug(`vis: %o`, vis);
-      vis = vis.extend({ source, target });
+      vis = vis.extend(source, target);
       debug(`vis: %o`, vis);
 
       for (let pred of before) {

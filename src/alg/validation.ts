@@ -5,18 +5,23 @@ const debug = Debug('validation');
 import { batch } from '../enumeration/batch';
 import { Schema } from '../schema';
 import { RandomProgramGenerator, Filter } from '../enumeration/random';
-import { StaticOutcomesTester, Tester } from './testing';
+import { StaticOutcomesTester, Tester, StaticOutcomesTesterInputs } from './testing';
 import { SpecStrengthener } from '../spec/strengthener';
+import { Server } from '../java/server';
+import { RelaxedExecutionGenerator } from '../core/execution';
+import { JCStressLimits } from '../java/jcstress/executor';
+import { Spec, Method } from '../spec/spec';
+import { TestResult } from './violation';
 
-export interface SpecValidator {
-  getViolations(spec): AsyncIterable<any>;
-  getFirstViolation(spec): Promise<any>;
+export interface SpecValidator<T> {
+  getViolations(spec): AsyncIterable<T>;
+  getFirstViolation(spec): Promise<T>;
 }
 
-abstract class AbstractValidator implements SpecValidator {
-  abstract async getViolations(spec);
-  async getFirstViolation(spec) {
-    let first;
+abstract class AbstractValidator<T> implements SpecValidator<T> {
+  abstract getViolations(spec: Spec): AsyncIterable<T>;
+  async getFirstViolation(spec: Spec) {
+    let first: T;
     for await (let violation of this.getViolations(spec)) {
 
       // NOTE: supposedly breaking here ensures that the generator’s
@@ -24,23 +29,34 @@ abstract class AbstractValidator implements SpecValidator {
       first = violation;
       break;
     }
-    return first;
+    // TODO: consider checking this
+    return first!;
   }
 }
 
-abstract class TestingBasedValidator extends AbstractValidator {
+export interface TestingBasedValidatorLimits extends Partial<JCStressLimits> {
+  maxPrograms: number;
+}
+
+export interface TestingBasedValidatorInputs extends StaticOutcomesTesterInputs {
+  limits: TestingBasedValidatorLimits;
+}
+
+abstract class TestingBasedValidator extends AbstractValidator<TestResult> {
   tester: StaticOutcomesTester;
   batchSize: number;
   maxPrograms: number;
 
-  constructor({ server, jars, javaHome, generator, limits: { maxPrograms, ...limits }, tester }) {
+  constructor(inputs: TestingBasedValidatorInputs) {
     super();
+    const { server, jars, javaHome, generator, limits, tester } = inputs;
+    const { maxPrograms } = limits;
     this.tester = new StaticOutcomesTester({ server, jars, javaHome, generator, limits, tester });
     this.batchSize = 100;
     this.maxPrograms = maxPrograms;
   }
 
-  async * getViolations(spec) {
+  async * getViolations(spec: Spec) {
     let batches = batch(this.getPrograms(spec), { size: this.batchSize, max: this.maxPrograms });
     for await (let programs of batches) {
       debug(`testing ${programs.length} programs`);
@@ -49,7 +65,7 @@ abstract class TestingBasedValidator extends AbstractValidator {
     }
   }
 
-  abstract getPrograms(spec);
+  abstract getPrograms(spec: Spec): Iterable<Schema>;
 }
 
 export class RandomTestValidator extends TestingBasedValidator {
@@ -62,7 +78,7 @@ export class RandomTestValidator extends TestingBasedValidator {
     this.limits = limits;
   }
 
-  * getPrograms(spec) {
+  * getPrograms(spec: Spec): Iterable<Schema> {
     let filter = this.filter;
     let limits = this.limits;
     let programGenerator = new RandomProgramGenerator({ spec, limits });
@@ -71,11 +87,17 @@ export class RandomTestValidator extends TestingBasedValidator {
   }
 }
 
+
+interface ProgramValidatorInputs extends TestingBasedValidatorInputs {
+  programs: Schema[];
+}
+
 export class ProgramValidator extends TestingBasedValidator {
   programs: Schema[];
 
-  constructor({ server, jars, javaHome, generator, limits, programs, tester }) {
-    super({ server, jars, javaHome, generator, limits, tester });
+  constructor(inputs: ProgramValidatorInputs) {
+    super(inputs);
+    const { programs } = inputs;
     this.programs = programs;
   }
 
@@ -85,7 +107,14 @@ export class ProgramValidator extends TestingBasedValidator {
   }
 }
 
-export class SpecStrengthValidator extends AbstractValidator {
+export interface Strengthening {
+  method: Method;
+  attribute: string;
+}
+
+export type StrengtheningResult = TestResult | Strengthening;
+
+export class SpecStrengthValidator extends AbstractValidator<StrengtheningResult> {
   server: any;
   jars: string[];
   javaHome?: string;
@@ -105,7 +134,7 @@ export class SpecStrengthValidator extends AbstractValidator {
     this.tester = tester;
   }
 
-  async * getViolations(spec) {
+  async * getViolations(spec: Spec) {
     for (let method of spec.methods) {
       let { server, jars, javaHome, generator, limits, tester } = this;
       let filter: Filter = program => program.sequences.some(s => s.invocations.some(i => i.method.name === method.name));

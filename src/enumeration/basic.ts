@@ -63,11 +63,11 @@ function filter(p) {
 
 function harness() {
   return new Schema({
-    class: null,
+    class: null as any,
     parameters: [],
     arguments: [],
-    sequences: null,
-    order: null
+    sequences: null as any,
+    order: null as any
   });
 }
 

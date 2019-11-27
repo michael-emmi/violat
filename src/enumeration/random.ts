@@ -6,27 +6,49 @@ const trace = Debug('enum:random:trace');
 const os = require('os');
 
 import { Spec, Method } from '../spec/spec';
-import { Schema, Sequence, Invocation } from '../schema';
+import { Schema, Sequence, Invocation, SchemaParameters } from '../schema';
 import { Chance } from 'chance';
 
 type Range = { min: number, max: number };
 export type Filter = (schema: Schema) => boolean;
 
+export interface RandomProgramGeneratorLimits {
+  threads: Range;
+  invocations: Range;
+  values: Range;
+}
+
+export interface RandomProgramGeneratorInputLimits {
+  minThreads: number;
+  maxThreads: number;
+  minInvocations: number;
+  maxInvocations: number;
+  minValues: number;
+  maxValues: number;
+}
+
+export interface RandomProgramGeneratorInputs {
+  spec: Spec;
+  limits: Partial<RandomProgramGeneratorInputLimits>;
+}
+
 export class RandomProgramGenerator {
   spec: Spec;
-  limits: { threads: Range, invocations: Range, values: Range; };
+  limits: RandomProgramGeneratorLimits;
   chance: Chance.Chance;
   programId: number;
   weights: number[];
 
-  constructor({ spec, limits: {
-    minThreads = 2,
-    maxThreads = Math.max(os.cpus().length, minThreads),
-    minInvocations = 3,
-    maxInvocations = 6,
-    minValues = 1,
-    maxValues = Math.ceil(Math.log(maxInvocations))
-  }}) {
+  constructor(inputs: RandomProgramGeneratorInputs) {
+    const { spec, limits } = inputs;
+    const {
+      minThreads = 2,
+      minInvocations = 3,
+      maxInvocations = 6,
+      minValues = 1 } = limits;
+    const {
+      maxThreads = Math.max(os.cpus().length, minThreads),
+      maxValues = Math.ceil(Math.log(maxInvocations)) } = limits;
     this.spec = spec;
     this.limits = {
       threads: { min: minThreads, max: maxThreads },
@@ -96,17 +118,18 @@ class SingleUseRandomProgramGenerator {
     this.invocations = [];
   }
 
-  getProgram() {
+  getProgram(): SchemaParameters {
     let id = this.id;
     let _class = this.spec.class;
     let parameters = this.spec.parameters || [];
     let _arguments = this.spec.default_parameters || [];
     let sequences = [...Array(this.numSequences)].map(_ => this.getSequence());
     let order = [];
-    return { id, class: _class, parameters, arguments: _arguments, sequences, order };
+    const schema = { id, class: _class, parameters, arguments: _arguments, sequences, order };
+    return schema;
   }
 
-  getSequence() {
+  getSequence(): Sequence {
     let numInvocations;
     if (this.sequences.length < this.numSequences - 1)
       numInvocations = Math.round(this.chance.normal({
@@ -123,7 +146,7 @@ class SingleUseRandomProgramGenerator {
     return sequence;
   }
 
-  getInvocation() {
+  getInvocation(): Invocation {
     let id = this.invocations.length;
     let method = this.getMethod();
     let _arguments = method.parameters.map(p => this.getValue(p.type));
@@ -132,7 +155,7 @@ class SingleUseRandomProgramGenerator {
     return invocation;
   }
 
-  getMethod() {
+  getMethod(): Method {
     return this.chance.weighted<Method>(this.spec.methods, this.getWeights());
   }
 

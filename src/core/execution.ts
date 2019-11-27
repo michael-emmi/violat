@@ -6,11 +6,17 @@ import { Schema, Sequence, Invocation } from '../schema';
 import { Visibility, VisibilityGenerator } from './visibility';
 import { Executor } from '../java/executor';
 
+export interface ExecutionInputs {
+  schema: Schema;
+  linearization: Invocation[];
+}
+
 class AtomicExecution {
   schema: Schema;
   linearization: Invocation[];
 
-  constructor({ schema, linearization }) {
+  constructor(inputs: ExecutionInputs) {
+    const { schema, linearization } = inputs;
     this.schema = schema;
     this.linearization = linearization;
   }
@@ -21,20 +27,25 @@ class AtomicExecution {
 }
 
 export interface ExecutionGenerator {
-  getExecutions(schema);
+  getExecutions(schema: Schema): AsyncIterable<AtomicExecution>;
 }
 
 export class AtomicExecutionGenerator implements ExecutionGenerator {
-  async * getExecutions(schema) {
+  async * getExecutions(schema: Schema) {
     for (let linearization of schema.getProgramOrder().linearizations())
       yield new AtomicExecution({ schema, linearization });
   }
 }
 
+interface RelaxedExecutionInputs extends ExecutionInputs {
+  visibility: Visibility;
+}
+
 class RelaxedExecution extends AtomicExecution {
   visibility: Visibility;
 
-  constructor({ schema, linearization, visibility }) {
+  constructor(inputs: RelaxedExecutionInputs) {
+    const { schema, linearization, visibility } = inputs
     super({ schema, linearization });
     this.visibility = visibility;
   }
@@ -54,14 +65,14 @@ class RelaxedExecution extends AtomicExecution {
   }
 }
 
-export class RelaxedExecutionGenerator {
+export class RelaxedExecutionGenerator implements ExecutionGenerator {
   visibilities: VisibilityGenerator;
 
   constructor(semantics) {
     this.visibilities = new VisibilityGenerator();
   }
 
-  async * getExecutions(schema, visibilities) {
+  async * getExecutions(schema: Schema) {
     for (let linearization of schema.getProgramOrder().linearizations())
       for await (let visibility of this.visibilities.getVisibilities({ schema, linearization }))
         yield new RelaxedExecution({ schema, linearization, visibility });

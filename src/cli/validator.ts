@@ -18,10 +18,12 @@ import { Schema } from '../schema';
 import * as RunJavaObjectServer from '../java/runjobj';
 import { VisibilitySemantics } from '../core/visibility';
 import { AtomicExecutionGenerator, RelaxedExecutionGenerator } from '../core/execution';
-import { SpecValidator, ProgramValidator, RandomTestValidator, SpecStrengthValidator } from '../alg/validation';
+import { SpecValidator, ProgramValidator, RandomTestValidator, SpecStrengthValidator, TestingBasedValidatorLimits, StrengtheningResult, Strengthening } from '../alg/validation';
 import { VisibilitySpecStrengthener } from '../spec/visibility';
 
 import * as uuidv1 from 'uuid/v1';
+import { TestResult } from '../alg/violation';
+import { Spec } from '../spec/spec';
 
 let cli = meow(`
   Usage
@@ -66,7 +68,7 @@ async function main() {
     console.log(`${cli.pkg.name} version ${cli.pkg.version}`);
     console.log(`---`);
 
-    let inputSpec = JSON.parse(fs.readFileSync(cli.input[0]).toString());
+    let inputSpec = JSON.parse(fs.readFileSync(cli.input[0]).toString()) as Spec;
     let { maximality, schema: schemas, jar, javaHome, tester, ...limits } = cli.flags;
     let methods = inputSpec.methods.filter(m => m.name.match(limits.methodFilter));
     let jars = jar ? [].concat(jar) : [];
@@ -80,14 +82,19 @@ async function main() {
 
     let semantics = new VisibilitySemantics();
     let generator = new RelaxedExecutionGenerator(semantics);
+
+    // NOTE: here we may prune away methods present in an input schema, which will error when parsing it
+    // TODO: do something to trace back that error to the pruning happening here.
     let spec = semantics.pruneSpecification({ ...inputSpec, methods });
 
-    let validator: SpecValidator;
+    let validator: SpecValidator<StrengtheningResult>;
 
     if (schemas) {
       let count = 0;
       validator = new ProgramValidator({
-        server, jars, javaHome, generator, limits, tester,
+        server, jars, javaHome, generator,
+        limits: limits as TestingBasedValidatorLimits,
+        tester,
         programs: [].concat(schemas).map(s => Schema.fromString(s, spec, count++))
       });
 
@@ -107,14 +114,16 @@ async function main() {
       console.log(`---`);
 
       if (maximality) {
-        let { method, attribute } = violation;
+        // TODO: check this?
+        let { method, attribute } = violation as Strengthening;
         console.log(`observed ${attribute} consistency for method: %s`, method.name);
         console.log(`---`);
 
       } else {
-        console.log(`${violation.schema}`);
+        const { schema, getTable } = violation as TestResult;
+        console.log(`${schema}`);
         console.log(`---`);
-        console.table(violation.getTable());
+        console.table(getTable());
         console.log(`---`);
       }
       count++;

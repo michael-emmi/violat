@@ -2,8 +2,24 @@ import * as assert from 'assert';
 import * as Debug from 'debug';
 const debug = Debug('executor');
 
-import { Invocation, Schema } from '../schema';
-import { Server } from '../java/server';
+import { Invocation, Schema, Argument } from '../schema';
+import { Server, Response } from '../java/server';
+import { Method, Parameter } from '../spec/spec';
+
+interface Constructor {
+  parameters: Parameter[];
+}
+
+export interface Query {
+  class: string;
+  constructor: Constructor;
+  arguments: Argument[];
+  invocations: Invocation[];
+}
+
+export interface Result {
+  [id: string]: string;
+}
 
 export class Executor {
   server: Server;
@@ -26,7 +42,7 @@ export class Executor {
     return await this._getResultFromQuery(invocations, query);
   }
 
-  _getQuery(invocations: Invocation[], schema: Schema) {
+  _getQuery(invocations: Invocation[], schema: Schema): Query {
     let query = {
       class: schema.class,
       constructor: {
@@ -39,14 +55,14 @@ export class Executor {
     return query;
   }
 
-  async _getResultFromQuery(invocations: Invocation[], query: {}) {
+  async _getResultFromQuery(invocations: Invocation[], query: Query): Promise<Result> {
     await this.isReady();
     let response = await this.server.query(query);
     debug(`response: %o`, response);
     return this._getResultFromResponse(invocations, response);
   }
 
-  _getResultFromResponse(invocations, response) {
+  _getResultFromResponse(invocations: Invocation[], response: Response): Result {
     let result = {};
     for (let [idx, value] of response.entries())
       result[invocations[idx].id] = value.replace(/\s+/g, '');
@@ -56,20 +72,20 @@ export class Executor {
 }
 
 export class CachingExecutor extends Executor {
-  cache: Map<string, string>;
+  cache: Map<string, Result>;
 
-  constructor(server) {
+  constructor(server: Server) {
     super(server);
     this.cache = new Map();
   }
 
-  async _getResult(invocations, schema) {
+  async _getResult(invocations: Invocation[], schema: Schema) {
     let query = this._getQuery(invocations, schema);
     let key = this._getKey(query);
-    let result;
+    let result: Result;
 
     if (this.cache.has(key)) {
-      result = this.cache.get(key);
+      result = this.cache.get(key)!;
       debug(`cached result: %o`, result);
 
     } else {
@@ -80,7 +96,7 @@ export class CachingExecutor extends Executor {
     return result;
   }
 
-  _getKey(query) {
+  _getKey(query: Query) {
     return JSON.stringify(query);
   }
 }

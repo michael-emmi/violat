@@ -7,6 +7,7 @@ import { Server } from '../java/server';
 import { CachingExecutor } from '../java/executor';
 import { Outcome } from '../outcome';
 import { Consistency } from '../consistency';
+import { Schema } from '../schema';
 
 export class OutcomePredictor {
   server: Server;
@@ -17,7 +18,7 @@ export class OutcomePredictor {
     this.generator = generator;
   }
 
-  async * outcomes(schema) {
+  async * outcomes(schema: Schema) {
     debug(`predicting outcomes for schema %s`, schema);
     let unique = new Set();
     let executor = new CachingExecutor(this.server);

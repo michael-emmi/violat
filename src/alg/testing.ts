@@ -4,20 +4,32 @@ const debug = Debug('testing');
 
 import { Schema } from '../schema';
 import { OutcomePredictor } from '../search/prediction';
-import { JCStressTester } from '../java/jcstress/executor';
+import { JCStressTester, JCStressLimits } from '../java/jcstress/executor';
 import { TestResult } from './violation';
 import * as JpfChecker from '../java/jpf/checker';
+import { Server } from '../java/server';
+import { ExecutionGenerator } from '../core/execution';
 
 export type Tester = 'JCStress' | 'Java Pathfinder';
+
+export interface StaticOutcomesTesterInputs {
+  server: Server;
+  jars: string[];
+  javaHome: string;
+  generator: ExecutionGenerator;
+  tester: Tester;
+  limits: Partial<JCStressLimits>;
+}
 
 export class StaticOutcomesTester {
   predictor: OutcomePredictor;
   jars: string[];
   javaHome?: string;
-  limits: {};
+  limits: Partial<JCStressLimits>;
   tester: Tester;
 
-  constructor({ server, jars, javaHome, generator, limits, tester }) {
+  constructor(inputs: StaticOutcomesTesterInputs) {
+    const { server, jars, javaHome, generator, limits, tester } = inputs;
     this.predictor = new OutcomePredictor({ server, generator });
     this.jars = jars;
     this.javaHome = javaHome;
@@ -25,7 +37,7 @@ export class StaticOutcomesTester {
     this.tester = tester;
   }
 
-  async * getViolations(programs) {
+  async * getViolations(programs: Schema[]) {
 
     debug(`computing expected outcomes for ${programs.length} programs`);
     for (let program of programs) {
