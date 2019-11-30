@@ -42,7 +42,6 @@
     "node": ">=10.0"
   },
   "scripts": {
-    "prebuild": "npm i",
     "build": "tsc",
     "pretest": "npm run build",
     "test": "mocha",
