@@ -42,8 +42,9 @@
     "node": ">=10.0"
   },
   "scripts": {
+    "prebuild": "npm i",
     "build": "tsc",
-    "prepare": "npm run build",
+    "pretest": "npm run build",
     "test": "mocha",
     "consistency-experiments": "node resources/scripts/experiments/consistency.js",
     "monitoring-experiments": "bash ./resources/scripts/experiments/monitoring.sh"
