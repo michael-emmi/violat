@@ -56,19 +56,28 @@ export class Server {
   }
 
   async loop(resolve: Resolver<void>) {
-    for await (const line of lines(this.process.stdout)) {
-      debug(`received: %s`, line);
-      const last = this.resolves.pop();
-      if (last === undefined)
-        throw new Error(`expected pending query`);
-      const { resolve } = last;
-      const result = JSON.parse(line) as Response;
-      debug(`result: %o`, result);
-      resolve(result);
-    }
+    try {
+      for await (const line of lines(this.process.stdout)) {
+        debug(`received: %s`, line);
+        const last = this.resolves.pop();
+        if (last === undefined)
+          throw new Error(`expected pending query`);
+        const { resolve } = last;
+        const result = JSON.parse(line) as Response;
+        debug(`result: %o`, result);
+        resolve(result);
+      }
 
-    if (this.resolves.length > 0)
-      throw new Error(`server terminated with pending requests`);
+      if (this.resolves.length > 0)
+        throw new Error(`server terminated with pending requests`);
+
+    } catch (e) {
+      const errors: string[] = [];
+      for await (const line of lines(this.process.stderr))
+        errors.push(line);
+      e.message += `\nserver stdout:\n${errors.join("\n")}`;
+      throw e;
+    }
 
     resolve();
   }
