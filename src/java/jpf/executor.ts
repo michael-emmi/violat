@@ -13,7 +13,10 @@ export type Source = {
   code: string
 };
 
-export async function runJpf({ name, code }: Source): Promise<Readable> {
+export async function runJpf({ name, code }: Source,
+    jars: string[] = [],
+    javaHome: string | undefined): Promise<Readable> {
+
   const { path: cwd } = await tmp.dir();
 
   const sourceFile = path.join(cwd, `${name}.java`);
@@ -27,9 +30,16 @@ export async function runJpf({ name, code }: Source): Promise<Readable> {
 
   try {
     debug(`compiling test harness`);
-    const { status, stdout, stderr } = cp.spawnSync(`javac`, [sourceFile], { cwd });
+    debug(`javaHome: %o`, javaHome);
+    debug(`jars: %o`, jars);
+    const command = `javac`;
+    const classpath = [".", jars.map((jar) => path.resolve(jar))].join(":");
+    const args = [`-cp`, classpath, sourceFile]
 
-    debug(`javac: %s`, stdout);
+    debug(`running %o with args %o in %o`, command, args, cwd);
+    const { status, stdout, stderr } = cp.spawnSync(command, args, { cwd });
+
+    debug(`javac: %s\n%s`, stdout, stderr);
 
     if (status !== 0)
       throw stderr.toString();

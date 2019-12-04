@@ -68,7 +68,7 @@ export class StaticOutcomesTester {
         return tester.getResults();
 
       case 'Java Pathfinder':
-        return JpfChecker.check(schemas);
+        return JpfChecker.check(schemas, this.jars, this.javaHome);
 
       default:
         throw new Error(`unexpected tester: ${this.tester}`);
