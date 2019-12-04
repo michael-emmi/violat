@@ -25,9 +25,17 @@ export async function maven(jcstressPath: string) {
   debug(`running command: %s`, cmd);
   const proc = cp.spawn(exe, args, { cwd });
 
+  const errors: string[] = [];
   for await (const line of lines(proc.stdout)) {
     debug(`maven: %s`, line);
+    if (line.match(/\[ERROR\]/))
+      errors.push(line);
   }
+
+  const code = await new Promise((resolve, _) => proc.on("close", resolve));
+
+  if (code)
+    throw Error(`maven failed with errors:\n${errors.join("\n")}`);
 }
 
 export async function gradle(parameters: Parameters): Promise<string> {

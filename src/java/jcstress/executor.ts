@@ -230,8 +230,9 @@ export abstract class JCStressRunner {
           await maven(this.workPath);
           debug(`test harnesses compiled`);
         } catch (e) {
-          reject(new Error(`test-harness compilation failed: ${e.stack || e}`));
-          return;
+          debug(`test-harness compilation failed`);
+          reject(e);
+          throw e;
         }
       }
 
