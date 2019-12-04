@@ -13,9 +13,15 @@ export type Source = {
   code: string
 };
 
+export interface Output {
+  stdout: Readable;
+  stderr: Readable;
+  returnCode: Promise<number>;
+}
+
 export async function runJpf({ name, code }: Source,
     jars: string[] = [],
-    javaHome: string | undefined): Promise<Readable> {
+    javaHome: string | undefined): Promise<Output> {
 
   const { path: cwd } = await tmp.dir();
 
@@ -50,11 +56,16 @@ export async function runJpf({ name, code }: Source,
 
   try {
     debug(`invoking Java Pathfinder`);
-    const proc = cp.spawn(`jpf`, [propertiesFile], { cwd });
-    return proc.stdout;
+    const command = `jpf`;
+    const args = [propertiesFile];
+    debug(`running %o with args %o in %o`, command, args, cwd);
+    const proc = cp.spawn(command, args, { cwd });
+    const { stdout, stderr } = proc;
+    const returnCode = new Promise<number>((resolve, _) => proc.on("close", resolve));
+    return { stdout, stderr, returnCode };
 
   } catch (e) {
-    throw `JPF failed: ${e}`;
+    throw Error(`JPF failed: ${e}`);
   }
 }
 

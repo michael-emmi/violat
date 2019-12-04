@@ -19,6 +19,9 @@ export async function * getOutcomes(readable: Readable, outcomes: Iterable<Outco
   }
   debug(`got outcomes: %o`, resultMap);
 
+  if (resultMap.size === 0)
+    throw Error(`Jpf failed to generate outcomes`);
+
   for (const [result, count] of resultMap.entries()) {
     const predicted = expected.get(result);
 

@@ -8,6 +8,7 @@ import { Outcome } from '../../outcome';
 import { getTestHarness } from './harness';
 import { runJpf } from './executor';
 import { getOutcomes } from './reader';
+import { lines } from '../../utils/lines';
 
 export type Result = {
   schema: Schema,
@@ -32,10 +33,19 @@ async function collectOutcomes(schema: Schema,
     javaHome: string | undefined): Promise<Outcome[]> {
 
   const source = getTestHarness(schema);
-  const readable = await runJpf(source, jars, javaHome);
+  const output = await runJpf(source, jars, javaHome);
+  const { stdout, stderr, returnCode } = output;
   const outcomes: Outcome[] = [];
-  for await (const outcome of getOutcomes(readable, schema.outcomes)) {
+
+  for await (const outcome of getOutcomes(stdout, schema.outcomes))
     outcomes.push(outcome);
+
+  if (await returnCode) {
+    const errors: string[] = [];
+    for await (const line of lines(stderr))
+      errors.push(line);
+    throw Error(`Jpf failed with errors:\n${errors.join("\n")}`);
   }
+
   return outcomes;
 }
