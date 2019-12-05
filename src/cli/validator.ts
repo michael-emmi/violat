@@ -123,7 +123,7 @@ async function main() {
         const { schema, getTable } = violation as TestResult;
         console.log(`${schema}`);
         console.log(`---`);
-        console.table(getTable());
+        console.table(getTable.bind(violation)());
         console.log(`---`);
       }
       count++;
