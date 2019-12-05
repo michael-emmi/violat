@@ -32,13 +32,13 @@ export async function runJpf({ name, code }: Source,
   await fs.writeFile(sourceFile, code);
 
   debug(`writing properties file: ${propertiesFile}`);
-  await fs.writeFile(propertiesFile, getProperties(name));
+  await fs.writeFile(propertiesFile, getProperties(name, jars));
 
   try {
     debug(`compiling test harness`);
     debug(`javaHome: %o`, javaHome);
     debug(`jars: %o`, jars);
-    const command = `javac`;
+    const command = getCompiler(javaHome);
     const classpath = [".", jars.map((jar) => path.resolve(jar))].join(":");
     const args = [`-cp`, classpath, sourceFile]
 
@@ -56,7 +56,10 @@ export async function runJpf({ name, code }: Source,
 
   try {
     debug(`invoking Java Pathfinder`);
+
+    // TODO: figure out how to use the runtime dictated by javaHome
     const command = `jpf`;
+
     const args = [propertiesFile];
     debug(`running %o with args %o in %o`, command, args, cwd);
     const proc = cp.spawn(command, args, { cwd });
@@ -69,13 +72,17 @@ export async function runJpf({ name, code }: Source,
   }
 }
 
-function getProperties(target: string): string {
+function getProperties(target: string, jars: string[]): string {
   return `target = ${target}
-classpath = .
+classpath = ${[".", ...jars.map((p) => path.resolve(p))].join(":")}
 sourcepath = .
 report.console.property_violation =
 report.console.start =
 report.console.finished =
 search.multiple_errors = true
 `;
+}
+
+function getCompiler(javaHome?: string): string {
+  return path.join(javaHome ? path.join(javaHome, "bin") : "", "javac");
 }
