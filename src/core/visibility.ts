@@ -278,7 +278,7 @@ class VisibilityExtender {
     let workList = [{ source: s0, target: t0 }];
 
     while (workList.length) {
-      let { source, target } = workList.shift() as { source: any, target: any };
+      let { source, target } = workList.shift()!;
       let sourceIdx = this.linearization.indexOf(source);
       let targetIdx = this.linearization.indexOf(target);
       let before = this.linearization.slice(0, targetIdx);
@@ -321,13 +321,21 @@ class VisibilityExtender {
     return vis;
   }
 
-  missingLink({ invocations, source, inter, target, vis }) {
-    if (vis.isVisible({ source, target }))
+  missingLink({ invocations, source, inter, target, vis }: MissingLinkParams) {
+    if (vis.isVisible(source, target))
       return false;
 
     let schema = this.schema;
-    vis = vis.toVisibility();
-    let constraints = new Constraints({ invocations, source, target, schema, vis });
+    const v = vis.toVisibility();
+    let constraints = new Constraints({ invocations, source, target, schema, vis: v });
     return constraints.isWitness(inter);
   }
+}
+
+interface MissingLinkParams {
+  invocations: Invocation[];
+  source: Invocation;
+  inter: Invocation;
+  target: Invocation;
+  vis: VisibilityImpl;
 }
