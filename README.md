@@ -17,7 +17,7 @@ This project depends essentially on recent Java and JavaScript environments, and
 * [Java SE Development Kit]: version 8 or greater
 * [Gradle] build tool
 * [Maven] project management tool
-* [Java Pathfinder] if the JPF-based tester is desired.
+* [Java Pathfinder] if the JPF-based tester is desired (in which JDK 8 is required)
 
 ## Installation
 
