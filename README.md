@@ -14,8 +14,8 @@ violations via stress testing with OpenJDK’s [jcstress][] tool.
 This project depends essentially on recent Java and JavaScript environments, and in particular on:
 
 * [Node.js] runtime for JavaScript: version 10.0 or greater
-* [Java SE Development Kit]: version 8 or greater
-* [Gradle] build tool
+* [Java SE Development Kit]: version 8
+* [Gradle] build tool: at least version 6
 * [Maven] project management tool
 * [Java Pathfinder] if the JPF-based tester is desired (in which JDK 8 is required)
 
