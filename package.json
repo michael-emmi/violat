@@ -46,6 +46,8 @@
     "build": "tsc",
     "pretest": "npm run build",
     "test": "mocha",
+    "preintegration-test": "npm run test",
+    "integration-test": "mocha -t 60000 integration-test/**/*.js",
     "consistency-experiments": "node resources/scripts/experiments/consistency.js",
     "monitoring-experiments": "bash ./resources/scripts/experiments/monitoring.sh"
   },
