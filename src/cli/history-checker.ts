@@ -115,7 +115,7 @@ let cli = meow(`
     console.log(`time: ${time}ms`);
 
     if (!result)
-      process.exitCode++;
+      process.exitCode!++;
   }
 
   server.close();

@@ -136,7 +136,7 @@ class JavaCodeGenerator extends SchemaIR {
     return [
       ...this.classAnnotations(),
       `public class ${this.testName()} {`,
-      ...this.memberDecls().map(d => d.toString().replace(/^/mg, '    ')),
+      ...this.memberDecls().map(d => (d as object).toString().replace(/^/mg, '    ')),
       `}`
     ].join('\n');
   }
