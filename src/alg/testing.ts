@@ -15,9 +15,9 @@ export type Tester = 'JCStress' | 'Java Pathfinder';
 export interface StaticOutcomesTesterInputs {
   server: Server;
   jars: string[];
-  javaHome: string;
+  javaHome?: string;
   generator: ExecutionGenerator;
-  tester: Tester;
+  tester: string;
   limits: Partial<JCStressLimits>;
 }
 
@@ -26,7 +26,7 @@ export class StaticOutcomesTester {
   jars: string[];
   javaHome?: string;
   limits: Partial<JCStressLimits>;
-  tester: Tester;
+  tester: string;
 
   constructor(inputs: StaticOutcomesTesterInputs) {
     const { server, jars, javaHome, generator, limits, tester } = inputs;

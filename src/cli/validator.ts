@@ -52,8 +52,11 @@ let cli = meow(`
     $ ${name} --schema "{ clear(); put(0,1) } || { containsKey(1); remove(0) }" ConcurrentHashMap.json
 `, {
   flags: {
-    tester: { default: 'JCStress' },
-    methodFilter: { default: '.*' },
+    jar: { type: 'string' },
+    javaHome: { type: 'string' },
+    schema: { type: 'string' },
+    tester: { default: 'JCStress', type: 'string' },
+    methodFilter: { default: '.*', type: 'string' },
     maxPrograms: { default: 100 },
     maxThreads: { default: 2 },
     maxInvocations: { default: 6 }
@@ -71,7 +74,7 @@ async function main() {
     let inputSpec = JSON.parse(fs.readFileSync(cli.input[0]).toString()) as Spec;
     let { maximality, schema: schemas, jar, javaHome, tester, ...limits } = cli.flags;
     let methods = inputSpec.methods.filter(m => m.name.match(limits.methodFilter));
-    let jars = jar ? [].concat(jar) : [];
+    let jars = jar ? [jar] : [];
 
     let server = await RunJavaObjectServer.create({
       sourcePath: path.resolve(config.resourcesPath, 'runjobj'),
@@ -95,7 +98,7 @@ async function main() {
         server, jars, javaHome, generator,
         limits: limits as TestingBasedValidatorLimits,
         tester,
-        programs: [].concat(schemas).map(s => Schema.fromString(s, spec, count++))
+        programs: [schemas].map(s => Schema.fromString(s, spec, count++))
       });
 
     } else if (maximality)

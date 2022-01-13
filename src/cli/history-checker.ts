@@ -63,9 +63,10 @@ let cli = meow(`
     $ ${name} --weak some_history.json
 `, {
   flags: {
-    weak: 'boolean',
-    jit: 'boolean',
-    min: 'boolean',
+    weak: { type: 'boolean' },
+    javaHome: { type: 'string' },
+    jit: { type: 'boolean' },
+    min: { type: 'boolean' },
     timeLimit: { default: 1000 }
   }
 });

@@ -31,10 +31,10 @@ let cli = meow(`
     $ ${name} --weak my_test_harness_schema.json
 `, {
   flags: {
-    weak: 'boolean',
-    weakRelaxLinearization: 'boolean',
-    weakRelaxVisibility: 'boolean',
-    weakRelaxReturns: 'boolean'
+    weak: { type: 'boolean' },
+    weakRelaxLinearization: { type: 'boolean' },
+    weakRelaxVisibility: { type: 'boolean' },
+    weakRelaxReturns: { type: 'boolean' }
   }
 });
 

@@ -9,7 +9,7 @@ type Arguments = {
   sourcePath: string;
   workPath: string;
   jars?: string[];
-  javaHome: string;
+  javaHome?: string;
 };
 
 export async function create({ sourcePath, workPath, jars = [], javaHome}: Arguments) {

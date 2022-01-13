@@ -14,7 +14,7 @@ let name = Object.keys(meta.bin)
 
 import { Schema } from '../schema';
 import { JCStressHistoryGenerator } from '../java/jcstress/histories';
-import { RandomProgramGenerator } from '../enumeration/random';
+import { RandomProgramGenerator, RandomProgramGeneratorInputLimits } from '../enumeration/random';
 
 const uuidv1 = require('uuid/v1');
 
@@ -79,7 +79,7 @@ async function output(args) {
   console.log(`---`);
 
   let spec = JSON.parse(fs.readFileSync(cli.input[0]).toString());
-  let limits = cli.flags;
+  let limits = cli.flags as Partial<RandomProgramGeneratorInputLimits>;
   let { javaHome } = cli.flags;
   let programGenerator = new RandomProgramGenerator({ spec, limits });
   let { template } = await setup();
@@ -87,7 +87,7 @@ async function output(args) {
   let schemas: Schema[] = [];
   let total = 0;
   let count = 0;
-  let limit = cli.flags.programs;
+  let limit = cli.flags.programs as number;
   let runId = uuidv1();
 
   for (let schema of programGenerator.getPrograms()) {
